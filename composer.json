@@ -1,0 +1,14 @@
+{
+    "name": "emmanuel/blog",
+    "description": "Projet5 Openclassrooms",
+    "autoload": {
+        "psr-4": {
+            "models\\": "src/models/",
+            "controllers\\": "src/controllers/"
+        }
+    },
+    "require": {
+        "altorouter/altorouter": "^2.0",
+        "twig/twig": "3.0"
+    }
+}
