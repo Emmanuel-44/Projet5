@@ -35,13 +35,13 @@ $router->map('GET', '/login', function() {
 $router->map('GET', '/admin', function() {
     $postController = new PostController();
     $postController->adminIndex();
-});
+}, 'adminIndex');
 
 // map create Post
 $router->map('GET', '/admin/ajouter', function() {
     $postController = new PostController();
     $postController->create();
-});
+}, 'create');
 
 // map read Post
 $router->map('GET', '/admin/article/[*:slug]-[i:id]', function() {
@@ -59,7 +59,7 @@ $router->map('GET', '/admin/modifier/[*:slug]-[i:id]', function() {
 $match = $router->match();
 
 // call closure or throw 404 status
-if(is_array($match) && is_callable($match['target'])) {
+if (is_array($match) && is_callable($match['target'])) {
     call_user_func_array($match['target'], $match['params']);
 } else {
     header( $_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');

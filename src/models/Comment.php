@@ -10,60 +10,42 @@ class Comment
     private $commentDate;
     private $commentState;
     private $postId;
-    private $errors = [];
-
-    const INVALID_USERNAME = 1;
-    const INVALID_CONTENT = 2;
 
     public function __construct($valeurs = [])
     {
-      if (!empty($valeurs))
-      {
-        $this->hydrate($valeurs);
-      }
+        if (!empty($valeurs))
+        {
+            $this->hydrate($valeurs);
+        }
     }
     
     public function hydrate($donnees)
     {
-      foreach ($donnees as $attribut => $valeur)
-      {
-        $methode = 'set'.ucfirst($attribut);
-        
-        if (is_callable([$this, $methode]))
+        foreach ($donnees as $attribut => $valeur)
         {
-          $this->$methode($valeur);
+            $methode = 'set'.ucfirst($attribut);
+        
+            if (is_callable([$this, $methode]))
+            {
+                $this->$methode($valeur);
+            }
         }
-      }
     }
 
     // SETTERS
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->id = $id;
     }
 
-    public function setUsername($username)
+    public function setUsername(string $username)
     {
-        if(!is_string($username) || empty($username))
-        {
-            $this->errors[] = self::INVALID_USERNAME;
-        }
-        else
-        {
         $this->username = $username;
-        }
     }
 
-    public function setContent($content)
+    public function setContent(string $content)
     {
-        if(!is_string($content) || empty($content))
-        {
-            $this->errors[] = self::INVALID_CONTENT;
-        }
-        else
-        {
-            $this->content = $content;
-        } 
+        $this->content = $content;
     }
 
     public function setCommentDate($commentDate)
@@ -76,7 +58,7 @@ class Comment
         $this->commentState = $commentState;
     }
 
-    public function setPostId($postId)
+    public function setPostId(int $postId)
     {
         $this->postId = $postId;
     }
@@ -111,11 +93,6 @@ class Comment
     public function getPostId()
     {
         return $this->postId;
-    }
-
-    public function getErrors()
-    {
-        return $this->errors;
     }
     // GETTERS END
 }

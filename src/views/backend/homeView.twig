@@ -1,1 +1,37 @@
-espace administration
+{% extends "backend/layout.twig" %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 style="margin: 0 0 15px 0">Liste des articles</h2>
+            <a href="admin/ajouter" class="mb-4 btn btn-primary">Ajouter un article</a>
+            <table class="table table-striped" style="margin-bottom: 30px;">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Auteur</th>
+                        <th>Date de publication</th>
+                        <th>Date de modification</th>
+                        <th></th>
+                        <th>Nouveau(x) commentaire(s)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <a href="" class="btn btn-primary" style="margin: 2px;">Voir</a>
+                                <a href="" class="btn btn-primary" style="margin: 2px;">Modifier</a>
+                                <a href="" class="btn btn-danger" style="margin: 2px;">Supprimer</a>
+                            </td>
+                            <td style="text-align: center;"><a href="" class="btn btn-success"></a></td>
+                        </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

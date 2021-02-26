@@ -1,6 +1,10 @@
 <?php
 namespace controllers;
 
+use models\DBFactory;
+use models\Post;
+use models\PostManager;
+
 class PostController
 {
     public function index()
