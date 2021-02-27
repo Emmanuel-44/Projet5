@@ -1,6 +1,8 @@
 <?php
 namespace models;
 
+use DateTime;
+
 class Post
 {
     private $id;
@@ -13,6 +15,12 @@ class Post
     private $modifDate;
     private $slug;
     private $newComment;
+    private $errors = [];
+
+    const INVALID_TITLE = 1;
+    const INVALID_AUTHOR = 2;
+    const INVALID_TEASER = 3;
+    const INVALID_CONTENT = 4;
 
     public function __construct($valeurs = [])
     {
@@ -61,30 +69,31 @@ class Post
         $this->author = $author;
     }
 
-    public function setImagePath($imagePath)
+    public function setImagePath(string $imagePath)
     {
-        $this->imagePath = $imagePath; 
+        $this->imagePath = $imagePath;
     }
 
-    public function setAddingDate($addingDate)
+    public function setAddingDate(DateTime $addingDate)
     {
         $this->addingDate = $addingDate;
     }
     
-    public function setModifDate($modifDate)
+    public function setModifDate(Datetime $modifDate)
     {
         $this->modifDate = $modifDate;
     }
 
-    public function setSlug($slug)
-    {  
+    public function setSlug(string $slug)
+    {
         $this->slug = $slug;
     }
 
-    public function setNewComment($newComment)
+    public function setNewComment(int $newComment)
     {
         $this->newComment = $newComment;
     }
+    // END SETTERS
 
     // GETTERS
     public function getId()
@@ -135,5 +144,36 @@ class Post
     public function getNewComment()
     {
         return $this->newComment;
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+    // END GETTERS
+
+    public function isValid() : bool
+    {
+        if (empty($this->title))
+        {
+            $this->errors[] = self::INVALID_TITLE;
+        }
+        
+        if (empty($this->author))
+        {
+            $this->errors[] = self::INVALID_AUTHOR;
+        }
+        
+        if (empty($this->teaser))
+        {
+            $this->errors[] = self::INVALID_TEASER;
+        }
+        
+        if (empty($this->content))
+        {
+            $this->errors[] = self::INVALID_CONTENT;
+        }
+
+        return empty($this->errors);
     }
 }

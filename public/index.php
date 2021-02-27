@@ -38,7 +38,7 @@ $router->map('GET', '/admin', function() {
 }, 'adminIndex');
 
 // map create Post
-$router->map('GET', '/admin/ajouter', function() {
+$router->map('GET|POST', '/admin/ajouter', function() {
     $postController = new PostController();
     $postController->create();
 }, 'create');

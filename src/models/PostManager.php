@@ -14,7 +14,7 @@ class PostManager
 
     public function add(Post $post)
     {
-        $req = $this->db->prepare('INSERT INTO post(title, teaser, author, content, imagePath, addingDate, modifDate, slug, newComment) VALUES(:title, :teaser, :author, :content, :imagePath, NOW(), NOW(), :slug, :newComment)');
+        $req = $this->db->prepare('INSERT INTO post(title, teaser, author, content, imagePath, addingDate, slug, newComment) VALUES(:title, :teaser, :author, :content, :imagePath, NOW(), :slug, :newComment)');
         $req->bindValue(':title', $post->getTitle());
         $req->bindValue(':teaser', $post->getTeaser());
         $req->bindValue(':author', $post->getAuthor());
