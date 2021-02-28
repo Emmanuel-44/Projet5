@@ -11,6 +11,14 @@ class TwigFactory
             'debug' => true
         ]);
         $twig->addExtension(new \Twig\Extension\DebugExtension());
+
+        $function = new \Twig\TwigFunction('htmlInsert', function($slug, $id, $class, $value) 
+        {
+            return "<a href='admin/article/$slug-$id' class='$class'>$value</a>";
+        }, ['is_safe' => ['html']]);
+
+        $twig->addFunction($function);
+
         return $twig;
     }
 }

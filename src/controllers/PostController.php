@@ -2,7 +2,6 @@
 namespace controllers;
 
 use Cocur\Slugify\Slugify;
-use DateTime;
 use models\DBFactory;
 use models\Post;
 use models\PostManager;
@@ -29,23 +28,29 @@ class PostController
 
     public function adminIndex()
     {
+        $db = DBFactory:: dbConnect();
+        $PostManager = new PostManager($db);
+        $posts = $PostManager->getList();
         $twig = TwigFactory::twig();
-        echo $twig->render('backend/homeView.twig');
+        echo $twig->render('backend/homeView.twig', array(
+            'posts' => $posts
+        ));
     }
 
     public function create()
     {
         if (isset($_POST['username']) && isset($_POST['title']) && isset($_POST['teaser']) && isset($_POST['content']))
-        {
+        {   
             if (!empty($_FILES['image']['name']))
             {
                 $image = $_FILES['image']['name'];
             }
             else
             {
-                $image = 'discord.jpg';
+                $image = 'defaut.png';
             }
             
+            $twig = TwigFactory::twig();
             $slugify = new Slugify();
             $slug = $slugify->slugify($_POST['title']);
 
@@ -53,25 +58,24 @@ class PostController
                 'author' => $_POST['username'],
                 'title' => $_POST['title'],
                 'teaser' => $_POST['teaser'],
-                'content' => nl2br($_POST['content']),
+                'content' => $_POST['content'],
                 'imagePath' => "public/img/" . $image,
                 'slug' => $slug,
                 'newComment' => '0'
             ]);
-
+            
+            
             if ($post->isValid())
             {
                 $db = DBFactory::dbConnect();
                 $PostManager = new PostManager($db);
                 $PostManager->add($post);
-                $twig = TwigFactory::twig();
                 echo $twig->render('backend/createView.twig', array(
                     'post' => $post,
                 ));
             }
             else
             {
-                $twig = TwigFactory::twig();
                 echo $twig->render('backend/createView.twig', array (
                     'post' => $post
                 ));

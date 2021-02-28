@@ -17,20 +17,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+                    {% for post in posts %}
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{ post.title }}</td>
+                            <td>{{ post.author }}</td>
+                            <td>{{ post.addingDate | date("d/m/Y") }}</td>
+                            <td>{{ post.modifDate != post.addingDate ? post.modifDate | date("d/m/Y") }}</td>
                             <td>
                                 <a href="" class="btn btn-primary" style="margin: 2px;">Voir</a>
                                 <a href="" class="btn btn-primary" style="margin: 2px;">Modifier</a>
                                 <a href="" class="btn btn-danger" style="margin: 2px;">Supprimer</a>
                             </td>
-                            <td style="text-align: center;"><a href="" class="btn btn-success"></a></td>
+                            <td style="text-align: center;">{{ post.newComment != '0' ? htmlInsert( post.slug, post.id, 'btn btn-success', post.newComment) }}</td>
                         </tr>
-
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

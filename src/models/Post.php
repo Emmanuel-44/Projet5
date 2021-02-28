@@ -74,12 +74,12 @@ class Post
         $this->imagePath = $imagePath;
     }
 
-    public function setAddingDate(DateTime $addingDate)
+    public function setAddingDate(Datetime $addingDate)
     {
         $this->addingDate = $addingDate;
     }
     
-    public function setModifDate(Datetime $modifDate)
+    public function setModifDate(DateTime $modifDate)
     {
         $this->modifDate = $modifDate;
     }
