@@ -64,18 +64,16 @@ class PostController
                 $db = DBFactory::dbConnect();
                 $PostManager = new PostManager($db);
                 $PostManager->add($post);
-                $errors = $post->getErrors();
                 $twig = TwigFactory::twig();
                 echo $twig->render('backend/createView.twig', array(
-                    'errors' => $errors
+                    'post' => $post,
                 ));
             }
             else
             {
-                $errors = $post->getErrors();
                 $twig = TwigFactory::twig();
                 echo $twig->render('backend/createView.twig', array (
-                    'errors' => $errors
+                    'post' => $post
                 ));
             }
         }
