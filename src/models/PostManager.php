@@ -26,7 +26,7 @@ class PostManager
         $req->execute();
     }
 
-    public function getList()
+    public function getList() : array
     {
         $req = $this->db->query('SELECT * FROM post ORDER BY addingDate DESC');
         $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\Post');
@@ -37,5 +37,17 @@ class PostManager
             $post->setModifDate(new DateTime($post->getModifDate()));
         }
         return $posts;
+    }
+
+    public function getSingle($id) : object
+    {
+        $req = $this->db->prepare('SELECT * FROM post WHERE id = :id');
+        $req->bindValue(':id', $id);
+        $req->execute();
+        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\Post');
+        $post = $req->fetch();
+        $post->setAddingDate(new DateTime($post->getAddingDate()));
+        $post->setModifDate(new DateTime($post->getModifDate()));
+        return $post;
     }
 }

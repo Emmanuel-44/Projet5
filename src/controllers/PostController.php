@@ -90,8 +90,14 @@ class PostController
 
     public function read()
     {
+        $db = DBFactory::dbConnect();
+        $PostManager = new PostManager($db);
+        $id = substr($_SERVER['REQUEST_URI'], -1);
+        $post = $PostManager->getSingle($id);
         $twig = TwigFactory::twig();
-        echo $twig->render('backend/readView.twig');
+        echo $twig->render('backend/readView.twig', array(
+            'post' => $post
+        ));
     }
 
     public function update()

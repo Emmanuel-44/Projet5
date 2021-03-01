@@ -19,6 +19,20 @@ class TwigFactory
 
         $twig->addFunction($function);
 
+        $function2 = new \Twig\TwigFunction('getPathPost', function($path, $slug, $id) 
+        {
+            return "'$path/$slug-$id'";
+        }, ['is_safe' => ['html']]);
+
+        $twig->addFunction($function2);
+
+        $function3 = new \Twig\TwigFunction('getPath', function($slash, $path) 
+        {
+            return "'$slash/$path'";
+        }, ['is_safe' => ['html']]);
+
+        $twig->addFunction($function3);
+
         return $twig;
     }
 }

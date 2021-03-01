@@ -1,11 +1,31 @@
 {% extends "backend/layout.twig" %}
-{% block container %}
-            <style>
-                .container {
-                    max-width: 800px;
-                }
-            </style>
-        {% endblock %}
+
+{% block css %}
+        <!-- ====== ALL CSS ====== -->
+        <link rel="stylesheet" href="../public/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../public/assets/css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="../public/assets/css/lightbox.min.css">
+        <link rel="stylesheet" href="../public/assets/css/owl.carousel.min.css">
+        <link rel="stylesheet" href="../public/assets/css/animate.css">
+        <link rel="stylesheet" href="../public/css/style.css">
+        <link rel="stylesheet" href="../public/assets/css/responsive.css">
+{% endblock %}
+
+{% block logo %}
+    <!-- Logo -->
+    <a class="navbar-brand logo" href="index.html">
+        <img src="../public/assets/images/logo.png" alt="logo">
+    </a>
+    <!-- // Logo -->
+{% endblock %}
+
+{% block AdminHome %}<li class="nav-item active"><a class="nav-link" href="../admin">ACCUEIL ADMINISTRATION</a></li>{% endblock %}
+{% block home %}<li class="nav-item"><a class="nav-link" href="../">RETOUR SITE</a></li>{% endblock %}
+
+{% block image %}<div class="page-title bg-img section-padding bg-overlay" style="background-image: url(../public/assets/images/breadcrumb.jpg)">{% endblock %}
+
+{% block width %}<div class="container" style="max-width: 800px; margin-top:80px; margin-bottom:80px;">{% endblock %}
+
 {% block content %}
     <div class="row">
         <div class="col-lg-10"><h2>Ajouter un article</h2></div>
@@ -66,4 +86,15 @@
             </div>
         </div>
     </form>
+{% endblock %}
+{% block js %}
+<!-- ====== ALL JS ====== -->
+    <script src="../public/assets/js/jquery-3.3.1.min.js"></script>
+    <script src="../public/assets/js/bootstrap.min.js"></script>
+    <script src="../public/assets/js/lightbox.min.js"></script>
+    <script src="../public/assets/js/owl.carousel.min.js"></script>
+    <script src="../public/assets/js/jquery.mixitup.js"></script>
+    <script src="../public/assets/js/wow.min.js"></script>
+    <script src="../public/assets/js/typed.js"></script>
+    <script src="../public/assets/js/main.js"></script>
 {% endblock %}
