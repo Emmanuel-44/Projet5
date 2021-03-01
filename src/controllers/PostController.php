@@ -39,6 +39,8 @@ class PostController
 
     public function create()
     {
+        $twig = TwigFactory::twig();
+
         if (isset($_POST['username']) && isset($_POST['title']) && isset($_POST['teaser']) && isset($_POST['content']))
         {   
             if (!empty($_FILES['image']['name']))
@@ -50,7 +52,6 @@ class PostController
                 $image = 'defaut.png';
             }
             
-            $twig = TwigFactory::twig();
             $slugify = new Slugify();
             $slug = $slugify->slugify($_POST['title']);
 
@@ -83,7 +84,6 @@ class PostController
         }
         else
         {
-            $twig = TwigFactory::twig();
             echo $twig->render('backend/createView.twig');
         }     
     }
@@ -103,6 +103,56 @@ class PostController
     public function update()
     {
         $twig = TwigFactory::twig();
-        echo $twig->render('backend/updateView.twig');
+
+        $db = DBFactory::dbConnect();
+        $PostManager = new PostManager($db);
+        $id = substr($_SERVER['REQUEST_URI'], -1);
+        $post = $PostManager->getSingle($id);
+
+        if (isset($_POST['username']) && isset($_POST['title']) && isset($_POST['teaser']) && isset($_POST['content']))
+        {
+            if (!empty($_FILES['image']['name']))
+            {
+                $image = $_FILES['image']['name'];
+            }
+            else
+            {
+                $image = 'defaut.png';
+            }
+
+            $slugify = new Slugify();
+            $slug = $slugify->slugify($_POST['title']);
+
+            $post = new Post([
+                'id' => $post->getId(),
+                'author' => $_POST['username'],
+                'title' => $_POST['title'],
+                'teaser' => $_POST['teaser'],
+                'content' => $_POST['content'],
+                'imagePath' => $image,
+                'slug' => $slug
+            ]);
+
+            if ($post->isValid())
+            {
+                $PostManager->update($post);
+                echo $twig->render('backend/updateView.twig', array(
+                    'post' => $post
+                ));
+            }
+            else
+            {
+                echo $twig->render('backend/updateView.twig', array(
+                    'post' => $post
+                ));
+            }          
+        }
+        else
+        {
+            $post->setErrors(['vide']);
+            echo $twig->render('backend/updateView.twig', array(
+                'post' => $post
+            ));
+        }    
     }
 }

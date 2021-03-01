@@ -50,7 +50,7 @@ $router->map('GET', '/admin/article/[*:slug]-[i:id]', function() {
 });
 
 // map update Post
-$router->map('GET', '/admin/modifier/[*:slug]-[i:id]', function() {
+$router->map('GET|POST', '/admin/modifier/[*:slug]-[i:id]', function() {
     $postController = new PostController();
     $postController->update();
 });

@@ -89,9 +89,14 @@ class Post
         $this->slug = $slug;
     }
 
-    public function setNewComment(int $newComment)
+    public function setNewComment($newComment)
     {
         $this->newComment = $newComment;
+    }
+
+    public function setErrors(array $errors)
+    {
+        $this->errors = $errors;
     }
     // END SETTERS
 

@@ -26,6 +26,19 @@ class PostManager
         $req->execute();
     }
 
+    public function update(Post $post)
+    {
+        $req = $this->db->prepare('UPDATE post SET author = :author, title = :title, teaser = :teaser, content = :content, imagePath = :imagePath, slug = :slug, modifDate = NOW() WHERE id = :id');
+        $req->bindValue(':author', $post->getAuthor());
+        $req->bindValue(':title', $post->getTitle());
+        $req->bindValue(':teaser', $post->getTeaser());
+        $req->bindValue(':content', $post->getContent());
+        $req->bindValue(':imagePath', $post->getImagePath());
+        $req->bindValue(':slug', $post->getSlug());
+        $req->bindValue(':id', $post->getId());
+        $req->execute();
+    }
+
     public function getList() : array
     {
         $req = $this->db->query('SELECT * FROM post ORDER BY addingDate DESC');
