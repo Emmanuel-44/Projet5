@@ -39,6 +39,11 @@ class PostManager
         $req->execute();
     }
 
+    public function delete($id)
+    {
+        $this->db->exec('DELETE FROM post WHERE id ='. $id);
+    }
+
     public function getList() : array
     {
         $req = $this->db->query('SELECT * FROM post ORDER BY addingDate DESC');

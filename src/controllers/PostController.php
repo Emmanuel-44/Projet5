@@ -92,7 +92,7 @@ class PostController
     {
         $db = DBFactory::dbConnect();
         $PostManager = new PostManager($db);
-        $id = substr($_SERVER['REQUEST_URI'], -1);
+        $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
         $post = $PostManager->getSingle($id);
         $twig = TwigFactory::twig();
         echo $twig->render('backend/readView.twig', array(
@@ -106,7 +106,7 @@ class PostController
 
         $db = DBFactory::dbConnect();
         $PostManager = new PostManager($db);
-        $id = substr($_SERVER['REQUEST_URI'], -1);
+        $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
         $post = $PostManager->getSingle($id);
 
         if (isset($_POST['username']) && isset($_POST['title']) && isset($_POST['teaser']) && isset($_POST['content']))
@@ -130,7 +130,8 @@ class PostController
                 'teaser' => $_POST['teaser'],
                 'content' => $_POST['content'],
                 'imagePath' => $image,
-                'slug' => $slug
+                'slug' => $slug,
+                'newComment' => 0
             ]);
 
             if ($post->isValid())
@@ -154,5 +155,15 @@ class PostController
                 'post' => $post
             ));
         }    
+    }
+
+    public function delete()
+    {
+        $twig = TwigFactory::twig();
+        $db = DBFactory::dbConnect();
+        $PostManager = new PostManager($db);
+        $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
+        $PostManager->delete($id);
+        header('location:../../admin');
     }
 }

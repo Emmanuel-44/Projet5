@@ -24,11 +24,11 @@
                             <td>{{ post.addingDate | date("d/m/Y") }}</td>
                             <td>{{ post.modifDate != post.addingDate ? post.modifDate | date("d/m/Y") }}</td>
                             <td>
-                                <a href={{ getPathPost('admin/article', post.slug, post.id) }} class="btn btn-primary" style="margin: 2px;">Voir</a>
-                                <a href={{ getPathPost('admin/modifier', post.slug, post.id) }} class="btn btn-primary" style="margin: 2px;">Modifier</a>
-                                <a href="" class="btn btn-danger" style="margin: 2px;">Supprimer</a>
+                                <a href="admin/article/{{ post.slug }}-{{ post.id }}" class="btn btn-primary" style="margin: 2px;">Voir</a>
+                                <a href="admin/modifier/{{ post.slug }}-{{ post.id }}" class="btn btn-primary" style="margin: 2px;">Modifier</a>
+                                <a href="admin/supprimer/{{ post.slug }}-{{ post.id }}" class="btn btn-danger" style="margin: 2px;">Supprimer</a>
                             </td>
-                            <td style="text-align: center;">{{ post.newComment != '0' ? htmlInsert( post.slug, post.id, 'btn btn-success', post.newComment) }}</td>
+                            <td style="text-align: center;">{% if post.newComment != 0 %} <a href="admin/article/{{ post.slug }}-{{ post.id }}" class="btn btn-success">{% endif %}{{ post.newComment ? post.newComment }}</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

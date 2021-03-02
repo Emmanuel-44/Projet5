@@ -7,47 +7,19 @@ use controllers\UserController;
 $router = new AltoRouter();
 $router->setBasePath('/projet5');
 
-// map homepage
-$router->map('GET', '/', function() {
-    $postController = new PostController();
-    $postController->index();
-});
+$postController = new PostController();
+$userController = new UserController();
 
-// map Blog
-$router->map('GET', '/blog', function() {
-    $postController = new PostController();
-    $postController->blog();
-});
-
-// map single Post
-$router->map('GET', '/blog/[*:slug]-[i:id]', function() {
-    $postController = new PostController();
-    $postController->single();
-});
-
-// map login
-$router->map('GET', '/login', function() {
-    $userController = new UserController();
-    $userController->login();
-});
-
-// map Home admin
-$router->map('GET', '/admin', function() {
-    $postController = new PostController();
-    $postController->adminIndex();
-}, 'adminIndex');
-
-// map create Post
-$router->map('GET|POST', '/admin/ajouter', function() {
-    $postController = new PostController();
-    $postController->create();
-}, 'create');
-
-// map read Post
-$router->map('GET', '/admin/article/[*:slug]-[i:id]', function() {
-    $postController = new PostController();
-    $postController->read();
-});
+// routes
+$router->map('GET', '/', [$postController, 'index']);
+$router->map('GET', '/blog', [$postController, 'blog']);
+$router->map('GET', '/blog/[*:slug]-[i:id]', [$postController, 'single']);
+$router->map('GET', '/login', [$userController, 'login']);
+$router->map('GET', '/admin', [$postController, 'adminIndex']);
+$router->map('GET|POST', '/admin/ajouter', [$postController, 'create']);
+$router->map('GET', '/admin/article/[*:slug]-[i:id]', [$postController, 'read']);
+$router->map('GET|POST', '/admin/modifier/[*:slug]-[i:id]', [$postController, 'update']);
+$router->map('GET', '/admin/supprimer/[*:slug]-[i:id]', [$postController, 'delete']);
 
 // map update Post
 $router->map('GET|POST', '/admin/modifier/[*:slug]-[i:id]', function() {

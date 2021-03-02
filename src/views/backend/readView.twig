@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block AdminHome %}<li class="nav-item active"><a class="nav-link" href="../../admin">ACCUEIL ADMINISTRATION</a></li>{% endblock %}
-{% block home %}<li class="nav-item"><a class="nav-link" href="../../">RETOUR SITE</a></li>{% endblock %}
+{% block home %}<li class="nav-item"><a class="nav-link" href="../../">QUITTER</a></li>{% endblock %}
 
 {% block image %}<div class="page-title bg-img section-padding bg-overlay" style="background-image: url(../../public/assets/images/breadcrumb.jpg)">{% endblock %}
 
@@ -33,7 +33,7 @@
                 <!-- Blog Main Content -->
                 <div class="col-lg-8">
                     <div class="blog-post">
-                        <img src= {{ getPath('../..', post.imagePath) }} alt="" class="blog-img">
+                        <img src="../../{{ post.imagePath }}" alt="" class="blog-img">
                         <h4 class="blog-title"><a href="#">{{ post.title }}</a></h4>
                         <p class="blog-meta"><a class="user-name" href="#">De {{ post.author }}</a><span class="blog-date">Publié le {{ post.addingDate | date("d/m/Y") }}</span><a href="#" class="blog-comment">Comments (05)</a></p>
                         <div class="blog-main-content">

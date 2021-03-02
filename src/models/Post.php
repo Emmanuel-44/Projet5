@@ -89,7 +89,7 @@ class Post
         $this->slug = $slug;
     }
 
-    public function setNewComment($newComment)
+    public function setNewComment(int $newComment)
     {
         $this->newComment = $newComment;
     }
