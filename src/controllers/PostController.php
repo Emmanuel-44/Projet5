@@ -3,6 +3,7 @@ namespace controllers;
 
 use Cocur\Slugify\Slugify;
 use models\DBFactory;
+use models\Functions;
 use models\Post;
 use models\PostManager;
 
@@ -45,11 +46,11 @@ class PostController
         {   
             if (!empty($_FILES['image']['name']))
             {
-                $image = $_FILES['image']['name'];
+                $imagePath = "public/img/" .$_FILES['image']['name'];
             }
             else
             {
-                $image = 'defaut.png';
+                $imagePath = 'public/img/defaut.png';
             }
             
             $slugify = new Slugify();
@@ -60,7 +61,7 @@ class PostController
                 'title' => $_POST['title'],
                 'teaser' => $_POST['teaser'],
                 'content' => $_POST['content'],
-                'imagePath' => "public/img/" . $image,
+                'imagePath' => $imagePath,
                 'slug' => $slug,
                 'newComment' => '0'
             ]);
@@ -68,6 +69,7 @@ class PostController
             
             if ($post->isValid())
             {
+                Functions::uploadImage();
                 $db = DBFactory::dbConnect();
                 $PostManager = new PostManager($db);
                 $PostManager->add($post);
@@ -113,11 +115,11 @@ class PostController
         {
             if (!empty($_FILES['image']['name']))
             {
-                $image = $_FILES['image']['name'];
+                $image = "public/img/" .$_FILES['image']['name'];
             }
             else
             {
-                $image = 'defaut.png';
+                $image = 'public/img/defaut.png';
             }
 
             $slugify = new Slugify();
@@ -136,6 +138,7 @@ class PostController
 
             if ($post->isValid())
             {
+                Functions::uploadImage();
                 $PostManager->update($post);
                 echo $twig->render('backend/updateView.twig', array(
                     'post' => $post
