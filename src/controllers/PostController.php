@@ -6,6 +6,7 @@ use models\DBFactory;
 use models\Functions;
 use models\Post;
 use models\PostManager;
+use models\CommentManager;
 
 class PostController
 {
@@ -25,11 +26,14 @@ class PostController
     {
         $db = DBFactory::dbConnect();
         $PostManager = new PostManager($db);
+        $CommentManager = new CommentManager($db);
         $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-        $post = $PostManager->getSingle($id);
+        $post = $PostManager->read($id);
+        $comments = $CommentManager->read($id);
         $twig = TwigFactory::twig();
         echo $twig->render('frontend/singleView.twig', array(
-            'post' => $post
+            'post' => $post,
+            'comments' => $comments
         ));
     }
 
@@ -99,13 +103,18 @@ class PostController
     {
         $db = DBFactory::dbConnect();
         $PostManager = new PostManager($db);
+        $CommentManager = new CommentManager($db);
         $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-        $post = $PostManager->getSingle($id);
+        $post = $PostManager->read($id);
+        $comments = $CommentManager->read($id);
         $twig = TwigFactory::twig();
         echo $twig->render('backend/readView.twig', array(
-            'post' => $post
-        ));    
+            'post' => $post,
+            'comments' => $comments
+        ));
     }
+
+
 
     public function update()
     {
@@ -114,7 +123,7 @@ class PostController
         $db = DBFactory::dbConnect();
         $PostManager = new PostManager($db);
         $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-        $post = $PostManager->getSingle($id);
+        $post = $PostManager->read($id);
 
         if (isset($_POST['username']) && isset($_POST['title']) && isset($_POST['teaser']) && isset($_POST['content']))
         {

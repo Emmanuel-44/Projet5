@@ -14,7 +14,7 @@ class CommentController
         $db = DBFactory::dbConnect();
         $twig = TwigFactory::twig();
         $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-        
+
         if(isset($_POST['username']) && isset($_POST['content']))
         {
             $comment = new Comment([
@@ -30,7 +30,7 @@ class CommentController
                 $CommentManager->add($comment);
         
                 $PostManager = new PostManager($db);
-                $post = $PostManager->getSingle($id);
+                $post = $PostManager->read($id);
                 $count = $CommentManager->countNew($post->getId());
         
                 $post = new Post([
@@ -44,29 +44,38 @@ class CommentController
                     'newComment' => $count
                 ]);
                 
+                $CommentManager = new CommentManager($db);
+                $comments = $CommentManager->read($id);
                 $PostManager->update($post);
                 echo $twig->render('frontend/singleView.twig', array(
                     'post' => $post,
-                    'comment' => $comment
+                    'comment' => $comment,
+                    'comments' => $comments
                 ));
             }
             else
             {
+                $CommentManager = new CommentManager($db);
+                $comments = $CommentManager->read($id);
                 $PostManager = new PostManager($db);
-                $post = $PostManager->getSingle($id);
+                $post = $PostManager->read($id);
                 echo $twig->render('frontend/singleView.twig', array(
                     'post' => $post,
-                    'comment' => $comment
+                    'comment' => $comment,
+                    'comments' => $comments
                 ));
             }
         }
         else
         {
+            $CommentManager = new CommentManager($db);
+            $comments = $CommentManager->read($id);
             $PostManager = new PostManager($db);
-            $post = $PostManager->getSingle($id);
+            $post = $PostManager->read($id);
             echo $twig->render('frontend/singleView.twig', array(
-                'post' => $post
+                'post' => $post,
+                'comments' => $comments
             ));
-        }  
-    }   
+        }
+    }
 }

@@ -1,6 +1,8 @@
 <?php
 namespace models;
 
+use PDO;
+
 class CommentManager
 {
     private $db;
@@ -34,5 +36,15 @@ class CommentManager
         $req->execute();
         $count = $req->fetch()['countComments'];
         return $count;
+    }
+
+    public function read($postId)
+    {
+        $req = $this->db->prepare('SELECT * FROM comment WHERE postId = :postId ORDER BY commentDate DESC');
+        $req->bindValue(':postId', $postId);
+        $req->execute();
+        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\Comment');
+        $comment = $req->fetchAll();
+        return $comment;
     }
 }

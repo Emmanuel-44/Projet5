@@ -43,6 +43,7 @@ class PostManager
     public function delete($id)
     {
         $this->db->exec('DELETE FROM post WHERE id ='. $id);
+        $this->db->exec('DELETE FROM comment WHERE postId='. $id);
     }
 
     public function getList() : array
@@ -59,7 +60,7 @@ class PostManager
         return $posts;
     }
 
-    public function getSingle($id) : object
+    public function read($id) : object
     {
         $req = $this->db->prepare('SELECT * FROM post WHERE id = :id');
         $req->bindValue(':id', $id);
