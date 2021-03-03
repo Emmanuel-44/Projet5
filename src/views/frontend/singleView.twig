@@ -1,78 +1,58 @@
 {% extends "frontend/layout.twig" %}
 
 {% block css %}
-    <!-- ====== ALL CSS ====== -->
-        <link rel="stylesheet" href="../public/assets/css/bootstrap.min.css">
-        <link rel="stylesheet" href="../public/assets/css/fontawesome-all.min.css">
-        <link rel="stylesheet" href="../public/assets/css/lightbox.min.css">
-        <link rel="stylesheet" href="../public/assets/css/owl.carousel.min.css">
-        <link rel="stylesheet" href="../public/assets/css/animate.css">
-        <link rel="stylesheet" href="../public/css/style.css">
-        <link rel="stylesheet" href="../public/assets/css/responsive.css">
+<!-- ====== ALL CSS ====== -->
+<link rel="stylesheet" href="../public/assets/css/bootstrap.min.css">
+<link rel="stylesheet" href="../public/assets/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="../public/assets/css/lightbox.min.css">
+<link rel="stylesheet" href="../public/assets/css/owl.carousel.min.css">
+<link rel="stylesheet" href="../public/assets/css/animate.css">
+<link rel="stylesheet" href="../public/css/style.css">
+<link rel="stylesheet" href="../public/assets/css/responsive.css">
 {% endblock %}
 
 {% block logo %}
-    <!-- Logo -->
-    <a class="navbar-brand logo" href="index.html">
-        <img src="../public/assets/images/logo.png" alt="logo">
-    </a>
-    <!-- // Logo -->
+<!-- Logo -->
+<a class="navbar-brand logo" href="index.html">
+    <img src="../public/assets/images/logo.png" alt="logo">
+</a>
+<!-- // Logo -->
+{% endblock %}
+
+{% block image %}
+<!-- Page Title -->
+<div class="page-title bg-img section-padding bg-overlay" style="background-image: url(../public/assets/images/breadcrumb.jpg)">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <h2>Catégorie</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- // Page Title -->
 {% endblock %}
 
 {% block content %}
-        <!-- Page Title -->
-        <div class="page-title bg-img section-padding bg-overlay" style="background-image: url(../public/assets/images/breadcrumb.jpg)">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-6 text-center">
-                        <h2>Single Blog</h2>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- // Page Title -->
-    </header>
-    <!-- ====== // Header ====== -->
-
     <section class="blog-section">
         <div class="container">
             <div class="row justify-content-center">
                 <!-- Blog Main Content -->
                 <div class="col-lg-8">
                     <div class="blog-post">
-                        <img src="../public/assets/images/blog/img-1.jpg" alt="" class="blog-img">
-                        <h4 class="blog-title"><a href="#">Safs is Full Responsive Web site Template</a></h4>
-                        <p class="blog-meta"><a class="user-name" href="#">AL Mamun</a><span class="blog-date">22 FEB 2018</span><a href="#" class="blog-comment">Comments (05)</a></p>
+                        <img src="../{{ post.imagePath }}" alt="" class="blog-img">
+                        <h4 class="blog-title"><a href="#">{{ post.title }}</a></h4>
+                        <p class="blog-meta"><a class="user-name" href="#">De {{ post.author }}</a><span class="blog-date">Publié le {{ post.addingDate | date("d/m/Y") }}</span><a href="#" class="blog-comment">Comments (05)</a></p>
                         <div class="blog-main-content">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore inventore nam laborum maiores aspernatur magni, totam laudantium incidunt. Itaque quia nostrum aliquam amet officiis pariatur obcaecati nulla autem facere quasi natus eligendi corporis facilis ducimus rerum omnis deserunt! Accusamus quidem quasi. Illo minus, magni commodi, tempore asperiores eligendi dolor obcaecati alias corporis assumenda! Deleniti laborum voluptatem blanditiis</p>
-
-                            <blockquote class="blockquote bg-light">
-                                <h6>Lorem ipsum dolor sit amet, consectetur.</h6>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eveniet totam, numquam? Voluptatum in voluptates quibusdam.</p>
-                            </blockquote>
-
-                            <p>ducimus odit dolor reiciendis assumenda commodi animi repudiandae rem libero non? Non reiciendis, quis, laudantium perspiciatis fugit ex. Deserunt itaque ad, corrupti beatae quos perferendis provident, ullam voluptates nam, sequi quia Inventore beatae tempore doloribus delectus pariatur officia non asperiores et aliquam voluptatibus sint, sit, eligendi, voluptatum deleniti optio similique? Deleniti recusandae, a quo cumque magnam repellat distinctio accusantium mollitia aspernatur hic, architecto et officiis consequatur voluptate unde. Sed quod dignissimos voluptatibus animi veniam ducimus, nemo nobis quisquam, tempora reiciendis doloribus sit error. Rem accusamus deserunt repellat. Mollitia molestiae, cupiditate suscipit laboriosam unde.</p>
-
-                            <div class="blog-content-footer">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <P>Share:</P>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <ul class="share text-right">
-                                            <li><a href=""><i class="fab fa-facebook-f"></i></a></li>
-                                            <li><a href=""><i class="fab fa-twitter"></i></a></li>
-                                            <li><a href=""><i class="fab fa-linkedin-in"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
+                            <p><strong>{{ post.teaser }}</strong></p>
+                            <div style="margin-top: 20px;"><p>{{ post.content }}</p></div>
                         </div>
+
                         <!--  Blog Author -->
                         <div class="blog-author">
                             <div class="user-img" style="background-image: url(../public/assets/images/team/img-1.jpg)"></div>
                             <div class="user-content">
-                                <h2>AL Mamun <span>Graphic designer</span></h2>
+                                <h2>{{ post.author }} <span>Graphic designer</span></h2>
                                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus, voluptas hic animi officiis corrupti velit commodi sed tempora reprehenderit.</p>
                                 <!-- Social Area -->
                                 <div class="social-aria text-left">
@@ -91,66 +71,45 @@
                         <div class="blog-comment">
                             <h3>Comments (05)</h3>
                             <ol class="main-comment">
-                                <li class="single-comment">
-
-                                    <!-- Comment Content -->
-                                    <div class="comment">
-                                        <div class="comment-user-img" style="background-image: url(../public/assets/images/team/img-2.jpg)"></div>
-                                        <div class="comment-content">
-                                            <h4>Naeem Islam</h4>
-                                            <p class="comment-date">20 Feb 2018</p>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel nihil perspiciatis placeat minima dolores magnam odio voluptatibus non. Ratione, ut, fugit.</p>
-                                            <a href="#"><i class="fa fa-reply"></i>Replay</a>
-                                        </div>
-                                    </div>
-                                    <!-- // Comment Content -->
-
-                                    <ol class="sub-comment">
-                                        <li class="single-comment">
-                                            <!-- Comment Content -->
-                                            <div class="comment">
-                                                <div class="comment-user-img" style="background-image: url(../public/assets/images/team/img-1.jpg)"></div>
-                                                <div class="comment-content">
-                                                    <h4>AL Mamun</h4>
-                                                    <p class="comment-date">20 Feb 2018</p>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel nihil perspiciatis placeat minima dolores magnam odio voluptatibus non. Ratione, ut, fugit.</p>
-                                                    <a href="#"><i class="fa fa-reply"></i>Replay</a>
-                                                </div>
-                                            </div>
-                                            <!-- // Comment Content -->
-                                        </li>
-                                    </ol>
-                                </li>
+                                {% for comment in comments %}
                                 <li class="single-comment">
                                     <!-- Comment Content -->
                                     <div class="comment">
-                                        <div class="comment-user-img" style="background-image: url(../public/assets/images/team/img-3.jpg)"></div>
-                                        <div class="comment-content">
-                                            <h4>Masud Rana</h4>
+                                        <div>
+                                            <h4>{{ comment.username }}</h4>
                                             <p class="comment-date">20 Feb 2018</p>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel nihil perspiciatis placeat minima dolores magnam odio voluptatibus non. Ratione, ut, fugit.</p>
-                                            <a href="#"><i class="fa fa-reply"></i>Replay</a>
+                                            <p>{{ comment.content }}</p>
                                         </div>
                                     </div>
                                     <!-- // Comment Content -->
                                 </li>
+                                {% endfor %}
                             </ol>
 
                             <!-- Blog Comment Form -->
                             <div class="blog-comment-form">
-                                <form action="#">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <p><input type="text" placeholder="Name" required></p>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <p><input type="email" placeholder="Email" required></p>
-                                        </div>
+                                <form action="" method="post">
+                                {% if comment is defined and comment.errors is empty %}
+                                    <div class="alert alert-success" role="alert">
+                                        Votre commentaire a été ajouté !
                                     </div>
-                                    <p><input type="text" placeholder="Website"></p>
-                                    <p><textarea name="" id="" placeholder="Your Comments" required></textarea></p>
+                                {% endif %}
+                                {% if constant('models\\Comment::INVALID_USERNAME') in comment.errors %}
+                                    <div class="alert alert-danger" role="alert">
+                                        Vous devez ajouter un Pseudo !
+                                    </div>
+                                {% endif %}
+                                    <div class="col-lg-12" style="padding-right:0px; padding-left:0px;">
+                                        <p><input type="text" name="username" placeholder="Pseudo" required></p>
+                                    </div>
+                                    {% if constant('models\\Comment::INVALID_CONTENT') in comment.errors %}
+                                    <div class="alert alert-danger" role="alert">
+                                        Vous devez ajouter un commentaire !
+                                    </div>
+                                    {% endif %}
+                                    <p><textarea name="content" placeholder="Commentaire" required></textarea></p>
                                     <div class="comment-btn text-center">
-                                        <button class="button" type="submit">Comment Now</button>
+                                        <button class="button" type="submit">Commenter</button>
                                     </div>
                                 </form>
                             </div>
@@ -167,13 +126,13 @@
 {% endblock %}
 
 {% block js %}
-    <!-- ====== ALL JS ====== -->
-        <script src="../public/assets/js/jquery-3.3.1.min.js"></script>
-        <script src="../public/assets/js/bootstrap.min.js"></script>
-        <script src="../public/assets/js/lightbox.min.js"></script>
-        <script src="../public/assets/js/owl.carousel.min.js"></script>
-        <script src="../public/assets/js/jquery.mixitup.js"></script>
-        <script src="../public/assets/js/wow.min.js"></script>
-        <script src="../public/assets/js/typed.js"></script>
-        <script src="../public/assets/js/main.js"></script>
-    {% endblock %}
+<!-- ====== ALL JS ====== -->
+<script src="../public/assets/js/jquery-3.3.1.min.js"></script>
+<script src="../public/assets/js/bootstrap.min.js"></script>
+<script src="../public/assets/js/lightbox.min.js"></script>
+<script src="../public/assets/js/owl.carousel.min.js"></script>
+<script src="../public/assets/js/jquery.mixitup.js"></script>
+<script src="../public/assets/js/wow.min.js"></script>
+<script src="../public/assets/js/typed.js"></script>
+<script src="../public/assets/js/main.js"></script>
+{% endblock %}

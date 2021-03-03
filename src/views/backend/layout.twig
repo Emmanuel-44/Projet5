@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta charset="UTF-8">
-    <title>Blog | Safs - HTML</title>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta charset="UTF-8">
+        <title>Blog | Safs - HTML</title>
 
-    <!-- ====== Google Fonts ====== -->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600" rel="stylesheet">
+        <!-- ====== Google Fonts ====== -->
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600" rel="stylesheet">
 
-    {% block css %}
+        {% block css %}
         <!-- ====== ALL CSS ====== -->
         <link rel="stylesheet" href="public/assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="public/assets/css/fontawesome-all.min.css">
@@ -19,52 +19,55 @@
         <link rel="stylesheet" href="public/assets/css/animate.css">
         <link rel="stylesheet" href="public/css/style.css">
         <link rel="stylesheet" href="public/assets/css/responsive.css">
-    {% endblock %}
-</head>
+        {% endblock %}
+    </head>
 
-<body data-spy="scroll" data-target=".navbar-nav">
+    <body data-spy="scroll" data-target=".navbar-nav">
 
-    <!-- ====== Header ====== -->
-    <header id="header" class="header">
-        <!-- ====== Navbar ====== -->
-        <nav class="navbar navbar-expand-lg fixed-top">
-            <div class="container">
-            {% block logo %}
-                <!-- Logo -->
-                <a class="navbar-brand logo" href="index.html">
-                    <img src="public/assets/images/logo.png" alt="logo">
-                </a>
-                <!-- // Logo -->
-            {% endblock %}
+        <!-- ====== Header ====== -->
+        <header id="header" class="header">
+            <!-- ====== Navbar ====== -->
+            <nav class="navbar navbar-expand-lg fixed-top">
+                <div class="container">
+                    {% block logo %}
+                        <!-- Logo -->
+                        <a class="navbar-brand logo" href="index.html">
+                            <img src="public/assets/images/logo.png" alt="logo">
+                        </a>
+                        <!-- // Logo -->
+                    {% endblock %}
 
-                <!-- Mobile Menu -->
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-expanded="false"><span><i class="fa fa-bars"></i></span></button>
-                <!-- Mobile Menu -->
+                    <!-- Mobile Menu -->
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-expanded="false"><span><i class="fa fa-bars"></i></span></button>
+                    <!-- Mobile Menu -->
 
-                <div class="collapse navbar-collapse main-menu" id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto">
-                        {% block AdminHome %}<li class="nav-item active"><a class="nav-link active" href="">ACCUEIL ADMINISTRATION</a></li>{% endblock %}
-                        {% block home %}<li class="nav-item"><a class="nav-link" href="../Projet5">QUITTER</a></li>{% endblock %}
-                    </ul>
+                    <div class="collapse navbar-collapse main-menu" id="navbarSupportedContent">
+                        <ul class="navbar-nav ml-auto">
+                            {% block AdminHome %}<li class="nav-item active"><a class="nav-link active" href="">ACCUEIL ADMINISTRATION</a></li>{% endblock %}
+                            {% block home %}<li class="nav-item"><a class="nav-link" href="../Projet5">QUITTER</a></li>{% endblock %}
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
-        <!-- Page Title -->
-        {% block image %}<div class="page-title bg-img section-padding bg-overlay" style="background-image: url(public/assets/images/breadcrumb.jpg)">{% endblock %}
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-6 text-center">
-                        <h2>Espace Administration</h2>
+            </nav>
+            <!-- Page Title -->
+            {% block image %}
+            <div class="page-title bg-img section-padding bg-overlay" style="background-image: url(public/assets/images/breadcrumb.jpg)">
+            {% endblock %}
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-6 text-center">
+                            <h2>Espace Administration</h2>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- // Page Title -->
-    </header>
-    <!-- ====== // Header ====== -->
+            <!-- // Page Title -->
+        </header>
+        <!-- ====== // Header ====== -->
 
-    <body>
-        {% block width %}<div class="container" style="max-width: 1400px; margin-top:80px; margin-bottom:80px;">{% endblock %}
+        {% block width %}
+        <div class="container" style="max-width: 1400px; margin-top:80px; margin-bottom:80px;">
+        {% endblock %}
             {% block content %}
             {% endblock %}
         </div>
@@ -96,5 +99,4 @@
         {% endblock %}
 
     </body>
-
 </html>

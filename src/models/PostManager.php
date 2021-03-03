@@ -28,13 +28,14 @@ class PostManager
 
     public function update(Post $post)
     {
-        $req = $this->db->prepare('UPDATE post SET author = :author, title = :title, teaser = :teaser, content = :content, imagePath = :imagePath, slug = :slug, modifDate = NOW() WHERE id = :id');
+        $req = $this->db->prepare('UPDATE post SET author = :author, title = :title, teaser = :teaser, content = :content, imagePath = :imagePath, slug = :slug, modifDate = NOW(), newComment = :newComment WHERE id = :id');
         $req->bindValue(':author', $post->getAuthor());
         $req->bindValue(':title', $post->getTitle());
         $req->bindValue(':teaser', $post->getTeaser());
         $req->bindValue(':content', $post->getContent());
         $req->bindValue(':imagePath', $post->getImagePath());
         $req->bindValue(':slug', $post->getSlug());
+        $req->bindValue(':newComment', $post->getNewComment());
         $req->bindValue(':id', $post->getId());
         $req->execute();
     }
@@ -51,6 +52,7 @@ class PostManager
         $posts = $req->fetchAll();
         foreach ($posts as $post)
         {
+            $post->setId(intval($post->getId()));
             $post->setAddingDate(new DateTime($post->getAddingDate()));
             $post->setModifDate(new DateTime($post->getModifDate()));
         }
@@ -64,6 +66,7 @@ class PostManager
         $req->execute();
         $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\Post');
         $post = $req->fetch();
+        $post->setId(intval($post->getId()));
         $post->setAddingDate(new DateTime($post->getAddingDate()));
         $post->setModifDate(new DateTime($post->getModifDate()));
         return $post;

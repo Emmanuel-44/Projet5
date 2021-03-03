@@ -10,7 +10,11 @@ class Comment
     private $commentDate;
     private $commentState;
     private $postId;
+    private $errors;
 
+    const INVALID_USERNAME = 1;
+    const INVALID_CONTENT = 2;
+    
     public function __construct($valeurs = [])
     {
         if (!empty($valeurs))
@@ -94,5 +98,25 @@ class Comment
     {
         return $this->postId;
     }
+
+    public function getErrors()
+    {
+        return $this->errors;
+    }
     // GETTERS END
+
+    public function isValid()
+    {
+        if(empty($this->username))
+        {
+            $this->errors[] = self::INVALID_USERNAME;
+        }
+        
+        if (empty($this->content))
+        {
+            $this->errors[] = self::INVALID_CONTENT;
+        }
+
+        return empty($this->errors);
+    }      
 }

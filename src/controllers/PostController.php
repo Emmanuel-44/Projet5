@@ -23,8 +23,14 @@ class PostController
 
     public function single()
     {
+        $db = DBFactory::dbConnect();
+        $PostManager = new PostManager($db);
+        $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
+        $post = $PostManager->getSingle($id);
         $twig = TwigFactory::twig();
-        echo $twig->render('frontend/singleView.twig');
+        echo $twig->render('frontend/singleView.twig', array(
+            'post' => $post
+        ));
     }
 
     public function adminIndex()
@@ -66,7 +72,6 @@ class PostController
                 'newComment' => '0'
             ]);
             
-            
             if ($post->isValid())
             {
                 Functions::uploadImage();
@@ -99,7 +104,7 @@ class PostController
         $twig = TwigFactory::twig();
         echo $twig->render('backend/readView.twig', array(
             'post' => $post
-        ));
+        ));    
     }
 
     public function update()
@@ -162,7 +167,6 @@ class PostController
 
     public function delete()
     {
-        $twig = TwigFactory::twig();
         $db = DBFactory::dbConnect();
         $PostManager = new PostManager($db);
         $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
