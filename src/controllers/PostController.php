@@ -30,10 +30,12 @@ class PostController
         $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
         $post = $PostManager->read($id);
         $comments = $CommentManager->read($id);
+        $count = $CommentManager->count($id);
         $twig = TwigFactory::twig();
         echo $twig->render('frontend/singleView.twig', array(
             'post' => $post,
-            'comments' => $comments
+            'comments' => $comments,
+            'count' => $count
         ));
     }
 
@@ -107,10 +109,12 @@ class PostController
         $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
         $post = $PostManager->read($id);
         $comments = $CommentManager->read($id);
+        $count = $CommentManager->count($id);
         $twig = TwigFactory::twig();
         echo $twig->render('backend/readView.twig', array(
             'post' => $post,
-            'comments' => $comments
+            'comments' => $comments,
+            'count' => $count
         ));
     }
 
@@ -122,8 +126,10 @@ class PostController
 
         $db = DBFactory::dbConnect();
         $PostManager = new PostManager($db);
+        $CommentManager = new CommentManager($db);
         $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
         $post = $PostManager->read($id);
+        $count = $CommentManager->countNew($post->getId());
 
         if (isset($_POST['username']) && isset($_POST['title']) && isset($_POST['teaser']) && isset($_POST['content']))
         {
@@ -147,7 +153,7 @@ class PostController
                 'content' => $_POST['content'],
                 'imagePath' => $image,
                 'slug' => $slug,
-                'newComment' => 0
+                'newComment' => $count
             ]);
 
             if ($post->isValid())

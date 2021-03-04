@@ -47,4 +47,17 @@ class CommentManager
         $comment = $req->fetchAll();
         return $comment;
     }
+
+    public function update(Comment $comment)
+    {
+        $req = $this->db->prepare('UPDATE comment SET commentState = :commentState WHERE id =:id');
+        $req->bindValue(':commentState', $comment->getCommentState());
+        $req->bindValue(':id', $comment->getId());
+        $req->execute();
+    }
+
+    public function delete($id)
+    {
+        $this->db->exec('DELETE FROM comment WHERE id=' .$id);
+    }
 }
