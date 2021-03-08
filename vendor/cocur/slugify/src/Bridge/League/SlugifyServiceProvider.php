@@ -16,22 +16,24 @@ class SlugifyServiceProvider extends AbstractServiceProvider
 
     public function register()
     {
-        $this->container->share(SlugifyInterface::class, function () {
-            $options = [];
-            if ($this->container->has('config.slugify.options')) {
-                $options = $this->container->get('config.slugify.options');
-            }
+        $this->container->share(
+            SlugifyInterface::class, function () {
+                $options = [];
+                if ($this->container->has('config.slugify.options')) {
+                    $options = $this->container->get('config.slugify.options');
+                }
 
-            $provider = null;
-            if ($this->container->has(RuleProviderInterface::class)) {
-                /* @var RuleProviderInterface $provider */
-                $provider = $this->container->get(RuleProviderInterface::class);
-            }
+                $provider = null;
+                if ($this->container->has(RuleProviderInterface::class)) {
+                    /* @var RuleProviderInterface $provider */
+                    $provider = $this->container->get(RuleProviderInterface::class);
+                }
 
-            return new Slugify(
-                $options,
-                $provider
-            );
-        });
+                return new Slugify(
+                    $options,
+                    $provider
+                );
+            }
+        );
     }
 }

@@ -20,25 +20,28 @@ $router->map('GET', '/login', [$userController, 'login']);
 $router->map('GET', '/admin', [$postController, 'adminIndex']);
 $router->map('GET|POST', '/admin/ajouter', [$postController, 'create']);
 $router->map('GET', '/admin/article/[*:slug]-[i:id]', [$postController, 'read']);
-$router->map('GET|POST', '/admin/modifier/[*:slug]-[i:id]', [$postController, 'update']);
+$router->map(
+    'GET|POST', '/admin/modifier/[*:slug]-[i:id]', [$postController, 'update']
+);
 $router->map('GET', '/admin/supprimer/[*:slug]-[i:id]', [$postController, 'delete']);
 $router->map('POST', '/blog/[*:slug]-[i:id]', [$commentController, 'add']);
+$router->map('GET', '/admin/supprimer/[*:slug]-[i:postId]/[i:commentId]', [$commentController, 'delete']);
+$router->map('GET', '/admin/valider/[*:slug]-[i:postId]/[i:commentId]', [$commentController, 'confirm']);
 
 // map update Post
-$router->map('GET|POST', '/admin/modifier/[*:slug]-[i:id]', function() {
-    $postController = new PostController();
-    $postController->update();
-});
+$router->map(
+    'GET|POST', '/admin/modifier/[*:slug]-[i:id]', function () {
+        $postController = new PostController();
+        $postController->update();
+    }
+);
 
 // match curent request url
 $match = $router->match();
 
 // call closure or throw 404 status
-if (is_array($match) && is_callable($match['target']))
-{
+if (is_array($match) && is_callable($match['target'])) {
     call_user_func_array($match['target'], $match['params']);
-}
-else
-{
+} else {
     echo '404 Not Found';
 }

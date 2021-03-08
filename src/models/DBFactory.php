@@ -1,12 +1,24 @@
 <?php
 namespace models;
 
+use PDO;
+
+/**
+ * Database factory
+ */
 class DBFactory
 {
-    public static function dbConnect()
+    /**
+     * Connect to Database
+     *
+     * @return PDO
+     */
+    public static function dbConnect() : PDO
     {
-        $db = new \PDO('mysql:host=localhost;dbname=oc_projet5_blog;charset=utf8', 'root', '');
-        $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $db = new PDO(
+            'mysql:host=localhost;dbname=oc_projet5_blog;charset=utf8', 'root', ''
+        );
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $db;
     }
 }

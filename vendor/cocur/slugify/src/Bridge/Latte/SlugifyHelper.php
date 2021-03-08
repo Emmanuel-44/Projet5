@@ -14,7 +14,9 @@ use Cocur\Slugify\SlugifyInterface;
  */
 class SlugifyHelper
 {
-    /** @var SlugifyInterface */
+    /**
+     * @var SlugifyInterface 
+     */
     private $slugify;
 
     /**

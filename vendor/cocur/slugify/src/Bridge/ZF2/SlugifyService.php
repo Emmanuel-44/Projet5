@@ -7,6 +7,7 @@ use Zend\ServiceManager\ServiceManager;
 
 /**
  * Class SlugifyService
+ *
  * @package    cocur/slugify
  * @subpackage bridge
  * @license    http://www.opensource.org/licenses/MIT The MIT License

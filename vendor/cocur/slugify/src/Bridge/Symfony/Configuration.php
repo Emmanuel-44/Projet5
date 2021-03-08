@@ -32,13 +32,13 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->booleanNode('lowercase')->end()
-                ->booleanNode('lowercase_after_regexp')->end()
-                ->booleanNode('trim')->end()
-                ->booleanNode('strip_tags')->end()
-                ->scalarNode('separator')->end()
-                ->scalarNode('regexp')->end()
-                ->arrayNode('rulesets')->prototype('scalar')->end()
+            ->booleanNode('lowercase')->end()
+            ->booleanNode('lowercase_after_regexp')->end()
+            ->booleanNode('trim')->end()
+            ->booleanNode('strip_tags')->end()
+            ->scalarNode('separator')->end()
+            ->scalarNode('regexp')->end()
+            ->arrayNode('rulesets')->prototype('scalar')->end()
             ->end();
 
         return $treeBuilder;

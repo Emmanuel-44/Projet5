@@ -2,6 +2,11 @@
 
 namespace models;
 
+use DateTime;
+
+/**
+ * Comment entity
+ */
 class Comment
 {
     private $id;
@@ -15,53 +20,105 @@ class Comment
     const INVALID_USERNAME = 1;
     const INVALID_CONTENT = 2;
     
-    public function __construct($valeurs = [])
+    /**
+     * Construct
+     *
+     * @param array $values values array
+     */
+    public function __construct($values = [])
     {
-        if (!empty($valeurs))
-        {
-            $this->hydrate($valeurs);
+        if (!empty($values)) {
+            $this->hydrate($values);
         }
     }
     
-    public function hydrate($donnees)
+    /**
+     * Hydrate
+     *
+     * @param [array] $datas datas array
+     * 
+     * @return void
+     */
+    public function hydrate($datas)
     {
-        foreach ($donnees as $attribut => $valeur)
-        {
-            $methode = 'set'.ucfirst($attribut);
+        foreach ($datas as $attribut => $value) {
+            $method = 'set'.ucfirst($attribut);
         
-            if (is_callable([$this, $methode]))
-            {
-                $this->$methode($valeur);
+            if (is_callable([$this, $method])) {
+                $this->$method($value);
             }
         }
     }
 
     // SETTERS
+
+    /**
+     * Id setter
+     *
+     * @param integer $id id
+     * 
+     * @return void
+     */
     public function setId(int $id)
     {
         $this->id = $id;
     }
 
+    /**
+     * Username setter
+     *
+     * @param string $_username username
+     * 
+     * @return void
+     */
     public function setUsername(string $username)
     {
         $this->username = $username;
     }
 
+    /**
+     * Content setter
+     *
+     * @param string $_content content
+     * 
+     * @return void
+     */
     public function setContent(string $content)
     {
         $this->content = $content;
     }
 
-    public function setCommentDate($commentDate)
+    /**
+     * CommentDate setter
+     *
+     * @param DateTime $_commentDate comment date
+     * 
+     * @return void
+     */
+    public function setCommentDate(DateTime $commentDate)
     {
         $this->commentDate = $commentDate;
     }
 
-    public function setCommentState($commentState)
+    /**
+     * CommentState setter
+     *
+     * @param boolean $_commentState comment state
+     * 
+     * @return void
+     */
+    public function setCommentState(bool $commentState)
     {
         $this->commentState = $commentState;
     }
 
+    /**
+     * PostId setter
+     *
+     * @param integer $_postId post id
+     * 
+     * @return void
+     */
     public function setPostId(int $postId)
     {
         $this->postId = $postId;
@@ -69,51 +126,90 @@ class Comment
     // SETTERS END
 
     // GETTERS
+
+    /**
+     * Id getter
+     *
+     * @return void
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * Username getter
+     *
+     * @return void
+     */
     public function getUsername()
     {
         return $this->username;
     }
 
+    /**
+     * Content getter
+     *
+     * @return void
+     */
     public function getContent()
     {
         return $this->content;
     }
 
+    /**
+     * CommentDate getter
+     *
+     * @return void
+     */
     public function getCommentDate()
     {
         return $this->commentDate;
     }
 
+    /**
+     * CommentState getter
+     *
+     * @return void
+     */
     public function getCommentState()
     {
         return $this->commentState;
     }
 
+    /**
+     * PostId getter
+     *
+     * @return void
+     */
     public function getPostId()
     {
         return $this->postId;
     }
 
+    /**
+     * Errors getter
+     *
+     * @return void
+     */
     public function getErrors()
     {
         return $this->errors;
     }
     // GETTERS END
 
+    /**
+     * Username and content validation
+     *
+     * @return boolean
+     */
     public function isValid()
     {
-        if(empty($this->username))
-        {
+        if (empty($this->username)) {
             $this->errors[] = self::INVALID_USERNAME;
         }
         
-        if (empty($this->content))
-        {
+        if (empty($this->content)) {
             $this->errors[] = self::INVALID_CONTENT;
         }
 

@@ -44,9 +44,9 @@ class AltoRouter
     /**
      * Create router in one call from config.
      *
-     * @param array $routes
-     * @param string $basePath
-     * @param array $matchTypes
+     * @param  array  $routes
+     * @param  string $basePath
+     * @param  array  $matchTypes
      * @throws Exception
      */
     public function __construct(array $routes = [], $basePath = '', array $matchTypes = [])
@@ -59,6 +59,7 @@ class AltoRouter
     /**
      * Retrieves all routes.
      * Useful if you want to process or display routes.
+     *
      * @return array All routes.
      */
     public function getRoutes()
@@ -73,7 +74,7 @@ class AltoRouter
      *      [$method, $route, $target, $name]
      *   ];
      *
-     * @param array $routes
+     * @param  array $routes
      * @return void
      * @author Koen Punt
      * @throws Exception
@@ -91,6 +92,7 @@ class AltoRouter
     /**
      * Set the base path.
      * Useful if you are running your application from a subdirectory.
+     *
      * @param string $basePath
      */
     public function setBasePath($basePath)
@@ -111,10 +113,10 @@ class AltoRouter
     /**
      * Map a route to a target
      *
-     * @param string $method One of 5 HTTP Methods, or a pipe-separated list of multiple HTTP Methods (GET|POST|PATCH|PUT|DELETE)
-     * @param string $route The route regex, custom regex must start with an @. You can use multiple pre-set regex filters, like [i:id]
-     * @param mixed $target The target where this route should point to. Can be anything.
-     * @param string $name Optional name of this route. Supply if you want to reverse route this url in your application.
+     * @param  string $method One of 5 HTTP Methods, or a pipe-separated list of multiple HTTP Methods (GET|POST|PATCH|PUT|DELETE)
+     * @param  string $route  The route regex, custom regex must start with an @. You can use multiple pre-set regex filters, like [i:id]
+     * @param  mixed  $target The target where this route should point to. Can be anything.
+     * @param  string $name   Optional name of this route. Supply if you want to reverse route this url in your application.
      * @throws Exception
      */
     public function map($method, $route, $target, $name = null)
@@ -137,8 +139,8 @@ class AltoRouter
      *
      * Generate the URL for a named route. Replace regexes with supplied parameters
      *
-     * @param string $routeName The name of the route.
-     * @param array @params Associative array of parameters to replace placeholders with.
+     * @param  string                                                                     $routeName The name of the route.
+     * @param  array @params Associative array of parameters to replace placeholders with.
      * @return string The URL of the route with named parameters in place.
      * @throws Exception
      */
@@ -182,8 +184,9 @@ class AltoRouter
 
     /**
      * Match a given Request Url against stored routes
-     * @param string $requestUrl
-     * @param string $requestMethod
+     *
+     * @param  string $requestUrl
+     * @param  string $requestMethod
      * @return array|boolean Array with route information on success, false on failure (no match).
      */
     public function match($requestUrl = null, $requestMethod = null)
@@ -233,7 +236,7 @@ class AltoRouter
                 $match = strcmp($requestUrl, $route) === 0;
             } else {
                 // Compare longest non-param string with url before moving on to regex
-				// Check if last character before param is a slash, because it could be optional if param is optional too (see https://github.com/dannyvankooten/AltoRouter/issues/241)
+                // Check if last character before param is a slash, because it could be optional if param is optional too (see https://github.com/dannyvankooten/AltoRouter/issues/241)
                 if (strncmp($requestUrl, $route, $position) !== 0 && ($lastRequestUrlChar === '/' || $route[$position-1] !== '/')) {
                     continue;
                 }
@@ -264,7 +267,8 @@ class AltoRouter
 
     /**
      * Compile the regex for a given route (EXPENSIVE)
-     * @param $route
+     *
+     * @param  $route
      * @return string
      */
     protected function compileRoute($route)

@@ -7,6 +7,7 @@ use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 
 /**
  * Class Module
+ *
  * @package    cocur/slugify
  * @subpackage bridge
  * @license    http://www.opensource.org/licenses/MIT The MIT License

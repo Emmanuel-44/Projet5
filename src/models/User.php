@@ -2,94 +2,182 @@
 
 namespace models;
 
+use DateTime;
+
+/**
+ * User entity
+ */
 class User
 {
-    private $id;
-    private $username;
-    private $contactEmail;
-    private $password;
-    private $addingDate;
+    private $_id;
+    private $_username;
+    private $_contactEmail;
+    private $_password;
+    private $_addingDate;
 
-    public function __construct($valeurs = [])
+    /**
+     * Construct
+     *
+     * @param array $values values array
+     */
+    public function __construct($values = [])
     {
-        if (!empty($valeurs))
-        {
-            $this->hydrate($valeurs);
+        if (!empty($values)) {
+            $this->hydrate($values);
         }
     }
     
-    public function hydrate($donnees)
+    /**
+     * Hydrate
+     *
+     * @param [array] $datas datas array
+     * 
+     * @return void
+     */
+    public function hydrate($datas)
     {
-        foreach ($donnees as $attribut => $valeur)
-        {
-            $methode = 'set'.ucfirst($attribut);
+        foreach ($datas as $attribut => $value) {
+            $method = 'set'.ucfirst($attribut);
           
-            if (is_callable([$this, $methode]))
-            {
-                $this->$methode($valeur);
+            if (is_callable([$this, $method])) {
+                $this->$method($value);
             }
         }
     }
 
     //SETTERS
-    public function setId(int $id)
+
+    /**
+     * Id setter
+     *
+     * @param integer $_id id
+     * 
+     * @return void
+     */
+    public function setId(int $_id)
     {
-        $this->id = $id;
+        $this->_id = $_id;
     }
 
-    public function setUsername(string $username)
+    /**
+     * Username setter
+     *
+     * @param string $_username username
+     * 
+     * @return void
+     */
+    public function setUsername(string $_username)
     {
-        $this->username = $username;
+        $this->_username = $_username;
     }
 
-    public function setContactEmail($contactEmail)
+    /**
+     * ContactEmail setter
+     *
+     * @param [string] $_contactEmail contact email
+     * 
+     * @return void
+     */
+    public function setContactEmail(string $_contactEmail)
     {
-        $this->contactEmail = $contactEmail;
+        $this->_contactEmail = $_contactEmail;
     }
 
-    public function setPassword(string $password)
+    /**
+     * Password setter
+     *
+     * @param string $_password password
+     * 
+     * @return void
+     */
+    public function setPassword(string $_password)
     {
-        $this->password = $password;
+        $this->_password = $_password;
     }
 
-    public function setAddingDate($addingDate)
+    /**
+     * AddingDate setter
+     *
+     * @param DateTime $_addingDate adding date
+     * 
+     * @return void
+     */
+    public function setAddingDate(DateTime $_addingDate)
     {
-        $this->addingDate = $addingDate;
+        $this->_addingDate = $_addingDate;
     }
 
-    public function setRole($role)
+    /**
+     * Role setter
+     *
+     * @param [array] $_role roles array
+     * 
+     * @return void
+     */
+    public function setRole(array $_role)
     {
-        $this->role = $role;
+        $this->_role = $_role;
     }
 
     //GETTERS
+
+    /**
+     * Id getter
+     *
+     * @return void
+     */
     public function getId()
     {
-        return $this->id;
+        return $this->_id;
     }
 
+    /**
+     * Username getter
+     *
+     * @return void
+     */
     public function getUsername()
     {
-        return $this->username;
+        return $this->_username;
     }
 
+    /**
+     * ContactEmail getter
+     *
+     * @return void
+     */
     public function getContactEmail()
     {
-        return $this->contactEmail;
+        return $this->_contactEmail;
     }
 
+    /**
+     * Password getter
+     *
+     * @return void
+     */
     public function getPassword()
     {
-        return $this->password;
+        return $this->_password;
     }
 
+    /**
+     * AddingDate getter
+     *
+     * @return void
+     */
     public function getAddingDate()
     {
-        return $this->addingDate;
+        return $this->_addingDate;
     }
 
+    /**
+     * Role getter
+     *
+     * @return void
+     */
     public function getRole()
     {
-        return $this->role;
+        return $this->_role;
     }
 }

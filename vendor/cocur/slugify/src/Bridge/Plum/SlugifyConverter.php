@@ -24,7 +24,9 @@ use Cocur\Slugify\SlugifyInterface;
  */
 class SlugifyConverter implements ConverterInterface
 {
-    /** @var Slugify */
+    /**
+     * @var Slugify 
+     */
     private $slugify;
 
     /**
