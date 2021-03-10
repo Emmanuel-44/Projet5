@@ -5,22 +5,22 @@ use DateTime;
 use PDO;
 
 /**
- * Comment Manager
+ * Comment manager
  */
 class CommentManager
 {
     private $_db;
 
     /**
-     * Construct
+     * Construt
      *
-     * @param \PDO $_db bdd
+     * @param PDO $db bdd
      */
-    public function __construct(\PDO $_db)
+    public function __construct(PDO $db)
     {
-        $this->_db = $_db;
+        $this->_db = $db;
     }
-
+    
     /**
      * Add a comment
      *

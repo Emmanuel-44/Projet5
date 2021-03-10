@@ -25,7 +25,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-6 text-center">
-                <h2>Catégorie</h2>
+                <h2>{{ post.title }}</h2>
             </div>
         </div>
     </div>
@@ -103,14 +103,14 @@
                                     </div>
                                 {% endif %}
                                     <div class="col-lg-12" style="padding-right:0px; padding-left:0px;">
-                                        <p><input type="text" name="username" placeholder="Pseudo" required></p>
+                                        <p><input type="text" name="username" placeholder="Pseudo" value="{{ comment.errors is not empty ? comment.username }}" required></p>
                                     </div>
                                     {% if constant('models\\Comment::INVALID_CONTENT') in comment.errors %}
                                     <div class="alert alert-danger" role="alert">
                                         Vous devez ajouter un commentaire !
                                     </div>
                                     {% endif %}
-                                    <p><textarea name="content" placeholder="Commentaire" required></textarea></p>
+                                    <p><textarea name="content" placeholder="Commentaire" required>{{ comment.errors is not empty ? comment.content }}</textarea></p>
                                     <div class="comment-btn text-center">
                                         <button class="button" type="submit">Commenter</button>
                                     </div>

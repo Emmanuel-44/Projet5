@@ -27,6 +27,8 @@ $router->map('GET', '/admin/supprimer/[*:slug]-[i:id]', [$postController, 'delet
 $router->map('POST', '/blog/[*:slug]-[i:id]', [$commentController, 'add']);
 $router->map('GET', '/admin/supprimer/[*:slug]-[i:postId]/[i:commentId]', [$commentController, 'delete']);
 $router->map('GET', '/admin/valider/[*:slug]-[i:postId]/[i:commentId]', [$commentController, 'confirm']);
+$router->map('GET', '/creer-un-compte', [$userController, 'create']);
+$router->map('POST', '/creer-un-compte', [$userController, 'create']);
 
 // map update Post
 $router->map(

@@ -1,11 +1,12 @@
 <?php
 namespace models;
 
+use core\Entity;
 use DateTime;
 /**
  * Post entity
  */
-class Post
+class Post extends Entity
 {
     private $id;
     private $title;
@@ -23,36 +24,6 @@ class Post
     const INVALID_AUTHOR = 2;
     const INVALID_TEASER = 3;
     const INVALID_CONTENT = 4;
-
-    /**
-     * Construct
-     *
-     * @param array $values values array
-     */
-    public function __construct($values = [])
-    {
-        if (!empty($values)) {
-            $this->hydrate($values);
-        }
-    }
-    
-    /**
-     * Hydrate
-     *
-     * @param [array] $datas datas array
-     * 
-     * @return void
-     */
-    public function hydrate($datas)
-    {
-        foreach ($datas as $attribut => $value) {
-            $method = 'set'.ucfirst($attribut);
-        
-            if (is_callable([$this, $method])) {
-                $this->$method($value);
-            }
-        }
-    }
 
     // SETTERS
 

@@ -18,6 +18,7 @@ class ComposerStaticInit48d73ca06cd77213885a12fd7bbfc24e
         ),
         'c' => 
         array (
+            'core\\' => 5,
             'controllers\\' => 12,
         ),
         'T' => 
@@ -39,6 +40,10 @@ class ComposerStaticInit48d73ca06cd77213885a12fd7bbfc24e
         'models\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/models',
+        ),
+        'core\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/core',
         ),
         'controllers\\' => 
         array (

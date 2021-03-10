@@ -2,11 +2,13 @@
 namespace controllers;
 
 use Cocur\Slugify\Slugify;
-use models\DBFactory;
-use models\Functions;
+use core\DBFactory;
+use core\Image;
 use models\Post;
 use models\PostManager;
 use models\CommentManager;
+use core\TwigFactory;
+use models\UserManager;
 
 /**
  * Post controller
@@ -69,10 +71,13 @@ class PostController
         $db = DBFactory:: dbConnect();
         $PostManager = new PostManager($db);
         $posts = $PostManager->getList();
+        $UserManager = new UserManager($db);
+        $admin = $UserManager->read(1);
         $twig = TwigFactory::twig();
         echo $twig->render(
             'backend/homeView.twig', array(
-            'posts' => $posts
+            'posts' => $posts,
+            'admin' => $admin
             )
         );
     }
@@ -89,11 +94,7 @@ class PostController
         if (isset($_POST['username']) && isset($_POST['title']) 
             && isset($_POST['teaser']) && isset($_POST['content'])
         ) {   
-            if (!empty($_FILES['image']['name'])) {
-                $imagePath = "public/img/" .$_FILES['image']['name'];
-            } else {
-                $imagePath = 'public/img/defaut.png';
-            }
+            $imagePath = Image::getImage('post');
             
             $slugify = new Slugify();
             $slug = $slugify->slugify($_POST['title']);
@@ -111,7 +112,7 @@ class PostController
             );
             
             if ($post->isValid()) {
-                Functions::uploadImage();
+                Image::uploadImage('post');
                 $db = DBFactory::dbConnect();
                 $PostManager = new PostManager($db);
                 $PostManager->add($post);
@@ -171,11 +172,7 @@ class PostController
         if (isset($_POST['username']) && isset($_POST['title']) 
             && isset($_POST['teaser']) && isset($_POST['content'])
         ) {
-            if (!empty($_FILES['image']['name'])) {
-                $image = "public/img/" .$_FILES['image']['name'];
-            } else {
-                $image = 'public/img/defaut.png';
-            }
+            $imagePath = Image::getImage('post');
 
             $slugify = new Slugify();
             $slug = $slugify->slugify($_POST['title']);
@@ -187,14 +184,14 @@ class PostController
                 'title' => $_POST['title'],
                 'teaser' => $_POST['teaser'],
                 'content' => $_POST['content'],
-                'imagePath' => $image,
+                'imagePath' => $imagePath,
                 'slug' => $slug,
                 'newComment' => $count
                 ]
             );
 
             if ($post->isValid()) {
-                Functions::uploadImage();
+                Image::uploadImage('post');
                 $PostManager->update($post);
                 echo $twig->render(
                     'backend/updateView.twig', array(

@@ -1,6 +1,12 @@
 <?php
 namespace controllers;
 
+use core\DBFactory;
+use core\Image;
+use core\TwigFactory;
+use models\User;
+use models\UserManager;
+
 /**
  * User controller
  */
@@ -15,5 +21,73 @@ class UserController
     {
         $twig = TwigFactory::twig();
         echo $twig->render('frontend/loginView.twig');
+    }
+
+    /**
+     * Create account
+     *
+     * @return void
+     */
+    public function create()
+    {
+        $db = DBFactory::dbConnect();
+        $twig = TwigFactory::twig();
+        
+        if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password'])) {
+            if (!empty($_POST['password'])) {
+                $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+            } else {
+                $password = '';
+            }
+            
+            $imagePath = Image::getImage('user');
+
+            $user = new User(
+                [
+                'username' => $_POST['username'],
+                'contactEmail' => $_POST['email'],
+                'password' => $password,
+                'imagePath' => $imagePath
+                ]
+            );
+    
+            if ($user->isValid() && $_POST['password'] == $_POST['confirm_password']) {
+                $UserManager = new UserManager($db);
+                $checkUsername = $UserManager->checkUsername();
+                $checkEmail = $UserManager->checkEmail();
+
+                if (!$checkEmail && !$checkUsername) {
+                    Image::uploadImage('user');
+                    $UserManager->add($user);
+                    echo $twig->render('frontend/createUserView.twig', array(
+                        'user' => $user
+                    ));
+                } else {
+                    if ($checkUsername) {
+                        $user->setErrors(['username_error']);
+                    }
+
+                    if ($checkEmail) {
+                        $user->setErrors(['email_error']);
+                    }
+
+                    if ($checkEmail && $checkUsername) {
+                        $user->setErrors(['email_error', 'username_error']);
+                    }
+
+                    echo $twig->render('frontend/createUserView.twig', array(
+                        'user' => $user
+                    ));
+                }
+                
+            } else {
+                echo $twig->render('frontend/createUserView.twig', array(
+                    'user' => $user,
+                    'post' => $_POST
+                ));
+            }
+        } else {
+            echo $twig->render('frontend/createUserView.twig');
+        }
     }
 }

@@ -1247,6 +1247,12 @@ ul.share li a {
     position: absolute;
 }
 
+.avatar-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
 .comment {
     display: block;
     padding: 10px 0;

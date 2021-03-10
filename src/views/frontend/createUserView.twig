@@ -1,0 +1,79 @@
+{% extends "frontend/layout.twig" %}
+
+{% block image %}
+<!-- Page Title -->
+<div class="page-title bg-img section-padding bg-overlay" style="background-image: url(public/assets/images/breadcrumb.jpg)">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <h2>Créer un compte</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- // Page Title -->
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 500px; margin-top:80px; margin-bottom:80px;">
+    <form class="mt-5" action="" method="post" enctype="multipart/form-data">
+    {% if 'username_error' in user.errors %}
+    <div class="alert alert-danger" role="alert">
+        Ce pseudo existe déjà !
+    </div>
+    {% endif %}
+    {% if 'email_error' in user.errors %}
+    <div class="alert alert-danger" role="alert">
+        Cette adresse email existe déjà !
+    </div>
+    {% endif %}
+        <label for="username">Pseudo :</label>
+        {% if constant('models\\User::INVALID_USERNAME') in user.errors %}
+            <div class="alert alert-danger" role="alert">
+                Vous devez renseigner votre pseudo !
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <input class="form-control" type="text" name="username" value="{{ user.errors is not empty ? user.username }}">
+        </div>
+        <label for="email">Email :</label>
+        {% if constant('models\\User::INVALID_EMAIL') in user.errors %}
+            <div class="alert alert-danger" role="alert">
+                Vous devez renseigner votre email dans un format valide !
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <input class="form-control" type="text" name="email" value="{{ user.errors is not empty ? user.contactEmail }}">
+        </div>
+        <label for="password">Mot de passe :</label>
+        {% if constant('models\\User::INVALID_PASSWORD') in user.errors %}
+            <div class="alert alert-danger" role="alert">
+                Vous devez renseigner votre mot de passe et le confirmer !
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <input class="form-control" type="password" name="password">
+        </div>
+        <label for="confirm_password">Confirmez votre mot de passe :</label>
+        {% if post.confirm_password is empty and post.confirm_password is defined %}
+        <div class="alert alert-danger" role="alert">
+            Vous devez confirmer votre mot de passe !
+        </div>
+        {% endif %}
+        <div class="form-group">
+            <input class="form-control" type="password" name="confirm_password">
+        </div>
+        <div class="mt-5 row">
+            <div class="col-lg-9">
+                <label for="image">Sélectionner l'image : <i>(jpg, jpeg, png, gif)</i></label>
+                <div class="form-group">
+                    <input type="file" name="image" />
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <button type="submit" class="btn btn-primary" style="margin-top: 15px">Ajouter</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

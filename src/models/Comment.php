@@ -2,12 +2,13 @@
 
 namespace models;
 
+use core\Entity;
 use DateTime;
 
 /**
  * Comment entity
  */
-class Comment
+class Comment extends Entity
 {
     private $id;
     private $username;
@@ -15,41 +16,11 @@ class Comment
     private $commentDate;
     private $commentState;
     private $postId;
-    private $errors;
+    private $errors = [];
 
     const INVALID_USERNAME = 1;
     const INVALID_CONTENT = 2;
     
-    /**
-     * Construct
-     *
-     * @param array $values values array
-     */
-    public function __construct($values = [])
-    {
-        if (!empty($values)) {
-            $this->hydrate($values);
-        }
-    }
-    
-    /**
-     * Hydrate
-     *
-     * @param [array] $datas datas array
-     * 
-     * @return void
-     */
-    public function hydrate($datas)
-    {
-        foreach ($datas as $attribut => $value) {
-            $method = 'set'.ucfirst($attribut);
-        
-            if (is_callable([$this, $method])) {
-                $this->$method($value);
-            }
-        }
-    }
-
     // SETTERS
 
     /**

@@ -61,7 +61,7 @@
                 "issues": "https://github.com/dannyvankooten/AltoRouter/issues",
                 "source": "https://github.com/dannyvankooten/AltoRouter/tree/2.0.1"
             },
-            "install-path": "../../../Projet5/vendor/altorouter/altorouter"
+            "install-path": "../altorouter/altorouter"
         },
         {
             "name": "cocur/slugify",
@@ -138,7 +138,7 @@
                 "issues": "https://github.com/cocur/slugify/issues",
                 "source": "https://github.com/cocur/slugify/tree/master"
             },
-            "install-path": "../../../Projet5/vendor/cocur/slugify"
+            "install-path": "../cocur/slugify"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -220,7 +220,7 @@
                     "type": "tidelift"
                 }
             ],
-            "install-path": "../../../Projet5/vendor/symfony/polyfill-ctype"
+            "install-path": "../symfony/polyfill-ctype"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -303,7 +303,7 @@
                     "type": "tidelift"
                 }
             ],
-            "install-path": "../../../Projet5/vendor/symfony/polyfill-mbstring"
+            "install-path": "../symfony/polyfill-mbstring"
         },
         {
             "name": "twig/twig",
@@ -374,7 +374,7 @@
                 "issues": "https://github.com/twigphp/Twig/issues",
                 "source": "https://github.com/twigphp/Twig/tree/v3.0.0"
             },
-            "install-path": "../../../Projet5/vendor/twig/twig"
+            "install-path": "../twig/twig"
         }
     ],
     "dev": true,

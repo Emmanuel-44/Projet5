@@ -3,9 +3,10 @@ namespace controllers;
 
 use models\Comment;
 use models\CommentManager;
-use models\DBFactory;
+use core\DBFactory;
 use models\PostManager;
 use models\Post;
+use core\TwigFactory;
 
 /**
  * Comment controller
@@ -28,7 +29,7 @@ class CommentController
                 [
                 'username' => $_POST['username'],
                 'content' => $_POST['content'],
-                'commentState' => '0',
+                'commentState' => false,
                 'postId' => $id
                 ]
             );
@@ -39,7 +40,8 @@ class CommentController
         
                 $PostManager = new PostManager($db);
                 $post = $PostManager->read($id);
-                $count = $CommentManager->countNew($id);
+                $countNew = $CommentManager->countNew($id);
+                $count = $CommentManager->count($id);
 
                 $post = new Post(
                     [
@@ -50,7 +52,7 @@ class CommentController
                     'content' => $post->getContent(),
                     'slug' => $post->getSlug(),
                     'imagePath' => $post->getImagePath(),
-                    'newComment' => $count
+                    'newComment' => $countNew
                     ]
                 );
                 
@@ -60,19 +62,22 @@ class CommentController
                     'frontend/singleView.twig', array(
                     'post' => $post,
                     'comment' => $comment,
-                    'comments' => $comments
+                    'comments' => $comments,
+                    'count' => $count
                     )
                 );
             } else {
                 $CommentManager = new CommentManager($db);
                 $comments = $CommentManager->read($id);
+                $count = $CommentManager->count($id);
                 $PostManager = new PostManager($db);
                 $post = $PostManager->read($id);
                 echo $twig->render(
                     'frontend/singleView.twig', array(
                     'post' => $post,
                     'comment' => $comment,
-                    'comments' => $comments
+                    'comments' => $comments,
+                    'count' => $count
                     )
                 );
             }

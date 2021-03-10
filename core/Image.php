@@ -1,17 +1,19 @@
 <?php
-namespace models;
+namespace core;
 
 /**
  * Multiple(s) function(s)
  */
-class Functions
+class Image
 {
     /**
-     * Upload images
+     * Upload image
      *
+     * @param [string] $folder
+     * 
      * @return void
      */
-    public static function uploadImage()
+    public static function uploadImage($folder)
     {
         if (isset($_FILES['image']) AND $_FILES['image']['error'] == 0) {
             if ($_FILES['image']['size'] <= 1000000) {
@@ -20,11 +22,21 @@ class Functions
                 $authorized_extensions = array('jpg', 'jpeg', 'png');
 
                 if (in_array($extension_upload, $authorized_extensions)) {
-                    $imagepath = '../public/img/' 
+                    $imagepath = "../public/img/$folder/"
                         . basename($_FILES['image']['name']);
                     move_uploaded_file($_FILES['image']['tmp_name'], $imagepath);
                 }
             }
         }
+    }
+
+    public static function getImage($folder)
+    {
+        if (!empty($_FILES['image']['name'])) {
+            $imagePath = "public/img/$folder/" .$_FILES['image']['name'];
+        } else {
+            $imagePath = "public/img/$folder/default.png";
+        }
+        return $imagePath;
     }
 }

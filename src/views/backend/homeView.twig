@@ -1,8 +1,11 @@
 {% extends "backend/layout.twig" %}
 
 {% block content %}
+<pre>
+    {{ dump(admin) }}
+</pre>
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-12" style="margin-bottom: 20px;">
             <h2 style="margin: 0 0 15px 0">Liste des articles</h2>
             <a href="admin/ajouter" class="mb-4 btn btn-primary">Ajouter un article</a>
             <table class="table table-striped" style="margin-bottom: 30px;">
@@ -31,6 +34,30 @@
                             <td style="text-align: center;">{% if post.newComment != 0 %} <a href="admin/article/{{ post.slug }}-{{ post.id }}" class="btn btn-success">{% endif %}{{ post.newComment ? post.newComment }}</a></td>
                         </tr>
                     {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-12">
+            <h2 style="margin: 0 0 15px 0">Administrateur</h2>
+            <table class="table table-striped" style="margin-bottom: 30px;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th style="text-align:center;">Pseudo</th>
+                        <th style="text-align:center;">Email</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><img src="{{ admin.imagePath }}" class="avatar-img" alt="Photo de profil"></td>
+                        <td style="text-align:center;">{{ admin.username }}</td>
+                        <td style="text-align:center;">{{ admin.contactEmail }}</td>
+                        <td style="text-align:center;">
+                            <a href="" class="btn btn-primary" style="margin: 2px;">Voir</a>
+                            <a href="" class="btn btn-primary" style="margin: 2px;">Modifier</a>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
