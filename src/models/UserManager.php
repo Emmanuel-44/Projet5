@@ -31,13 +31,14 @@ class UserManager
     public function add(User $user)
     {
         $req = $this->_db->prepare(
-            'INSERT INTO user (username, contactEmail, pwrd, addingDate, imagePath) 
-            VALUES (:username, :contactEmail, :pwrd, NOW(), :imagePath)'
+            'INSERT INTO user (username, contactEmail, password, addingDate, imagePath, role) 
+            VALUES (:username, :contactEmail, :password, NOW(), :imagePath, :role)'
         );
         $req->bindValue(':username', $user->getUsername());
         $req->bindValue(':contactEmail', $user->getContactEmail());
-        $req->bindValue(':pwrd', $user->getPassword());
+        $req->bindValue(':password', $user->getPassword());
         $req->bindValue(':imagePath', $user->getImagePath());
+        $req->bindValue(':role', serialize($user->getRole()));
         $req->execute();
     }
 
@@ -46,7 +47,7 @@ class UserManager
      *
      * @param [int] $id id user
      * 
-     * @return void
+     * @return object
      */
     public function read($id)
     {
@@ -57,6 +58,7 @@ class UserManager
         $user = $req->fetch();
         $user->setId((int)$user->getId());
         $user->setAddingDate(new DateTime($user->getAddingDate()));
+        $user->setRole(unserialize($user->getRole()));
         return $user;
     }
 
@@ -65,7 +67,7 @@ class UserManager
      *
      * @return void
      */
-    public function checkUsername()
+    public function findByUsername()
     {
         $req = $this->_db->prepare('SELECT username FROM user WHERE username = ?');
         $req->execute(array($_POST['username']));
@@ -78,9 +80,9 @@ class UserManager
      *
      * @return void
      */
-    public function checkEmail()
+    public function findByEmail()
     {
-        $req = $this->_db->prepare('SELECT contactEmail FROM user WHERE contactEmail = ?');
+        $req = $this->_db->prepare('SELECT * FROM user WHERE contactEmail = ?');
         $req->execute(array($_POST['email']));
         $check = $req->fetch();
         return $check;

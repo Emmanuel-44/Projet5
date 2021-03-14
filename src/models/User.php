@@ -10,14 +10,14 @@ use DateTime;
  */
 class User extends Entity
 {
-    protected $id;
-    protected $username;
-    protected $contactEmail;
-    protected $password;
-    protected $addingDate;
-    protected $imagePath;
-    protected $role = ['USER'];
-    protected $errors = [];
+    private $id;
+    private $username;
+    private $contactEmail;
+    private $password;
+    private $addingDate;
+    private $imagePath;
+    private $role = [];
+    private $errors = [];
 
     const INVALID_USERNAME = 1;
     const INVALID_PASSWORD = 2;
@@ -28,7 +28,7 @@ class User extends Entity
     /**
      * Id setter
      *
-     * @param integer $_id id
+     * @param integer $id id
      * 
      * @return void
      */
@@ -40,7 +40,7 @@ class User extends Entity
     /**
      * Username setter
      *
-     * @param string $_username username
+     * @param string $username username
      * 
      * @return void
      */
@@ -52,7 +52,7 @@ class User extends Entity
     /**
      * ContactEmail setter
      *
-     * @param [string] $_contactEmail contact email
+     * @param [string] $contactEmail contact email
      * 
      * @return void
      */
@@ -64,7 +64,7 @@ class User extends Entity
     /**
      * Password setter
      *
-     * @param string $_password password
+     * @param string $password password
      * 
      * @return void
      */
@@ -76,7 +76,7 @@ class User extends Entity
     /**
      * AddingDate setter
      *
-     * @param DateTime $_addingDate adding date
+     * @param DateTime $addingDate adding date
      * 
      * @return void
      */
@@ -98,9 +98,21 @@ class User extends Entity
     }
 
     /**
-     * ImagePath setter
+     * Undocumented function
      *
-     * @param string $imagePath image path
+     * @param array $role role
+     * 
+     * @return void
+     */
+    public function setRole(array $role)
+    {
+        $this->role = $role;
+    }
+
+    /**
+     * Errors setter
+     *
+     * @param string $errors error
      * 
      * @return void
      */
@@ -208,10 +220,29 @@ class User extends Entity
             $this->errors[] = self::INVALID_PASSWORD;
         }
 
-        if (empty($this->contactEmail) || !filter_var($this->contactEmail, FILTER_VALIDATE_EMAIL)) {
+        if (empty($this->contactEmail) 
+            || !filter_var($this->contactEmail, FILTER_VALIDATE_EMAIL)
+        ) {
             $this->errors[] = self::INVALID_EMAIL;
         }
 
         return empty($this->errors);
+    }
+
+    /**
+     * Set session
+     *
+     * @return void
+     */
+    public function setSession()
+    {
+        $_SESSION['user'] = [
+            'id' => $this->id,
+            'username' => $this->username,
+            'contactEmail' => $this->contactEmail,
+            'addingDate' => $this->addingDate,
+            'imagePath' => $this->imagePath,
+            'role' => $this->role
+        ];
     }
 }

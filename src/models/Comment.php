@@ -38,7 +38,7 @@ class Comment extends Entity
     /**
      * Username setter
      *
-     * @param string $_username username
+     * @param string $username username
      * 
      * @return void
      */
@@ -50,7 +50,7 @@ class Comment extends Entity
     /**
      * Content setter
      *
-     * @param string $_content content
+     * @param string $content content
      * 
      * @return void
      */
@@ -62,7 +62,7 @@ class Comment extends Entity
     /**
      * CommentDate setter
      *
-     * @param DateTime $_commentDate comment date
+     * @param DateTime $commentDate comment date
      * 
      * @return void
      */
@@ -74,7 +74,7 @@ class Comment extends Entity
     /**
      * CommentState setter
      *
-     * @param boolean $_commentState comment state
+     * @param boolean $commentState comment state
      * 
      * @return void
      */
@@ -86,7 +86,7 @@ class Comment extends Entity
     /**
      * PostId setter
      *
-     * @param integer $_postId post id
+     * @param integer $postId post id
      * 
      * @return void
      */

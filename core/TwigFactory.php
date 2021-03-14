@@ -1,5 +1,7 @@
 <?php
 namespace core;
+
+
 /**
  * Twig
  */
@@ -20,6 +22,7 @@ class TwigFactory
             ]
         );
         $twig->addExtension(new \Twig\Extension\DebugExtension());
+        $twig->addExtension(new Sessions);
 
         return $twig;
     }

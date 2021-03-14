@@ -109,19 +109,24 @@ class CommentManager
     /**
      * Get single comment
      *
-     * @param [type] $postId id post
+     * @param [int] $postId id post
      * 
-     * @param [type] $id id comment
+     * @param [int] $id     id comment
      * 
      * @return Comment
      */
     public function single($postId, $id)
     {
-        $req = $this->_db->prepare('SELECT id, username, content, commentDate, commentState FROM comment WHERE postId = :postId AND id = :id ORDER BY commentDate DESC');
+        $req = $this->_db->prepare(
+            'SELECT id, username, content, commentDate, commentState FROM comment 
+            WHERE postId = :postId AND id = :id ORDER BY commentDate DESC'
+        );
         $req->bindValue(':postId', $postId);
         $req->bindValue(':id', $id);
         $req->execute();
-        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\Comment');
+        $req->setFetchMode(
+            PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\Comment'
+        );
         $comment = $req->fetch();
         $comment->setId((int)$comment->getId());
         $comment->setPostId((int)$comment->getPostId());

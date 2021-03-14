@@ -15,7 +15,12 @@
 {% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 400px; margin-top:120px; margin-bottom:120px;">
+<div class="container" style="max-width: 400px; margin-top:170px; margin-bottom:170px;">
+{% if 'fail' in error %}
+<div class="alert alert-danger" role="alert">
+    Vos identifiants sont incorrect !
+</div>
+{% endif %}
     <form class="mt-5" action="" method="post" enctype="multipart/form-data">
         <label for="email">Email :</label>
         <div class="form-group">
@@ -24,10 +29,6 @@
         <label for="password">Mot de passe :</label>
         <div class="form-group">
             <input class="form-control" type="password" name="password" value="">
-        </div>
-        <label for="confirm_password">Confirmez votre mot de passe :</label>
-        <div class="form-group">
-            <input class="form-control" type="password" name="confirm_password" value="">
         </div>
         <div class="mt-5">
             <div class="text-center">

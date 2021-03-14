@@ -68,18 +68,20 @@ class PostController
      */
     public function adminIndex()
     {
-        $db = DBFactory:: dbConnect();
-        $PostManager = new PostManager($db);
-        $posts = $PostManager->getList();
-        $UserManager = new UserManager($db);
-        $admin = $UserManager->read(1);
-        $twig = TwigFactory::twig();
-        echo $twig->render(
-            'backend/homeView.twig', array(
-            'posts' => $posts,
-            'admin' => $admin
-            )
-        );
+        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
+            $db = DBFactory:: dbConnect();
+            $PostManager = new PostManager($db);
+            $posts = $PostManager->getList();
+            $twig = TwigFactory::twig();
+            echo $twig->render(
+                'backend/homeView.twig', array(
+                'posts' => $posts
+                )
+            );
+        } else {
+            header('location: ../Projet5');
+        }
+        
     }
 
     /**

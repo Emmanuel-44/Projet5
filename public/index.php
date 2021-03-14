@@ -1,4 +1,5 @@
 <?php
+session_start();
 require '../vendor/autoload.php';
 
 use controllers\PostController;
@@ -17,6 +18,8 @@ $router->map('GET', '/', [$postController, 'index']);
 $router->map('GET', '/blog', [$postController, 'blog']);
 $router->map('GET', '/blog/[*:slug]-[i:id]', [$postController, 'single']);
 $router->map('GET', '/login', [$userController, 'login']);
+$router->map('POST', '/login', [$userController, 'login']);
+$router->map('GET', '/logout', [$userController, 'logout']);
 $router->map('GET', '/admin', [$postController, 'adminIndex']);
 $router->map('GET|POST', '/admin/ajouter', [$postController, 'create']);
 $router->map('GET', '/admin/article/[*:slug]-[i:id]', [$postController, 'read']);

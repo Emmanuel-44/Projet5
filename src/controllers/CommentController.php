@@ -105,7 +105,9 @@ class CommentController
         $db = DBFactory::dbConnect();
         $CommentManager = new CommentManager($db);
         $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
-        $postId = (int)strstr(substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', -1);
+        $postId = (int)strstr(
+            substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', -1
+        );
         $CommentManager->delete($commentId);
         $PostManager = new PostManager($db);
         $post = $PostManager->read($postId);
@@ -139,7 +141,9 @@ class CommentController
         $db = DBFactory::dbConnect();
         $CommentManager = new CommentManager($db);
         $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
-        $postId = (int)strstr(substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', -1);
+        $postId = (int)strstr(
+            substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', -1
+        );
         $comment = $CommentManager->single($postId, $commentId);
         
         $comment = new Comment(

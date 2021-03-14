@@ -19,8 +19,54 @@ class UserController
      */
     public function login()
     {
-        $twig = TwigFactory::twig();
-        echo $twig->render('frontend/loginView.twig');
+        if (empty($_SESSION['user'])) {
+            $twig = TwigFactory::twig();
+
+            if (isset($_POST['email']) && isset($_POST['password']) 
+                && !empty($_POST['email']) && !empty(['password'])
+            ) {
+                $db = DBFactory::dbConnect();
+                $UserManager = new UserManager($db);
+                $check = $UserManager->findByEmail();
+    
+                if (!$check) {
+                    $error = ['fail'];
+                    echo $twig->render(
+                        'frontend/loginView.twig', array(
+                            'error' => $error
+                        )
+                    );
+                } else {
+                    $user = $UserManager->read($check['id']);
+                    if (password_verify($_POST['password'], $user->getPassword())) {
+                        $user->setSession();
+                        if (in_array('ADMIN', $user->getRole())) {
+                            header('location: ../Projet5/admin');
+                        } else {
+                            header('location: ../Projet5');
+                        }
+                        
+                    } else {
+                        $error = ['fail'];
+                        echo $twig->render(
+                            'frontend/loginView.twig', array(
+                                'error' => $error
+                            )
+                        );
+                    }
+                }   
+            } else {
+                echo $twig->render('frontend/loginView.twig');
+            } 
+        } else {
+            header('location: ../Projet5');
+        } 
+    }
+
+    public function logout()
+    {
+        session_destroy();
+        header('location: ../Projet5');
     }
 
     /**
@@ -30,64 +76,76 @@ class UserController
      */
     public function create()
     {
-        $db = DBFactory::dbConnect();
-        $twig = TwigFactory::twig();
-        
-        if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password'])) {
-            if (!empty($_POST['password'])) {
-                $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-            } else {
-                $password = '';
-            }
+        if (empty($_SESSION['user'])) {
+            $db = DBFactory::dbConnect();
+            $twig = TwigFactory::twig();
             
-            $imagePath = Image::getImage('user');
-
-            $user = new User(
-                [
-                'username' => $_POST['username'],
-                'contactEmail' => $_POST['email'],
-                'password' => $password,
-                'imagePath' => $imagePath
-                ]
-            );
-    
-            if ($user->isValid() && $_POST['password'] == $_POST['confirm_password']) {
-                $UserManager = new UserManager($db);
-                $checkUsername = $UserManager->checkUsername();
-                $checkEmail = $UserManager->checkEmail();
-
-                if (!$checkEmail && !$checkUsername) {
-                    Image::uploadImage('user');
-                    $UserManager->add($user);
-                    echo $twig->render('frontend/createUserView.twig', array(
-                        'user' => $user
-                    ));
+            if (isset($_POST['username']) && isset($_POST['email']) 
+                && isset($_POST['password'])
+            ) {
+                if (!empty($_POST['password'])) {
+                    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
                 } else {
-                    if ($checkUsername) {
-                        $user->setErrors(['username_error']);
-                    }
-
-                    if ($checkEmail) {
-                        $user->setErrors(['email_error']);
-                    }
-
-                    if ($checkEmail && $checkUsername) {
-                        $user->setErrors(['email_error', 'username_error']);
-                    }
-
-                    echo $twig->render('frontend/createUserView.twig', array(
-                        'user' => $user
-                    ));
+                    $password = '';
                 }
                 
+                $imagePath = Image::getImage('user');
+    
+                $user = new User(
+                    [
+                    'username' => $_POST['username'],
+                    'contactEmail' => $_POST['email'],
+                    'password' => $password,
+                    'imagePath' => $imagePath,
+                    'role' => ['USER']
+                    ]
+                );
+        
+                if ($user->isValid() 
+                    && $_POST['password'] == $_POST['confirm_password']
+                ) {
+                    $UserManager = new UserManager($db);
+                    $checkUsername = $UserManager->findByUsername();
+                    $checkEmail = $UserManager->findByEmail();
+    
+                    if (!$checkEmail && !$checkUsername) {
+                        Image::uploadImage('user');
+                        $UserManager->add($user);
+                        $user->setSession();
+                        header('location: ../Projet5');
+                    } else {
+                        if ($checkUsername) {
+                            $user->setErrors(['username_error']);
+                        }
+    
+                        if ($checkEmail) {
+                            $user->setErrors(['email_error']);
+                        }
+    
+                        if ($checkEmail && $checkUsername) {
+                            $user->setErrors(['email_error', 'username_error']);
+                        }
+    
+                        echo $twig->render(
+                            'frontend/createUserView.twig', array(
+                                'user' => $user
+                            )
+                        );
+                    }
+                    
+                } else {
+                    echo $twig->render(
+                        'frontend/createUserView.twig', array(
+                            'user' => $user,
+                            'post' => $_POST
+                        )
+                    );
+                }
             } else {
-                echo $twig->render('frontend/createUserView.twig', array(
-                    'user' => $user,
-                    'post' => $_POST
-                ));
+                echo $twig->render('frontend/createUserView.twig');
             }
         } else {
-            echo $twig->render('frontend/createUserView.twig');
+            header('location: ../Projet5');
         }
     }
 }

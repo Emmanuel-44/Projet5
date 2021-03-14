@@ -42,9 +42,26 @@
                     <!-- Mobile Menu -->
 
                     <div class="collapse navbar-collapse main-menu" id="navbarSupportedContent">
-                        <ul class="navbar-nav ml-auto">
+                        <ul class="navbar-nav ml-auto mr-auto">
                             {% block AdminHome %}<li class="nav-item active"><a class="nav-link active" href="">ACCUEIL ADMINISTRATION</a></li>{% endblock %}
                             {% block home %}<li class="nav-item"><a class="nav-link" href="../Projet5">QUITTER</a></li>{% endblock %}
+                        </ul>
+                        <ul class="navbar-nav ml-auto">
+                            {% if session.user is defined and session.user is not empty %}
+                                <li class="nav-item"><img src="{{ session.user.imagePath }}" class="avatar-img" alt="Photo de profil"></li>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-warning dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Bonjour {{ session.user.username }}</a>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <p class="dropdown-item">{{ session.user.contactEmail }}</p>
+                                        <p class="dropdown-item">Membre depuis le {{ session.user.addingDate | date('d/m/Y') }}</p>
+                                        <div class="dropdown-divider">
+                                            <a class="dropdown-item" href="../Projet5/logout">Se déconnecter</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>

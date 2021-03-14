@@ -126,7 +126,7 @@ class Post extends Entity
     /**
      * Slug setter
      *
-     * @param string $_slug slug
+     * @param string $slug slug
      * 
      * @return void
      */
@@ -138,7 +138,7 @@ class Post extends Entity
     /**
      * NewComment setter
      *
-     * @param integer $_newComment new comment count
+     * @param integer $newComment new comment count
      * 
      * @return void
      */
@@ -150,7 +150,7 @@ class Post extends Entity
     /**
      * Errors setter
      *
-     * @param array $_errors errors array
+     * @param array $errors errors array
      * 
      * @return void
      */
