@@ -49,7 +49,7 @@ class UserManager
      * 
      * @return object
      */
-    public function read($id)
+    public function getUser($id)
     {
         $req = $this->_db->prepare('SELECT * FROM user WHERE id = :id');
         $req->bindValue(':id', $id);

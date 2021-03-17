@@ -17,6 +17,7 @@ class Post extends Entity
     private $addingDate;
     private $modifDate;
     private $slug;
+    private $validComment;
     private $newComment;
     private $errors = [];
 
@@ -136,6 +137,18 @@ class Post extends Entity
     }
 
     /**
+     * ValidComment setter
+     *
+     * @param integer $validComment valid comment count
+     * 
+     * @return void
+     */
+    public function setValidComment(int $validComment)
+    {
+        $this->validComment = $validComment;
+    }
+
+    /**
      * NewComment setter
      *
      * @param integer $newComment new comment count
@@ -250,6 +263,16 @@ class Post extends Entity
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * ValidComment getter
+     *
+     * @return void
+     */
+    public function getValidComment()
+    {
+        return $this->validComment;
     }
 
     /**

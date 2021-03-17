@@ -32,9 +32,9 @@ class PostManager
     {
         $req = $this->_db->prepare(
             'INSERT INTO post(title, teaser, author, content, 
-            imagePath, addingDate, modifDate, slug, newComment) 
+            imagePath, addingDate, modifDate, slug, validComment, newComment) 
             VALUES(:title, :teaser, :author, :content, :imagePath, 
-            NOW(), NOW(), :slug, :newComment)'
+            NOW(), NOW(), :slug, :validComment, :newComment )'
         );
         $req->bindValue(':title', $post->getTitle());
         $req->bindValue(':teaser', $post->getTeaser());
@@ -42,6 +42,7 @@ class PostManager
         $req->bindValue(':content', $post->getContent());
         $req->bindValue(':imagePath', $post->getImagePath());
         $req->bindValue(':slug', $post->getSlug());
+        $req->bindValue(':validComment', $post->getValidComment());
         $req->bindValue(':newComment', $post->getNewComment());
         $req->execute();
     }
@@ -58,7 +59,7 @@ class PostManager
         $req = $this->_db->prepare(
             'UPDATE post SET author = :author, title = :title, teaser = :teaser, 
             content = :content, imagePath = :imagePath, slug = :slug, 
-            modifDate = NOW(), newComment = :newComment 
+            modifDate = NOW(), validComment = :validComment, newComment = :newComment 
             WHERE id = :id'
         );
         $req->bindValue(':author', $post->getAuthor());
@@ -67,6 +68,7 @@ class PostManager
         $req->bindValue(':content', $post->getContent());
         $req->bindValue(':imagePath', $post->getImagePath());
         $req->bindValue(':slug', $post->getSlug());
+        $req->bindValue(':validComment', $post->getValidComment());
         $req->bindValue(':newComment', $post->getNewComment());
         $req->bindValue(':id', $post->getId());
         $req->execute();
@@ -97,6 +99,7 @@ class PostManager
         $posts = $req->fetchAll();
         foreach ($posts as $post) {
             $post->setId((int)$post->getId());
+            $post->setValidComment((int)$post->getValidComment());
             $post->setNewComment((int)$post->getNewComment());
             $post->setAddingDate(new DateTime($post->getAddingDate()));
             $post->setModifDate(new DateTime($post->getModifDate()));
@@ -111,7 +114,7 @@ class PostManager
      * 
      * @return Post
      */
-    public function read($id) : Post
+    public function getPost($id) : Post
     {
         $req = $this->_db->prepare('SELECT * FROM post WHERE id = :id');
         $req->bindValue(':id', $id);
@@ -119,6 +122,7 @@ class PostManager
         $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\Post');
         $post = $req->fetch();
         $post->setId((int)$post->getId());
+        $post->setValidComment((int)$post->getValidComment());
         $post->setNewComment((int)$post->getNewComment());
         $post->setAddingDate(new DateTime($post->getAddingDate()));
         $post->setModifDate(new DateTime($post->getModifDate()));

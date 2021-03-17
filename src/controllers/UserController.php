@@ -37,13 +37,13 @@ class UserController
                         )
                     );
                 } else {
-                    $user = $UserManager->read($check['id']);
+                    $user = $UserManager->getUser($check['id']);
                     if (password_verify($_POST['password'], $user->getPassword())) {
                         $user->setSession();
                         if (in_array('ADMIN', $user->getRole())) {
-                            header('location: ../Projet5/admin');
+                            header('location: http://localhost/Projet5/admin');
                         } else {
-                            header('location: ../Projet5');
+                            header('location: http://localhost/Projet5');
                         }
                         
                     } else {
@@ -59,14 +59,14 @@ class UserController
                 echo $twig->render('frontend/loginView.twig');
             } 
         } else {
-            header('location: ../Projet5');
+            header('location: http://localhost/Projet5');
         } 
     }
 
     public function logout()
     {
         session_destroy();
-        header('location: ../Projet5');
+        header('location: http://localhost/Projet5');
     }
 
     /**
@@ -112,7 +112,7 @@ class UserController
                         Image::uploadImage('user');
                         $UserManager->add($user);
                         $user->setSession();
-                        header('location: ../Projet5');
+                        header('location: http://localhost/Projet5');
                     } else {
                         if ($checkUsername) {
                             $user->setErrors(['username_error']);
@@ -145,7 +145,7 @@ class UserController
                 echo $twig->render('frontend/createUserView.twig');
             }
         } else {
-            header('location: ../Projet5');
+            header('location: http://localhost/Projet5');
         }
     }
 }

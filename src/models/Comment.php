@@ -16,6 +16,7 @@ class Comment extends Entity
     private $commentDate;
     private $commentState;
     private $postId;
+    private $userImagePath;
     private $errors = [];
 
     const INVALID_USERNAME = 1;
@@ -94,6 +95,18 @@ class Comment extends Entity
     {
         $this->postId = $postId;
     }
+
+    /**
+     * UserId setter
+     *
+     * @param string $UserImagePath user ImagePath
+     * 
+     * @return void
+     */
+    public function setUserImagePath(string $UserImagePath)
+    {
+        $this->userImagePath = $UserImagePath;
+    }
     // SETTERS END
 
     // GETTERS
@@ -156,6 +169,16 @@ class Comment extends Entity
     public function getPostId()
     {
         return $this->postId;
+    }
+
+    /**
+     * UserImagePath getter
+     *
+     * @return void
+     */
+    public function getUserImagePath()
+    {
+        return $this->userImagePath;
     }
 
     /**

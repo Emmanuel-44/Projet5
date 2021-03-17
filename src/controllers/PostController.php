@@ -8,7 +8,6 @@ use models\Post;
 use models\PostManager;
 use models\CommentManager;
 use core\TwigFactory;
-use models\UserManager;
 
 /**
  * Post controller
@@ -33,8 +32,15 @@ class PostController
      */
     public function blog()
     {
+        $db = DBFactory:: dbConnect();
+        $PostManager = new PostManager($db);
+        $posts = $PostManager->getList();
         $twig = TwigFactory::twig();
-        echo $twig->render('frontend/blogView.twig');
+        echo $twig->render(
+            'frontend/blogView.twig', array(
+            'posts' => $posts
+            )
+        );
     }
     
     /**
@@ -48,15 +54,13 @@ class PostController
         $PostManager = new PostManager($db);
         $CommentManager = new CommentManager($db);
         $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-        $post = $PostManager->read($id);
-        $comments = $CommentManager->read($id);
-        $count = $CommentManager->count($id);
+        $post = $PostManager->getPost($id);
+        $comments = $CommentManager->getList($id);
         $twig = TwigFactory::twig();
         echo $twig->render(
             'frontend/singleView.twig', array(
             'post' => $post,
-            'comments' => $comments,
-            'count' => $count
+            'comments' => $comments
             )
         );
     }
@@ -69,6 +73,7 @@ class PostController
     public function adminIndex()
     {
         if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
+
             $db = DBFactory:: dbConnect();
             $PostManager = new PostManager($db);
             $posts = $PostManager->getList();
@@ -79,9 +84,8 @@ class PostController
                 )
             );
         } else {
-            header('location: ../Projet5');
-        }
-        
+            header('location: http://localhost/Projet5');
+        }   
     }
 
     /**
@@ -92,43 +96,49 @@ class PostController
     public function create()
     {
         $twig = TwigFactory::twig();
+        
+        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
 
-        if (isset($_POST['username']) && isset($_POST['title']) 
-            && isset($_POST['teaser']) && isset($_POST['content'])
-        ) {   
-            $imagePath = Image::getImage('post');
-            
-            $slugify = new Slugify();
-            $slug = $slugify->slugify($_POST['title']);
+            if (isset($_POST['username']) && isset($_POST['title']) 
+                && isset($_POST['teaser']) && isset($_POST['content'])
+            ) {   
+                $imagePath = Image::getImage('post');
+                
+                $slugify = new Slugify();
+                $slug = $slugify->slugify($_POST['title']);
 
-            $post = new Post(
-                [
-                'author' => $_POST['username'],
-                'title' => $_POST['title'],
-                'teaser' => $_POST['teaser'],
-                'content' => $_POST['content'],
-                'imagePath' => $imagePath,
-                'slug' => $slug,
-                'newComment' => '0'
-                ]
-            );
-            
-            if ($post->isValid()) {
-                Image::uploadImage('post');
-                $db = DBFactory::dbConnect();
-                $PostManager = new PostManager($db);
-                $PostManager->add($post);
-                header('location: ../admin');
-            } else {
-                echo $twig->render(
-                    'backend/createView.twig', array (
-                    'post' => $post
-                    )
+                $post = new Post(
+                    [
+                    'author' => $_POST['username'],
+                    'title' => $_POST['title'],
+                    'teaser' => $_POST['teaser'],
+                    'content' => $_POST['content'],
+                    'imagePath' => $imagePath,
+                    'slug' => $slug,
+                    'validComment' => 0,
+                    'newComment' => 0
+                    ]
                 );
+                
+                if ($post->isValid()) {
+                    Image::uploadImage('post');
+                    $db = DBFactory::dbConnect();
+                    $PostManager = new PostManager($db);
+                    $PostManager->add($post);
+                    header('location: ../admin');
+                } else {
+                    echo $twig->render(
+                        'backend/createView.twig', array (
+                        'post' => $post
+                        )
+                    );
+                }
+            } else {
+                echo $twig->render('backend/createView.twig');
             }
         } else {
-            echo $twig->render('backend/createView.twig');
-        }     
+            header('location: http://localhost/Projet5');
+        }
     }
 
     /**
@@ -138,21 +148,24 @@ class PostController
      */
     public function read()
     {
-        $db = DBFactory::dbConnect();
-        $PostManager = new PostManager($db);
-        $CommentManager = new CommentManager($db);
-        $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-        $post = $PostManager->read($id);
-        $comments = $CommentManager->read($id);
-        $count = $CommentManager->count($id);
-        $twig = TwigFactory::twig();
-        echo $twig->render(
-            'backend/readView.twig', array(
-            'post' => $post,
-            'comments' => $comments,
-            'count' => $count
-            )
-        );
+        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
+            
+            $db = DBFactory::dbConnect();
+            $PostManager = new PostManager($db);
+            $CommentManager = new CommentManager($db);
+            $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
+            $post = $PostManager->getPost($id);
+            $comments = $CommentManager->getList($id);
+            $twig = TwigFactory::twig();
+            echo $twig->render(
+                'backend/readView.twig', array(
+                'post' => $post,
+                'comments' => $comments,
+                )
+            );
+        } else {
+            header('location: http://localhost/Projet5');
+        }   
     }
 
     /**
@@ -164,57 +177,64 @@ class PostController
     {
         $twig = TwigFactory::twig();
 
-        $db = DBFactory::dbConnect();
-        $PostManager = new PostManager($db);
-        $CommentManager = new CommentManager($db);
-        $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-        $post = $PostManager->read($id);
-        $count = $CommentManager->countNew($id);
+        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
 
-        if (isset($_POST['username']) && isset($_POST['title']) 
-            && isset($_POST['teaser']) && isset($_POST['content'])
-        ) {
-            $imagePath = Image::getImage('post');
+            $db = DBFactory::dbConnect();
+            $PostManager = new PostManager($db);
+            $CommentManager = new CommentManager($db);
+            $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
+            $post = $PostManager->getPost($id);
+            $countValid = $CommentManager->count($id);
+            $countNew = $CommentManager->countNew($id);
 
-            $slugify = new Slugify();
-            $slug = $slugify->slugify($_POST['title']);
+            if (isset($_POST['username']) && isset($_POST['title']) 
+                && isset($_POST['teaser']) && isset($_POST['content'])
+            ) {
+                $imagePath = Image::getImage('post');
 
-            $post = new Post(
-                [
-                'id' => $id,
-                'author' => $_POST['username'],
-                'title' => $_POST['title'],
-                'teaser' => $_POST['teaser'],
-                'content' => $_POST['content'],
-                'imagePath' => $imagePath,
-                'slug' => $slug,
-                'newComment' => $count
-                ]
-            );
+                $slugify = new Slugify();
+                $slug = $slugify->slugify($_POST['title']);
 
-            if ($post->isValid()) {
-                Image::uploadImage('post');
-                $PostManager->update($post);
-                echo $twig->render(
-                    'backend/updateView.twig', array(
-                    'post' => $post
-                    )
+                $post = new Post(
+                    [
+                    'id' => $id,
+                    'author' => $_POST['username'],
+                    'title' => $_POST['title'],
+                    'teaser' => $_POST['teaser'],
+                    'content' => $_POST['content'],
+                    'imagePath' => $imagePath,
+                    'slug' => $slug,
+                    'validComment' => $countValid,
+                    'newComment' => $countNew
+                    ]
                 );
+
+                if ($post->isValid()) {
+                    Image::uploadImage('post');
+                    $PostManager->update($post);
+                    echo $twig->render(
+                        'backend/updateView.twig', array(
+                        'post' => $post
+                        )
+                    );
+                } else {
+                    echo $twig->render(
+                        'backend/updateView.twig', array(
+                        'post' => $post
+                        )
+                    );
+                }          
             } else {
+                $post->setErrors(['vide']);
                 echo $twig->render(
                     'backend/updateView.twig', array(
                     'post' => $post
                     )
                 );
-            }          
+            }
         } else {
-            $post->setErrors(['vide']);
-            echo $twig->render(
-                'backend/updateView.twig', array(
-                'post' => $post
-                )
-            );
-        }    
+            header('location: http://localhost/Projet5');
+        }     
     }
 
     /**
@@ -224,10 +244,15 @@ class PostController
      */
     public function delete()
     {
-        $db = DBFactory::dbConnect();
-        $PostManager = new PostManager($db);
-        $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-        $PostManager->delete($id);
-        header('location:../../admin');
+        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
+
+            $db = DBFactory::dbConnect();
+            $PostManager = new PostManager($db);
+            $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
+            $PostManager->delete($id);
+            header('location:../../admin');
+        } else {
+            header('location: http://localhost/Projet5');
+        }
     }
 }

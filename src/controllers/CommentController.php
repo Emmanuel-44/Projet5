@@ -22,74 +22,90 @@ class CommentController
     {
         $db = DBFactory::dbConnect();
         $twig = TwigFactory::twig();
-        $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-
+        $Postid = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
+        $CommentManager = new CommentManager($db);
+        $PostManager = new PostManager($db);
+            
+        // Si le formulaire est validé
         if (isset($_POST['username']) && isset($_POST['content'])) {
-            $comment = new Comment(
-                [
-                'username' => $_POST['username'],
-                'content' => $_POST['content'],
-                'commentState' => false,
-                'postId' => $id
-                ]
-            );
-    
-            if ($comment->isValid()) { 
-                $CommentManager = new CommentManager($db);
-                $CommentManager->add($comment);
-        
-                $PostManager = new PostManager($db);
-                $post = $PostManager->read($id);
-                $countNew = $CommentManager->countNew($id);
-                $count = $CommentManager->count($id);
 
-                $post = new Post(
+            // Si l'utilisateur est connecté
+            if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
+                $userImagePath = $_SESSION['user']['imagePath'];
+                $comment = new Comment(
                     [
-                    'id' => $id,
-                    'title' => $post->getTitle(),
-                    'author' => $post->getAuthor(),
-                    'teaser' => $post->getTeaser(),
-                    'content' => $post->getContent(),
-                    'slug' => $post->getSlug(),
-                    'imagePath' => $post->getImagePath(),
-                    'newComment' => $countNew
+                    'username' => $_POST['username'],
+                    'content' => $_POST['content'],
+                    'commentState' => false,
+                    'postId' => $Postid,
+                    'userImagePath' => $userImagePath
                     ]
                 );
                 
-                $comments = $CommentManager->read($id);
-                $PostManager->update($post);
-                echo $twig->render(
-                    'frontend/singleView.twig', array(
-                    'post' => $post,
-                    'comment' => $comment,
-                    'comments' => $comments,
-                    'count' => $count
-                    )
-                );
+                // Si les données sont valides
+                if ($comment->isValid()) { 
+                    $CommentManager->add($comment);
+                    $post = $PostManager->getPost($Postid);
+                    $countNew = $CommentManager->countNew($Postid);
+                    $countValid = $CommentManager->count($Postid);
+    
+                    $post = new Post(
+                        [
+                        'id' => $Postid,
+                        'title' => $post->getTitle(),
+                        'author' => $post->getAuthor(),
+                        'teaser' => $post->getTeaser(),
+                        'content' => $post->getContent(),
+                        'slug' => $post->getSlug(),
+                        'imagePath' => $post->getImagePath(),
+                        'validComment' => $countValid,
+                        'newComment' => $countNew
+                        ]
+                    );
+                    
+                    $comments = $CommentManager->getList($Postid);
+                    $PostManager->update($post);
+                    echo $twig->render(
+                        'frontend/singleView.twig', array(
+                        'post' => $post,
+                        'comment' => $comment,
+                        'comments' => $comments
+                        )
+                    );
+                
+                // Si les données ne sont pas valides
+                } else {
+                    $comments = $CommentManager->getList($Postid);
+                    $post = $PostManager->getPost($Postid);
+                    echo $twig->render(
+                        'frontend/singleView.twig', array(
+                        'post' => $post,
+                        'comment' => $comment,
+                        'comments' => $comments,
+                        )
+                    );
+                }
+            // Si l'utilisateur n'est pas connecté
             } else {
-                $CommentManager = new CommentManager($db);
-                $comments = $CommentManager->read($id);
-                $count = $CommentManager->count($id);
-                $PostManager = new PostManager($db);
-                $post = $PostManager->read($id);
+                $error = 'Vous devez être connecté pour envoyer un message';
+                $comments = $CommentManager->getList($Postid);
+                $post = $PostManager->getPost($Postid);
                 echo $twig->render(
                     'frontend/singleView.twig', array(
                     'post' => $post,
-                    'comment' => $comment,
                     'comments' => $comments,
-                    'count' => $count
+                    'error' => $error
                     )
                 );
             }
+        // Si le formulaire n'est pas rempli
         } else {
-            $CommentManager = new CommentManager($db);
-            $comments = $CommentManager->read($id);
-            $PostManager = new PostManager($db);
-            $post = $PostManager->read($id);
+            $comments = $CommentManager->getList($Postid);
+            $post = $PostManager->getPost($Postid);
             echo $twig->render(
                 'frontend/singleView.twig', array(
                 'post' => $post,
-                'comments' => $comments
+                'comments' => $comments,
                 )
             );
         }
@@ -102,33 +118,55 @@ class CommentController
      */
     public function delete()
     {
-        $db = DBFactory::dbConnect();
-        $CommentManager = new CommentManager($db);
-        $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
-        $postId = (int)strstr(
-            substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', -1
-        );
-        $CommentManager->delete($commentId);
-        $PostManager = new PostManager($db);
-        $post = $PostManager->read($postId);
-        $count = $CommentManager->countNew($postId);
+        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
 
-                $post = new Post(
-                    [
-                    'id' => $postId,
-                    'title' => $post->getTitle(),
-                    'author' => $post->getAuthor(),
-                    'teaser' => $post->getTeaser(),
-                    'content' => $post->getContent(),
-                    'slug' => $post->getSlug(),
-                    'imagePath' => $post->getImagePath(),
-                    'newComment' => $count
-                    ]
-                );
+            $db = DBFactory::dbConnect();
+            $CommentManager = new CommentManager($db);
+            $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
+            $postId = (int)strstr(
+                substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', -1
+            );
+            $comment = $CommentManager->getComment($postId, $commentId);
+            $userImagePath = $_SESSION['user']['imagePath'];
+            $comment = new Comment(
+                [
+                    'id' => $comment->getId(),
+                    'username' => $comment->getUsername(),
+                    'content' => 'Message modéré par l\'administration',
+                    'commentDate' => $comment->getCommentDate(),
+                    'commentState' => true,
+                    'postId' => $comment->getPostId(),
+                    'userId' => $userImagePath
+                ]
+            );
 
-        $PostManager->update($post);
-        $slug = $post->getSlug();
-        header("location: ../../../admin/article/$slug-$postId");
+            $CommentManager->update($comment);
+
+            $PostManager = new PostManager($db);
+            $post = $PostManager->getPost($postId);
+            $countNew = $CommentManager->countNew($postId);
+            $countValid = $CommentManager->count($postId);
+
+                    $post = new Post(
+                        [
+                        'id' => $postId,
+                        'title' => $post->getTitle(),
+                        'author' => $post->getAuthor(),
+                        'teaser' => $post->getTeaser(),
+                        'content' => $post->getContent(),
+                        'slug' => $post->getSlug(),
+                        'imagePath' => $post->getImagePath(),
+                        'validComment' => $countValid,
+                        'newComment' => $countNew
+                        ]
+                    );
+
+            $PostManager->update($post);
+            $slug = $post->getSlug();
+            header("location: ../../../admin/article/$slug-$postId");
+        } else {
+            header('location: http://localhost/Projet5');
+        }
     }
 
     /**
@@ -138,46 +176,54 @@ class CommentController
      */
     public function confirm()
     {
-        $db = DBFactory::dbConnect();
-        $CommentManager = new CommentManager($db);
-        $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
-        $postId = (int)strstr(
-            substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', -1
-        );
-        $comment = $CommentManager->single($postId, $commentId);
-        
-        $comment = new Comment(
-            [
-                'id' => $comment->getId(),
-                'username' => $comment->getUsername(),
-                'content' => $comment->getContent(),
-                'commentDate' => $comment->getCommentDate(),
-                'commentState' => true,
-                'postId' => $comment->getPostId(),
-            ]
-        );
+        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
 
-        $CommentManager->update($comment);
+            $db = DBFactory::dbConnect();
+            $CommentManager = new CommentManager($db);
+            $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
+            $postId = (int)strstr(
+                substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', -1
+            );
+            $comment = $CommentManager->getComment($postId, $commentId);
+            $userImagePath = $_SESSION['user']['imagePath'];
+            $comment = new Comment(
+                [
+                    'id' => $comment->getId(),
+                    'username' => $comment->getUsername(),
+                    'content' => $comment->getContent(),
+                    'commentDate' => $comment->getCommentDate(),
+                    'commentState' => true,
+                    'postId' => $comment->getPostId(),
+                    'userId' => $userImagePath
+                ]
+            );
 
-        $PostManager = new PostManager($db);
-        $post = $PostManager->read($postId);
-        $count = $CommentManager->countNew($postId);
+            $CommentManager->update($comment);
 
-                $post = new Post(
-                    [
-                    'id' => $postId,
-                    'title' => $post->getTitle(),
-                    'author' => $post->getAuthor(),
-                    'teaser' => $post->getTeaser(),
-                    'content' => $post->getContent(),
-                    'slug' => $post->getSlug(),
-                    'imagePath' => $post->getImagePath(),
-                    'newComment' => $count
-                    ]
-                );
+            $PostManager = new PostManager($db);
+            $post = $PostManager->getPost($postId);
+            $countNew = $CommentManager->countNew($postId);
+            $countValid = $CommentManager->count($postId);
 
-        $PostManager->update($post);
-        $slug = $post->getSlug();
-        header("location: ../../../admin/article/$slug-$postId");
+                    $post = new Post(
+                        [
+                        'id' => $postId,
+                        'title' => $post->getTitle(),
+                        'author' => $post->getAuthor(),
+                        'teaser' => $post->getTeaser(),
+                        'content' => $post->getContent(),
+                        'slug' => $post->getSlug(),
+                        'imagePath' => $post->getImagePath(),
+                        'validComment' => $countValid,
+                        'newComment' => $countNew
+                        ]
+                    );
+
+            $PostManager->update($post);
+            $slug = $post->getSlug();
+            header("location: ../../../admin/article/$slug-$postId");
+        } else {
+            header('location: http://localhost/Projet5');
+        } 
     }
 }

@@ -1,31 +1,12 @@
-{% extends "frontend/layout.twig" %}
-
-{% block css %}
-<!-- ====== ALL CSS ====== -->
-<link rel="stylesheet" href="../public/assets/css/bootstrap.min.css">
-<link rel="stylesheet" href="../public/assets/css/fontawesome-all.min.css">
-<link rel="stylesheet" href="../public/assets/css/lightbox.min.css">
-<link rel="stylesheet" href="../public/assets/css/owl.carousel.min.css">
-<link rel="stylesheet" href="../public/assets/css/animate.css">
-<link rel="stylesheet" href="../public/css/style.css">
-<link rel="stylesheet" href="../public/assets/css/responsive.css">
-{% endblock %}
-
-{% block logo %}
-<!-- Logo -->
-<a class="navbar-brand logo" href="index.html">
-    <img src="../public/assets/images/logo.png" alt="logo">
-</a>
-<!-- // Logo -->
-{% endblock %}
+{% extends "layout.twig" %}
 
 {% block image %}
 <!-- Page Title -->
-<div class="page-title bg-img section-padding bg-overlay" style="background-image: url(../public/assets/images/breadcrumb.jpg)">
+<div class="page-title bg-img section-padding bg-overlay" style="background-image: url(http://localhost/Projet5/public/assets/images/blog.jpg)">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-6 text-center">
-                <h2>{{ post.title }}</h2>
+                <h2><small>{{ post.title }}</small></h2>
             </div>
         </div>
     </div>
@@ -37,17 +18,22 @@
     <section class="blog-section">
         <div class="container">
             <div class="row justify-content-center">
+            {% if error %}<div class="alert alert-danger" role="alert">{{error}}</div>{% endif %}
+            {% if comment is defined and comment.errors is empty %}
+                <div class="alert alert-success" role="alert">
+                    Votre commentaire sera ajouté après validation !
+                </div>
+            {% endif %}
                 <!-- Blog Main Content -->
                 <div class="col-lg-8">
                     <div class="blog-post">
                         <img src="../{{ post.imagePath }}" alt="" class="blog-img">
                         <h4 class="blog-title"><a href="#">{{ post.title }}</a></h4>
-                        <p class="blog-meta"><span class="user-name">De {{ post.author }}</span><span class="blog-date">Publié le {{ post.addingDate | date("d/m/Y") }}</span><span class="blog-comment">Comments ({{ count }})</span></p>
+                        <p class="blog-meta"><span class="user-name">De {{ post.author }}</span><span class="blog-date">Publié le {{ post.addingDate | date("d/m/Y") }}</span><span class="blog-comment">{{ post.validComment }} Commentaire(s)</span></p>
                         <div class="blog-main-content">
                             <p><strong>{{ post.teaser }}</strong></p>
                             <div style="margin-top: 20px;"><p>{{ post.content | nl2br }}</p></div>
                         </div>
-
                         <!--  Blog Author -->
                         <div class="blog-author">
                             <div class="user-img" style="background-image: url(../public/assets/images/team/img-1.jpg)"></div>
@@ -69,18 +55,22 @@
 
                         <!-- Blog Comments -->
                         <div class="blog-comment">
-                            <h3>Comments ({{ count }})</h3>
+                            <h3>{{ post.validComment }} Commentaire(s)</h3>
                             <ol class="main-comment">
                             {% for comment in comments %}
                                 {% if comment.commentState == true %}
                                     <li class="single-comment">
                                         <!-- Comment Content -->
                                         <div class="comment">
-                                            <div class="comment-user-img" style="background-image: url(../assets/images/team/img-2.jpg)"></div>
+                                            <div class="comment-user-img" style="background-image: url(../{{comment.userImagePath}})"></div>
                                             <div class="comment-content">
                                                 <h4>{{ comment.username }}</h4>
                                                 <p class="comment-date">{{ comment.commentDate | date('d/m/Y') }}</p>
-                                                <p>{{ comment.content }}</p>
+                                                {% if comment.content == 'Message modéré par l\'administration' %}
+                                                    <p><i>{{ comment.content }}</i></p>
+                                                {% else %}
+                                                    <p>{{ comment.content }}</p>
+                                                {% endif %} 
                                             </div>
                                         </div>
                                         <!-- // Comment Content -->
@@ -88,29 +78,23 @@
                                 {% endif %}
                             {% endfor %}
                             </ol>
-
                             <!-- Blog Comment Form -->
-                            <div class="blog-comment-form">
+                            <div class="blog-comment-form mt-5">
                                 <form action="" method="post">
-                                {% if comment is defined and comment.errors is empty %}
-                                    <div class="alert alert-success" role="alert">
-                                        Votre commentaire sera ajouté après validation !
-                                    </div>
-                                {% endif %}
                                 {% if constant('models\\Comment::INVALID_USERNAME') in comment.errors %}
                                     <div class="alert alert-danger" role="alert">
                                         Vous devez ajouter un Pseudo !
                                     </div>
                                 {% endif %}
                                     <div class="col-lg-12" style="padding-right:0px; padding-left:0px;">
-                                        <p><input type="text" name="username" placeholder="Pseudo" value="{{ comment.errors is not empty ? comment.username }}" required></p>
+                                        <p><input type="text" name="username" placeholder="Pseudo" {{session ? 'readonly'}} value="{{ session.user.username }}"></p>
                                     </div>
                                     {% if constant('models\\Comment::INVALID_CONTENT') in comment.errors %}
                                     <div class="alert alert-danger" role="alert">
                                         Vous devez ajouter un commentaire !
                                     </div>
                                     {% endif %}
-                                    <p><textarea name="content" placeholder="Commentaire" required>{{ comment.errors is not empty ? comment.content }}</textarea></p>
+                                    <p><textarea name="content" placeholder="Commentaire">{{ comment.errors is not empty ? comment.content }}</textarea></p>
                                     <div class="comment-btn text-center">
                                         <button class="button" type="submit">Commenter</button>
                                     </div>
@@ -126,16 +110,4 @@
             </div>
         </div>
     </section>
-{% endblock %}
-
-{% block js %}
-<!-- ====== ALL JS ====== -->
-<script src="../public/assets/js/jquery-3.3.1.min.js"></script>
-<script src="../public/assets/js/bootstrap.min.js"></script>
-<script src="../public/assets/js/lightbox.min.js"></script>
-<script src="../public/assets/js/owl.carousel.min.js"></script>
-<script src="../public/assets/js/jquery.mixitup.js"></script>
-<script src="../public/assets/js/wow.min.js"></script>
-<script src="../public/assets/js/typed.js"></script>
-<script src="../public/assets/js/main.js"></script>
 {% endblock %}

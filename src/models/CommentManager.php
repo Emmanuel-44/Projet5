@@ -32,13 +32,14 @@ class CommentManager
     {
         $req = $this->_db->prepare(
             'INSERT INTO comment
-            (username, content, commentDate, commentState, postId) 
-            VALUES(:username, :content, NOW(), :commentState, :postId)'
+            (username, content, commentDate, commentState, postId, userImagePath) 
+            VALUES(:username, :content, NOW(), :commentState, :postId, :userImagePath)'
         );
         $req->bindValue(':username', $comment->getUsername());
         $req->bindValue(':content', $comment->getContent());
         $req->bindValue(':commentState', $comment->getCommentState());
         $req->bindValue(':postId', $comment->getPostId());
+        $req->bindValue(':userImagePath', $comment->getUserImagePath());
         $req->execute();
     }
 
@@ -85,7 +86,7 @@ class CommentManager
      * 
      * @return array
      */
-    public function read($postId) : array
+    public function getList($postId) : array
     {
         $req = $this->_db->prepare(
             'SELECT * FROM comment WHERE postId = :postId 
@@ -115,7 +116,7 @@ class CommentManager
      * 
      * @return Comment
      */
-    public function single($postId, $id)
+    public function getComment($postId, $id)
     {
         $req = $this->_db->prepare(
             'SELECT id, username, content, commentDate, commentState FROM comment 
@@ -145,10 +146,11 @@ class CommentManager
     public function update(Comment $comment)
     {
         $req = $this->_db->prepare(
-            'UPDATE comment SET commentState = :commentState 
+            'UPDATE comment SET commentState = :commentState, content = :content
             WHERE id =:id'
         );
         $req->bindValue(':commentState', $comment->getCommentState());
+        $req->bindValue(':content', $comment->getContent());
         $req->bindValue(':id', $comment->getId());
         $req->execute();
     }
