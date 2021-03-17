@@ -2,126 +2,247 @@
 
 namespace models;
 
-class User
+use core\Entity;
+use DateTime;
+
+/**
+ * User entity
+ */
+class User extends Entity
 {
     private $id;
     private $username;
     private $contactEmail;
     private $password;
     private $addingDate;
+    private $imagePath;
     private $role = [];
     private $errors = [];
 
     const INVALID_USERNAME = 1;
-    const INVALID_EMAIL = 2;
-    const INVALID_PASSWORD = 3;
-
-    public function __construct($valeurs = [])
-    {
-      if (!empty($valeurs))
-      {
-        $this->hydrate($valeurs);
-      }
-    }
-    
-    public function hydrate($donnees)
-    {
-      foreach ($donnees as $attribut => $valeur)
-      {
-        $methode = 'set'.ucfirst($attribut);
-        
-        if (is_callable([$this, $methode]))
-        {
-          $this->$methode($valeur);
-        }
-      }
-    }
+    const INVALID_PASSWORD = 2;
+    const INVALID_EMAIL = 3;
 
     //SETTERS
-    public function setId($id)
+
+    /**
+     * Id setter
+     *
+     * @param integer $id id
+     * 
+     * @return void
+     */
+    public function setId(int $id)
     {
-      $this->id = $id;
+        $this->id = $id;
     }
 
-    public function setUsername($username)
+    /**
+     * Username setter
+     *
+     * @param string $username username
+     * 
+     * @return void
+     */
+    public function setUsername(string $username)
     {
-        if(!is_string($username) || empty($username))
-        {
-            $this->errors[] = self::INVALID_USERNAME;
-        }
-        else
-        {
         $this->username = $username;
-        }
     }
 
-    public function setContactEmail($contactEmail)
+    /**
+     * ContactEmail setter
+     *
+     * @param [string] $contactEmail contact email
+     * 
+     * @return void
+     */
+    public function setContactEmail(string $contactEmail)
     {
-        if(!filter_var($contactEmail, FILTER_VALIDATE_EMAIL))
-        {
-            $this->errors[] = self::INVALID_EMAIL;
-        }
-        else
-        {
-            $this->contactEmail = $contactEmail;
-        }
+        $this->contactEmail = $contactEmail;
     }
 
-    public function setPassword($password)
+    /**
+     * Password setter
+     *
+     * @param string $password password
+     * 
+     * @return void
+     */
+    public function setPassword(string $password)
     {
-        if(!is_string($password) || empty($password))
-        {
-            $this->errors[] = self::INVALID_PASSWORD;
-        }
-        else
-        {
-            $this->password = $password;
-        }
+        $this->password = $password;
     }
 
-    public function setAddingDate($addingDate)
+    /**
+     * AddingDate setter
+     *
+     * @param DateTime $addingDate adding date
+     * 
+     * @return void
+     */
+    public function setAddingDate(DateTime $addingDate)
     {
-      $this->addingDate = $addingDate;
+        $this->addingDate = $addingDate;
     }
 
-    public function setRole($role)
+    /**
+     * ImagePath setter
+     *
+     * @param string $imagePath image path
+     * 
+     * @return void
+     */
+    public function setImagePath(string $imagePath)
     {
-      $this->role = $role;
+        $this->imagePath = $imagePath;
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param array $role role
+     * 
+     * @return void
+     */
+    public function setRole(array $role)
+    {
+        $this->role = $role;
+    }
+
+    /**
+     * Errors setter
+     *
+     * @param string $errors error
+     * 
+     * @return void
+     */
+    public function setErrors(array $errors)
+    {
+        $this->errors = $errors;
+    }
+    // END SETTERS
 
     //GETTERS
+
+    /**
+     * Id getter
+     *
+     * @return void
+     */
     public function getId()
     {
-      return $this->id;
+        return $this->id;
     }
 
+    /**
+     * Username getter
+     *
+     * @return void
+     */
     public function getUsername()
     {
-      return $this->username;
+        return $this->username;
     }
 
+    /**
+     * ContactEmail getter
+     *
+     * @return void
+     */
     public function getContactEmail()
     {
-      return $this->contactEmail;
+        return $this->contactEmail;
     }
 
+    /**
+     * Password getter
+     *
+     * @return void
+     */
     public function getPassword()
     {
-      return $this->password;
+        return $this->password;
     }
 
+    /**
+     * AddingDate getter
+     *
+     * @return void
+     */
     public function getAddingDate()
     {
-      return $this->addingDate;
+        return $this->addingDate;
     }
 
+    /**
+     * ImagePath getter
+     *
+     * @return void
+     */
+    public function getImagePath()
+    {
+        return $this->imagePath;
+    }
+
+    /**
+     * Role getter
+     *
+     * @return void
+     */
     public function getRole()
     {
         return $this->role;
     }
 
+    /**
+     * Errors getter
+     *
+     * @return void
+     */
     public function getErrors()
     {
         return $this->errors;
+    }
+    // END GETTERS
+
+    /**
+     * Validation
+     *
+     * @return boolean
+     */
+    public function isValid() : bool
+    {
+        if (empty($this->username)) {
+            $this->errors[] = self::INVALID_USERNAME;
+        }
+        
+        if (empty($this->password)) {
+            $this->errors[] = self::INVALID_PASSWORD;
+        }
+
+        if (empty($this->contactEmail) 
+            || !filter_var($this->contactEmail, FILTER_VALIDATE_EMAIL)
+        ) {
+            $this->errors[] = self::INVALID_EMAIL;
+        }
+
+        return empty($this->errors);
+    }
+
+    /**
+     * Set session
+     *
+     * @return void
+     */
+    public function setSession()
+    {
+        $_SESSION['user'] = [
+            'id' => $this->id,
+            'username' => $this->username,
+            'contactEmail' => $this->contactEmail,
+            'addingDate' => $this->addingDate,
+            'imagePath' => $this->imagePath,
+            'role' => $this->role
+        ];
     }
 }

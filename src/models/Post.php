@@ -1,7 +1,12 @@
 <?php
 namespace models;
 
-class Post
+use core\Entity;
+use DateTime;
+/**
+ * Post entity
+ */
+class Post extends Entity
 {
     private $id;
     private $title;
@@ -12,175 +17,308 @@ class Post
     private $addingDate;
     private $modifDate;
     private $slug;
+    private $validComment;
     private $newComment;
     private $errors = [];
 
     const INVALID_TITLE = 1;
-    const INVALID_TEASER = 2;
-    const INVALID_AUTHOR = 3;
+    const INVALID_AUTHOR = 2;
+    const INVALID_TEASER = 3;
     const INVALID_CONTENT = 4;
-    const INVALID_IMAGEPATH = 5;
-
-    public function __construct($valeurs = [])
-    {
-      if (!empty($valeurs))
-      {
-        $this->hydrate($valeurs);
-      }
-    }
-    
-    public function hydrate($donnees)
-    {
-      foreach ($donnees as $attribut => $valeur)
-      {
-        $methode = 'set'.ucfirst($attribut);
-        
-        if (is_callable([$this, $methode]))
-        {
-          $this->$methode($valeur);
-        }
-      }
-    }
 
     // SETTERS
-    public function setId($id)
+
+    /**
+     * Id setter
+     *
+     * @param integer $id id
+     * 
+     * @return void
+     */
+    public function setId(int $id)
     {
         $this->id = $id;
     }
 
-    public function setTitle($title)
+    /**
+     * Title setter
+     *
+     * @param string $title title
+     * 
+     * @return void
+     */
+    public function setTitle(string $title)
     {
-        if(!is_string($title) || empty($title))
-        {
-            $this->errors[] = self::INVALID_TITLE;
-        }
-        else
-        {
-            $this->title = $title;
-        }
+        $this->title = $title;
     }
 
-    public function setTeaser($teaser)
+    /**
+     * Teaser setter
+     *
+     * @param string $teaser teaser
+     * 
+     * @return void
+     */
+    public function setTeaser(string $teaser)
     {
-        if(!is_string($teaser) || empty($teaser))
-        {
-            $this->errors[] = self::INVALID_TEASER;
-        }
-        else
-        {
-            $this->teaser = $teaser;
-        }  
+        $this->teaser = $teaser;  
     }
 
-    public function setContent($content)
+    /**
+     * Content setter
+     *
+     * @param string $content content
+     * 
+     * @return void
+     */
+    public function setContent(string $content)
     {
-        if(!is_string($content) || empty($content))
-        {
-            $this->errors[] = self::INVALID_CONTENT;
-        }
-        else
-        {
-            $this->content = $content;
-        } 
+        $this->content = $content;
     }
 
-    public function setAuthor($author)
+    /**
+     * Author setter
+     *
+     * @param string $author author
+     * 
+     * @return void
+     */
+    public function setAuthor(string $author)
     {
-        if(!is_string($author) || empty($author))
-        {
-            $this->errors[] = self::INVALID_AUTHOR;
-        }
-        else
-        {
-            $this->author = $author;
-        }
+        $this->author = $author;
     }
 
-    public function setImagePath($imagePath)
+    /**
+     * ImagePath setter
+     *
+     * @param string $imagePath image path
+     * 
+     * @return void
+     */
+    public function setImagePath(string $imagePath)
     {
-        if(!is_file($imagePath))
-        {
-            $this->errors[] = self::INVALID_IMAGEPATH;
-        }
-        else
-        {
-            $this->imagePath = $imagePath;
-        } 
+        $this->imagePath = $imagePath;
     }
 
-    public function setAddingDate($addingDate)
+    /**
+     * AddingDate setter
+     *
+     * @param Datetime $addingDate adding date
+     * 
+     * @return void
+     */
+    public function setAddingDate(Datetime $addingDate)
     {
         $this->addingDate = $addingDate;
     }
     
-    public function setModifDate($modifDate)
+    /**
+     * ModifDate setter
+     *
+     * @param DateTime $modifDate modification date
+     * 
+     * @return void
+     */
+    public function setModifDate(DateTime $modifDate)
     {
         $this->modifDate = $modifDate;
     }
 
-    public function setSlug($slug)
-    {  
+    /**
+     * Slug setter
+     *
+     * @param string $slug slug
+     * 
+     * @return void
+     */
+    public function setSlug(string $slug)
+    {
         $this->slug = $slug;
     }
 
-    public function setNewComment($newComment)
+    /**
+     * ValidComment setter
+     *
+     * @param integer $validComment valid comment count
+     * 
+     * @return void
+     */
+    public function setValidComment(int $validComment)
+    {
+        $this->validComment = $validComment;
+    }
+
+    /**
+     * NewComment setter
+     *
+     * @param integer $newComment new comment count
+     * 
+     * @return void
+     */
+    public function setNewComment(int $newComment)
     {
         $this->newComment = $newComment;
     }
 
+    /**
+     * Errors setter
+     *
+     * @param array $errors errors array
+     * 
+     * @return void
+     */
+    public function setErrors(array $errors)
+    {
+        $this->errors = $errors;
+    }
+    // END SETTERS
+
     // GETTERS
+
+    /**
+     * Id getter
+     *
+     * @return void
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * Title getter
+     *
+     * @return void
+     */
     public function getTitle()
     {
         return $this->title;
     }
 
+    /**
+     * Teaser getter
+     *
+     * @return void
+     */
     public function getTeaser()
     {
         return $this->teaser;
     }
 
+    /**
+     * Content getter
+     *
+     * @return void
+     */
     public function getContent()
     {
         return $this->content;
     }
 
+    /**
+     * Author getter
+     *
+     * @return void
+     */
     public function getAuthor()
     {
         return $this->author;
     }
 
+    /**
+     * ImagePath getter
+     *
+     * @return void
+     */
     public function getImagePath()
     {
         return $this->imagePath;
     }
 
+    /**
+     * AddingDate getter
+     *
+     * @return void
+     */
     public function getAddingDate()
     {
         return $this->addingDate;
     }
 
+    /**
+     * ModifDate getter
+     *
+     * @return void
+     */
     public function getModifDate()
     {
         return $this->modifDate;
     }
 
+    /**
+     * Slug getter
+     *
+     * @return void
+     */
     public function getSlug()
     {
         return $this->slug;
     }
 
+    /**
+     * ValidComment getter
+     *
+     * @return void
+     */
+    public function getValidComment()
+    {
+        return $this->validComment;
+    }
+
+    /**
+     * NewComment getter
+     *
+     * @return void
+     */
     public function getNewComment()
     {
         return $this->newComment;
     }
 
+    /**
+     * Errors getter
+     *
+     * @return void
+     */
     public function getErrors()
     {
         return $this->errors;
+    }
+    // END GETTERS
+
+    /**
+     * Validation
+     *
+     * @return boolean
+     */
+    public function isValid() : bool
+    {
+        if (empty($this->title)) {
+            $this->errors[] = self::INVALID_TITLE;
+        }
+        
+        if (empty($this->author)) {
+            $this->errors[] = self::INVALID_AUTHOR;
+        }
+        
+        if (empty($this->teaser)) {
+            $this->errors[] = self::INVALID_TEASER;
+        }
+        
+        if (empty($this->content)) {
+            $this->errors[] = self::INVALID_CONTENT;
+        }
+
+        return empty($this->errors);
     }
 }

@@ -1,1 +1,72 @@
-Formulaire modifier article
+{% extends "layout.twig" %}
+
+{% block image %}
+    <div class="page-title bg-img section-padding bg-overlay" style="background-image: url(http://localhost/Projet5/public/assets/images/admin.jpg)">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <h2><small>Espace Administration</small></h2>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container" style="max-width: 800px; margin-top:80px; margin-bottom:80px;">
+        <div class="row">
+            <div class="col-lg-10"><h2>Modifier un article</h2></div>
+            <div class="col-lg-2 pt-3"><a href="http://localhost/Projet5/admin">Retour</a></div>
+        </div>
+        {% if post is defined and post.errors is empty %}
+            <div class="alert alert-success" role="alert">
+                Votre article a été modifié !
+            </div>
+        {% endif %}
+
+        <form class="mt-5" action="" method="post" enctype="multipart/form-data">
+            <label for="username">Auteur :</label>
+            <div class="form-group">
+                <input class="form-control" type="text" name="username" readonly value="{{ post.author }}">
+            </div>
+            <label for="title">Titre :</label>
+                {% if constant('models\\Post::INVALID_TITLE') in post.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        Vous devez ajouter un titre !
+                    </div>
+                {% endif %}
+            <div class="form-group">
+                <input class="form-control" type="text" name="title" value="{{ post.title }}">
+            </div>
+            <label for="teaser">Chapô :</label>
+                {% if constant('models\\Post::INVALID_TEASER') in post.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        Ce champ est obligatoire !
+                    </div>
+                {% endif %}
+            <div class="form-group">
+                <textarea class="form-control" name="teaser">{{ post.teaser }}</textarea>
+            </div>
+            <label for="content">Contenu de l'article :</label>
+                {% if constant('models\\Post::INVALID_CONTENT') in post.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        Votre article n'a pas de contenu !
+                    </div>
+                {% endif %}
+            <div class="form-group">
+                <textarea class="form-control" name="content" rows="10">{{ post.content }}</textarea>
+            </div>
+            <div class="mt-5 row">
+                <div class="col-lg-10">
+                    <label for="image">Sélectionner l'image : <i>(jpg, jpeg, png, gif)</i></label>
+                    <div class="form-group">
+                        <input type="file" name="image" />
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <button type="submit" class="btn btn-primary" style="margin-top: 15px">Modifier</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
