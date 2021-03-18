@@ -1,18 +1,20 @@
-{% extends 'frontend/layout.twig' %}
+{% extends 'layout.twig' %}
 
-{% block content %}
-<!-- Page Title -->
-        <div class="page-title bg-img section-padding bg-overlay" style="background-image: url(assets/images/breadcrumb.jpg)">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-6 text-center">
-                        <h2>Blog</h2>
-                    </div>
+{% block image %}
+    <!-- Page Title -->
+    <div class="page-title bg-img section-padding bg-overlay" style="background-image: url(assets/images/blog.jpg)">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <h2>Blog</h2>
                 </div>
             </div>
         </div>
-        <!-- // Page Title -->
-    </header>
+    </div>
+    <!-- // Page Title -->
+{% endblock %}
+
+{% block content %}
     <!-- ====== // Header ====== -->
     <section class="blog-section">
         <div class="container">
@@ -21,92 +23,17 @@
                     <div class="blog-area">
                         <div class="row">
                             <!-- Single Blog -->
-                            <div class="col-sm-4">
-                                <div class="single-blog">
-                                    <div class="blog-thumb" style="background-image: url(assets/images/blog/img-1.jpg)"></div>
-                                    <h4 class="blog-title"><a href="single-blog.html">Full Responsive</a></h4>
-                                    <p class="blog-meta"><a href="#">AL Mamun</a>, 22 FEB 2018</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque similique velit, officiis non.</p>
-                                    <a href="single-blog.html" class="button">Read More</a>
+                            {% for post in posts %}
+                                <div class="col-sm-4">
+                                    <div class="single-blog">
+                                        <div class="blog-thumb" style="background-image: url({{post.imagePath}})"></div>
+                                        <h4 class="blog-title">{{post.title}}</h4>
+                                        <p class="blog-meta">De {{post.author}}, publié le {{post.addingDate | date('d/m/Y')}}{{ post.modifDate != post.addingDate ? ', modifié le ' ~ post.modifDate | date("d/m/Y") }}, {{post.validComment}} Commentaire(s)</p>
+                                        <p>{{post.teaser | slice(0, 200)}} [...]</p>
+                                        <a href="blog/{{post.slug}}-{{post.id}}" class="button">Lire plus</a>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- Single Blog -->
-                            <!-- Single Blog -->
-                            <div class="col-sm-4">
-                                <div class="single-blog">
-                                    <div class="blog-thumb" style="background-image: url(assets/images/blog/img-2.jpg)"></div>
-                                    <h4 class="blog-title"><a href="single-blog.html">Full Responsive</a></h4>
-                                    <p class="blog-meta"><a href="#">AL Mamun</a>, 22 FEB 2018</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque similique velit, officiis non.</p>
-                                    <a href="single-blog.html" class="button">Read More</a>
-                                </div>
-                            </div>
-                            <!-- Single Blog -->
-                            <!-- Single Blog -->
-                            <div class="col-sm-4">
-                                <div class="single-blog">
-                                    <div class="blog-thumb" style="background-image: url(assets/images/blog/img-3.jpg)"></div>
-                                    <h4 class="blog-title"><a href="single-blog.html">Full Responsive</a></h4>
-                                    <p class="blog-meta"><a href="#">AL Mamun</a>, 22 FEB 2018</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque similique velit, officiis non.</p>
-                                    <a href="single-blog.html" class="button">Read More</a>
-                                </div>
-                            </div>
-                            <!-- Single Blog -->
-                            <!-- Single Blog -->
-                            <div class="col-sm-4">
-                                <div class="single-blog">
-                                    <div class="blog-thumb" style="background-image: url(assets/images/blog/img-4.jpg)"></div>
-                                    <h4 class="blog-title"><a href="single-blog.html">Full Responsive</a></h4>
-                                    <p class="blog-meta"><a href="#">AL Mamun</a>, 22 FEB 2018</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque similique velit, officiis non.</p>
-                                    <a href="#" class="button">Read More</a>
-                                </div>
-                            </div>
-                            <!-- Single Blog -->
-                            <!-- Single Blog -->
-                            <div class="col-sm-4">
-                                <div class="single-blog">
-                                    <div class="blog-thumb" style="background-image: url(assets/images/blog/img-5.jpg)"></div>
-                                    <h4 class="blog-title"><a href="single-blog.html">Full Responsive</a></h4>
-                                    <p class="blog-meta"><a href="#">AL Mamun</a>, 22 FEB 2018</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque similique velit, officiis non.</p>
-                                    <a href="#" class="button">Read More</a>
-                                </div>
-                            </div>
-                            <!-- Single Blog -->
-                            <!-- Single Blog -->
-                            <div class="col-sm-4">
-                                <div class="single-blog">
-                                    <div class="blog-thumb" style="background-image: url(assets/images/blog/img-6.jpg)"></div>
-                                    <h4 class="blog-title"><a href="single-blog.html">Full Responsive</a></h4>
-                                    <p class="blog-meta"><a href="#">AL Mamun</a>, 22 FEB 2018</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque similique velit, officiis non.</p>
-                                    <a href="single-blog.html" class="button">Read More</a>
-                                </div>
-                            </div>
-                            <!-- Single Blog -->
-                            <!-- Single Blog -->
-                            <div class="col-sm-4">
-                                <div class="single-blog">
-                                    <div class="blog-thumb" style="background-image: url(assets/images/blog/img-7.jpg)"></div>
-                                    <h4 class="blog-title"><a href="single-blog.html">Full Responsive</a></h4>
-                                    <p class="blog-meta"><a href="#">AL Mamun</a>, 22 FEB 2018</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque similique velit, officiis non.</p>
-                                    <a href="single-blog.html" class="button">Read More</a>
-                                </div>
-                            </div>
-                            <!-- Single Blog -->
-                            <!-- Single Blog -->
-                            <div class="col-sm-4">
-                                <div class="single-blog">
-                                    <div class="blog-thumb" style="background-image: url(assets/images/blog/img-8.jpg)"></div>
-                                    <h4 class="blog-title"><a href="single-blog.html">Full Responsive</a></h4>
-                                    <p class="blog-meta"><a href="#">AL Mamun</a>, 22 FEB 2018</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque similique velit, officiis non.</p>
-                                    <a href="single-blog.html" class="button">Read More</a>
-                                </div>
-                            </div>
+                            {% endfor %}
                             <!-- Single Blog -->
                         </div>
                         <div class="row justify-content-center">

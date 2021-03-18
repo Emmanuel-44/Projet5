@@ -4,11 +4,13 @@
     "autoload": {
         "psr-4": {
             "models\\": "src/models/",
-            "controllers\\": "src/controllers/"
+            "controllers\\": "src/controllers/",
+            "core\\": "core/"
         }
     },
     "require": {
         "altorouter/altorouter": "^2.0",
-        "twig/twig": "3.0"
+        "twig/twig": "3.0",
+        "cocur/slugify": "^4.0"
     }
 }

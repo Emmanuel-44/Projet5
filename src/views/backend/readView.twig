@@ -1,1 +1,112 @@
-Détail d'unarticle dans l'administration
+{% extends "layout.twig" %}
+
+{% block image %}
+    <div class="page-title bg-img section-padding bg-overlay" style="background-image: url(http://localhost/Projet5/public/assets/images/admin.jpg)">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <h2><small>Espace Administration</small></h2>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <section class="blog-section">
+        <div class="container">
+            <div class="mb-3 text-center"><a href="http://localhost/Projet5/admin">Retour</a></div>
+            <div class="row justify-content-center">
+                <!-- Blog Main Content -->
+                <div class="col-lg-8">
+                    <div class="blog-post">
+                        <img src="../../{{ post.imagePath }}" alt="" class="blog-img">
+                        <h4 class="blog-title"><a href="#">{{ post.title }}</a></h4>
+                        <p class="blog-meta"><span class="user-name">De {{ post.author }}</span><span class="blog-date">Publié le {{ post.addingDate | date("d/m/Y") }}</span><span class="blog-comment">{{ post.validComment }} Commentaire(s)</span></p>
+                        <div class="blog-main-content">
+                            <p><strong>{{ post.teaser }}</strong></p>
+                            <div style="margin-top: 20px;"><p>{{ post.content | nl2br }}</p></div>
+                        </div>
+
+                        <!--  Blog Author -->
+                        <div class="blog-author">
+                            <div class="user-img" style="background-image: url(../../public/assets/images/team/img-1.jpg)"></div>
+                            <div class="user-content">
+                                <h2>{{ post.author }} <span>Graphic designer</span></h2>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus, voluptas hic animi officiis corrupti velit commodi sed tempora reprehenderit.</p>
+                                <!-- Social Area -->
+                                <div class="social-aria text-left">
+                                    <a target="_blank" href="#"><i class="fab fa-facebook-f"></i></a>
+                                    <a target="_blank" href="#"><i class="fab fa-twitter"></i></a>
+                                    <a target="_blank" href="#"><i class="fab fa-instagram"></i></a>
+                                    <a target="_blank" href="#"><i class="fab fa-pinterest"></i></a>
+                                    <a target="_blank" href="#"><i class="fab fa-youtube"></i></a>
+                                </div>
+                                <!-- // Social Area -->
+                            </div>
+                        </div>
+                        <!-- // Blog Author -->
+                        <!-- Blog Comments -->
+                        <div class="blog-comment">
+                            <h3>{{ post.validComment }} Commentaire(s)</h3>
+                            <ol class="main-comment">
+                                {% for comment in comments %}
+                                    {% if comment.commentState == true %}
+                                        <li class="single-comment">
+                                            <!-- Comment Content -->
+                                            <div class="comment">
+                                                <div class="comment-user-img" style="background-image: url(../../{{ comment.userImagePath }})"></div>
+                                                <div class="comment-content">
+                                                    <h4>{{ comment.username }}</h4>
+                                                    <p class="comment-date">{{ comment.commentDate | date('d/m/Y') }}</p>
+                                                    {% if comment.content == 'Message modéré par l\'administration' %}
+                                                        <p><i>{{ comment.content }}</i></p>
+                                                    {% else %}
+                                                        <p>{{ comment.content }}</p>
+                                                    {% endif %} 
+                                                </div>
+                                            </div>
+                                            <!-- // Comment Content -->
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ol>
+                        </div>
+                        <!-- // Blog Comments -->
+                        <!-- Comment validation -->
+                        <div class="blog-comment mt-5">
+                            <ol class="main-comment">
+                                <div class="blog-post">
+                                    <h3 class="text-center">Validation de commentaire(s)</h3>
+                                    {% for comment in comments %}
+                                        {% if comment.commentState == false %}
+                                            <li class="single-comment">
+                                                <!-- Comment Content -->
+                                                <div class="comment">
+                                                    <div class="comment-user-img" style="background-image: url(../../{{ comment.userImagePath }})"></div>
+                                                    <div class="comment-content">
+                                                        <h4>{{ comment.username }}</h4>
+                                                        <p class="comment-date">{{ comment.commentDate | date('d/m/Y') }}</p>
+                                                        <p>{{ comment.content }}</p>
+                                                    </div>
+                                                    <div class="text-center mt-2">
+                                                        <a href="../../admin/valider/{{ post.slug }}-{{ post.id }}/{{ comment.id }}" class="btn btn-success" style="margin: 5px;">Valider</a>
+                                                        <a href="../../admin/supprimer/{{ post.slug }}-{{ post.id }}/{{ comment.id }}" class="btn btn-danger">Refuser</a>
+                                                    </div>  
+                                                </div>
+                                                <div class="dropdown-divider"></div>
+                                                <!-- // Comment Content -->
+                                            </li>       
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </ol>
+                        </div>
+                        <!-- // Comment validation -->
+                    </div>
+                </div>
+                <!-- // Blog Main Content -->
+            </div>
+        </div>
+    </section>
+{% endblock %}
