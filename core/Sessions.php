@@ -2,10 +2,10 @@
 namespace core;
 
 /**
- * 
  * Session twig
  */
-class Sessions extends \Twig\Extension\AbstractExtension implements \Twig\Extension\GlobalsInterface
+class Sessions extends \Twig\Extension\AbstractExtension 
+implements \Twig\Extension\GlobalsInterface
 {
     /**
      * Get $_SESSION from Twig

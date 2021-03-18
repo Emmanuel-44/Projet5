@@ -59,7 +59,8 @@ class PostManager
         $req = $this->_db->prepare(
             'UPDATE post SET author = :author, title = :title, teaser = :teaser, 
             content = :content, imagePath = :imagePath, slug = :slug, 
-            modifDate = NOW(), validComment = :validComment, newComment = :newComment 
+            modifDate = NOW(), validComment = :validComment, 
+            newComment = :newComment 
             WHERE id = :id'
         );
         $req->bindValue(':author', $post->getAuthor());

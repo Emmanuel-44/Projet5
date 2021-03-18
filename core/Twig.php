@@ -5,7 +5,7 @@ namespace core;
 /**
  * Twig
  */
-class TwigFactory
+class Twig
 {
     /**
      * Twig loader

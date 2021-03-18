@@ -31,7 +31,8 @@ class UserManager
     public function add(User $user)
     {
         $req = $this->_db->prepare(
-            'INSERT INTO user (username, contactEmail, password, addingDate, imagePath, role) 
+            'INSERT INTO user 
+            (username, contactEmail, password, addingDate, imagePath, role) 
             VALUES (:username, :contactEmail, :password, NOW(), :imagePath, :role)'
         );
         $req->bindValue(':username', $user->getUsername());

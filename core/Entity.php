@@ -7,10 +7,10 @@ namespace core;
 class Entity
 {
         /**
-     * Construct
-     *
-     * @param array $values values array
-     */
+         * Construct
+         *
+         * @param array $values values array
+         */
     public function __construct($values = [])
     {
         if (!empty($values)) {

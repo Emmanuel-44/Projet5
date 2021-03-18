@@ -1,6 +1,7 @@
 <?php
 namespace models;
 
+use Cocur\Slugify\Slugify;
 use core\Entity;
 use DateTime;
 /**
@@ -133,6 +134,8 @@ class Post extends Entity
      */
     public function setSlug(string $slug)
     {
+        $slugify = new Slugify();
+        $slug = $slugify->slugify($this->title);
         $this->slug = $slug;
     }
 

@@ -1,16 +1,15 @@
 <?php
 namespace controllers;
 
-use core\DBFactory;
+use core\Controller;
 use core\Image;
-use core\TwigFactory;
 use models\User;
 use models\UserManager;
 
 /**
  * User controller
  */
-class UserController
+class UserController extends Controller
 {
     /**
      * Login user controller
@@ -19,19 +18,19 @@ class UserController
      */
     public function login()
     {
-        if (empty($_SESSION['user'])) {
-            $twig = TwigFactory::twig();
+        $UserManager = new UserManager($this->db);
+
+        if (!$this->sessionExist('user', 'USER')) {
 
             if (isset($_POST['email']) && isset($_POST['password']) 
                 && !empty($_POST['email']) && !empty(['password'])
             ) {
-                $db = DBFactory::dbConnect();
-                $UserManager = new UserManager($db);
+
                 $check = $UserManager->findByEmail();
     
                 if (!$check) {
                     $error = ['fail'];
-                    echo $twig->render(
+                    $this->render(
                         'frontend/loginView.twig', array(
                             'error' => $error
                         )
@@ -48,7 +47,7 @@ class UserController
                         
                     } else {
                         $error = ['fail'];
-                        echo $twig->render(
+                        $this->render(
                             'frontend/loginView.twig', array(
                                 'error' => $error
                             )
@@ -56,13 +55,18 @@ class UserController
                     }
                 }   
             } else {
-                echo $twig->render('frontend/loginView.twig');
+                $this->render('frontend/loginView.twig');
             } 
         } else {
             header('location: http://localhost/Projet5');
         } 
     }
 
+    /**
+     * Logout user controller
+     *
+     * @return void
+     */
     public function logout()
     {
         session_destroy();
@@ -76,13 +80,12 @@ class UserController
      */
     public function create()
     {
-        if (empty($_SESSION['user'])) {
-            $db = DBFactory::dbConnect();
-            $twig = TwigFactory::twig();
+        $UserManager = new UserManager($this->db);
+
+        if (!$this->sessionExist('user', 'USER')) {
             
-            if (isset($_POST['username']) && isset($_POST['email']) 
-                && isset($_POST['password'])
-            ) {
+            if ($this->formValidate($_POST, ['username','email', 'password'])) {
+
                 if (!empty($_POST['password'])) {
                     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
                 } else {
@@ -93,8 +96,8 @@ class UserController
     
                 $user = new User(
                     [
-                    'username' => $_POST['username'],
-                    'contactEmail' => $_POST['email'],
+                    'username' => htmlspecialchars($_POST['username']),
+                    'contactEmail' => htmlspecialchars($_POST['email']),
                     'password' => $password,
                     'imagePath' => $imagePath,
                     'role' => ['USER']
@@ -104,7 +107,6 @@ class UserController
                 if ($user->isValid() 
                     && $_POST['password'] == $_POST['confirm_password']
                 ) {
-                    $UserManager = new UserManager($db);
                     $checkUsername = $UserManager->findByUsername();
                     $checkEmail = $UserManager->findByEmail();
     
@@ -126,7 +128,7 @@ class UserController
                             $user->setErrors(['email_error', 'username_error']);
                         }
     
-                        echo $twig->render(
+                        $this->render(
                             'frontend/createUserView.twig', array(
                                 'user' => $user
                             )
@@ -134,7 +136,7 @@ class UserController
                     }
                     
                 } else {
-                    echo $twig->render(
+                    $this->render(
                         'frontend/createUserView.twig', array(
                             'user' => $user,
                             'post' => $_POST
@@ -142,7 +144,7 @@ class UserController
                     );
                 }
             } else {
-                echo $twig->render('frontend/createUserView.twig');
+                $this->render('frontend/createUserView.twig');
             }
         } else {
             header('location: http://localhost/Projet5');

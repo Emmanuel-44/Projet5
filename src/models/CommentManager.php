@@ -33,7 +33,8 @@ class CommentManager
         $req = $this->_db->prepare(
             'INSERT INTO comment
             (username, content, commentDate, commentState, postId, userImagePath) 
-            VALUES(:username, :content, NOW(), :commentState, :postId, :userImagePath)'
+            VALUES
+            (:username, :content, NOW(), :commentState, :postId, :userImagePath)'
         );
         $req->bindValue(':username', $comment->getUsername());
         $req->bindValue(':content', $comment->getContent());
@@ -111,7 +112,6 @@ class CommentManager
      * Get single comment
      *
      * @param [int] $postId id post
-     * 
      * @param [int] $id     id comment
      * 
      * @return Comment

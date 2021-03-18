@@ -1,18 +1,16 @@
 <?php
 namespace controllers;
 
-use Cocur\Slugify\Slugify;
-use core\DBFactory;
+use core\Controller;
 use core\Image;
 use models\Post;
 use models\PostManager;
 use models\CommentManager;
-use core\TwigFactory;
 
 /**
  * Post controller
  */
-class PostController
+class PostController extends Controller
 {
     /**
      * Home page controller
@@ -21,8 +19,7 @@ class PostController
      */
     public function index()
     {
-        $twig = TwigFactory::twig();
-        echo $twig->render('frontend/homeView.twig');
+        $this->render('frontend/homeView.twig');
     }
 
     /**
@@ -32,11 +29,9 @@ class PostController
      */
     public function blog()
     {
-        $db = DBFactory:: dbConnect();
-        $PostManager = new PostManager($db);
+        $PostManager = new PostManager($this->db);
         $posts = $PostManager->getList();
-        $twig = TwigFactory::twig();
-        echo $twig->render(
+        $this->render(
             'frontend/blogView.twig', array(
             'posts' => $posts
             )
@@ -50,14 +45,12 @@ class PostController
      */
     public function single()
     {
-        $db = DBFactory::dbConnect();
-        $PostManager = new PostManager($db);
-        $CommentManager = new CommentManager($db);
+        $PostManager = new PostManager($this->db);
+        $CommentManager = new CommentManager($this->db);
         $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
         $post = $PostManager->getPost($id);
         $comments = $CommentManager->getList($id);
-        $twig = TwigFactory::twig();
-        echo $twig->render(
+        $this->render(
             'frontend/singleView.twig', array(
             'post' => $post,
             'comments' => $comments
@@ -72,13 +65,11 @@ class PostController
      */
     public function adminIndex()
     {
-        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
-
-            $db = DBFactory:: dbConnect();
-            $PostManager = new PostManager($db);
+        $PostManager = new PostManager($this->db);
+        
+        if ($this->sessionExist('user', 'ADMIN')) {
             $posts = $PostManager->getList();
-            $twig = TwigFactory::twig();
-            echo $twig->render(
+            $this->render(
                 'backend/homeView.twig', array(
                 'posts' => $posts
                 )
@@ -95,17 +86,16 @@ class PostController
      */
     public function create()
     {
-        $twig = TwigFactory::twig();
-        
-        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
+        $PostManager = new PostManager($this->db);
 
-            if (isset($_POST['username']) && isset($_POST['title']) 
-                && isset($_POST['teaser']) && isset($_POST['content'])
-            ) {   
+        if ($this->sessionExist('user', 'ADMIN')) {
+
+            if ($this->formValidate(
+                $_POST, ['username', 'title', 'teaser', 'content']
+            )
+            ) {
+
                 $imagePath = Image::getImage('post');
-                
-                $slugify = new Slugify();
-                $slug = $slugify->slugify($_POST['title']);
 
                 $post = new Post(
                     [
@@ -114,7 +104,7 @@ class PostController
                     'teaser' => $_POST['teaser'],
                     'content' => $_POST['content'],
                     'imagePath' => $imagePath,
-                    'slug' => $slug,
+                    'slug' => $_POST['title'],
                     'validComment' => 0,
                     'newComment' => 0
                     ]
@@ -122,19 +112,17 @@ class PostController
                 
                 if ($post->isValid()) {
                     Image::uploadImage('post');
-                    $db = DBFactory::dbConnect();
-                    $PostManager = new PostManager($db);
                     $PostManager->add($post);
                     header('location: ../admin');
                 } else {
-                    echo $twig->render(
+                    $this->render(
                         'backend/createView.twig', array (
                         'post' => $post
                         )
                     );
                 }
             } else {
-                echo $twig->render('backend/createView.twig');
+                $this->render('backend/createView.twig');
             }
         } else {
             header('location: http://localhost/Projet5');
@@ -148,16 +136,15 @@ class PostController
      */
     public function read()
     {
-        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
+        $PostManager = new PostManager($this->db);
+        $CommentManager = new CommentManager($this->db);
+
+        if ($this->sessionExist('user', 'ADMIN')) {
             
-            $db = DBFactory::dbConnect();
-            $PostManager = new PostManager($db);
-            $CommentManager = new CommentManager($db);
             $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
             $post = $PostManager->getPost($id);
             $comments = $CommentManager->getList($id);
-            $twig = TwigFactory::twig();
-            echo $twig->render(
+            $this->render(
                 'backend/readView.twig', array(
                 'post' => $post,
                 'comments' => $comments,
@@ -175,25 +162,21 @@ class PostController
      */
     public function update()
     {
-        $twig = TwigFactory::twig();
+        $PostManager = new PostManager($this->db);
+        $CommentManager = new CommentManager($this->db);
 
-        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
-
-            $db = DBFactory::dbConnect();
-            $PostManager = new PostManager($db);
-            $CommentManager = new CommentManager($db);
+        if ($this->sessionExist('user', 'ADMIN')) {
             $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
             $post = $PostManager->getPost($id);
             $countValid = $CommentManager->count($id);
             $countNew = $CommentManager->countNew($id);
 
-            if (isset($_POST['username']) && isset($_POST['title']) 
-                && isset($_POST['teaser']) && isset($_POST['content'])
+            if ($this->formValidate(
+                $_POST, ['username', 'title', 'teaser', 'content']
+            )
             ) {
-                $imagePath = Image::getImage('post');
 
-                $slugify = new Slugify();
-                $slug = $slugify->slugify($_POST['title']);
+                $imagePath = Image::getImage('post');
 
                 $post = new Post(
                     [
@@ -203,7 +186,7 @@ class PostController
                     'teaser' => $_POST['teaser'],
                     'content' => $_POST['content'],
                     'imagePath' => $imagePath,
-                    'slug' => $slug,
+                    'slug' => $_POST['title'],
                     'validComment' => $countValid,
                     'newComment' => $countNew
                     ]
@@ -212,13 +195,13 @@ class PostController
                 if ($post->isValid()) {
                     Image::uploadImage('post');
                     $PostManager->update($post);
-                    echo $twig->render(
+                    $this->render(
                         'backend/updateView.twig', array(
                         'post' => $post
                         )
                     );
                 } else {
-                    echo $twig->render(
+                    $this->render(
                         'backend/updateView.twig', array(
                         'post' => $post
                         )
@@ -226,7 +209,7 @@ class PostController
                 }          
             } else {
                 $post->setErrors(['vide']);
-                echo $twig->render(
+                $this->render(
                     'backend/updateView.twig', array(
                     'post' => $post
                     )
@@ -244,10 +227,9 @@ class PostController
      */
     public function delete()
     {
-        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
+        $PostManager = new PostManager($this->db);
 
-            $db = DBFactory::dbConnect();
-            $PostManager = new PostManager($db);
+        if ($this->sessionExist('user', 'ADMIN')) {
             $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
             $PostManager->delete($id);
             header('location:../../admin');

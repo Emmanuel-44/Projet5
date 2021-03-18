@@ -1,17 +1,16 @@
 <?php
 namespace controllers;
 
+use core\Controller;
 use models\Comment;
 use models\CommentManager;
-use core\DBFactory;
 use models\PostManager;
 use models\Post;
-use core\TwigFactory;
 
 /**
  * Comment controller
  */
-class CommentController
+class CommentController extends Controller
 {
     /**
      * Add a comment
@@ -20,22 +19,21 @@ class CommentController
      */
     public function add()
     {
-        $db = DBFactory::dbConnect();
-        $twig = TwigFactory::twig();
         $Postid = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-        $CommentManager = new CommentManager($db);
-        $PostManager = new PostManager($db);
+        $CommentManager = new CommentManager($this->db);
+        $PostManager = new PostManager($this->db);
             
         // Si le formulaire est validé
-        if (isset($_POST['username']) && isset($_POST['content'])) {
+        if ($this->formValidate($_POST, ['username','content'])) {
 
             // Si l'utilisateur est connecté
-            if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
+            if ($this->sessionExist('user', 'USER')) {
+
                 $userImagePath = $_SESSION['user']['imagePath'];
                 $comment = new Comment(
                     [
-                    'username' => $_POST['username'],
-                    'content' => $_POST['content'],
+                    'username' => htmlspecialchars($_POST['username']),
+                    'content' => htmlspecialchars($_POST['content']),
                     'commentState' => false,
                     'postId' => $Postid,
                     'userImagePath' => $userImagePath
@@ -65,7 +63,7 @@ class CommentController
                     
                     $comments = $CommentManager->getList($Postid);
                     $PostManager->update($post);
-                    echo $twig->render(
+                    $this->render(
                         'frontend/singleView.twig', array(
                         'post' => $post,
                         'comment' => $comment,
@@ -73,11 +71,11 @@ class CommentController
                         )
                     );
                 
-                // Si les données ne sont pas valides
+                    // Si les données ne sont pas valides
                 } else {
                     $comments = $CommentManager->getList($Postid);
                     $post = $PostManager->getPost($Postid);
-                    echo $twig->render(
+                    $this->render(
                         'frontend/singleView.twig', array(
                         'post' => $post,
                         'comment' => $comment,
@@ -85,12 +83,12 @@ class CommentController
                         )
                     );
                 }
-            // Si l'utilisateur n'est pas connecté
+                // Si l'utilisateur n'est pas connecté
             } else {
                 $error = 'Vous devez être connecté pour envoyer un message';
                 $comments = $CommentManager->getList($Postid);
                 $post = $PostManager->getPost($Postid);
-                echo $twig->render(
+                $this->render(
                     'frontend/singleView.twig', array(
                     'post' => $post,
                     'comments' => $comments,
@@ -98,11 +96,11 @@ class CommentController
                     )
                 );
             }
-        // Si le formulaire n'est pas rempli
+            // Si le formulaire n'est pas rempli
         } else {
             $comments = $CommentManager->getList($Postid);
             $post = $PostManager->getPost($Postid);
-            echo $twig->render(
+            $this->render(
                 'frontend/singleView.twig', array(
                 'post' => $post,
                 'comments' => $comments,
@@ -118,10 +116,10 @@ class CommentController
      */
     public function delete()
     {
-        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
+        $CommentManager = new CommentManager($this->db);
+        $PostManager = new PostManager($this->db);
 
-            $db = DBFactory::dbConnect();
-            $CommentManager = new CommentManager($db);
+        if ($this->sessionExist('user', 'ADMIN')) {
             $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
             $postId = (int)strstr(
                 substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', -1
@@ -142,7 +140,6 @@ class CommentController
 
             $CommentManager->update($comment);
 
-            $PostManager = new PostManager($db);
             $post = $PostManager->getPost($postId);
             $countNew = $CommentManager->countNew($postId);
             $countValid = $CommentManager->count($postId);
@@ -176,10 +173,10 @@ class CommentController
      */
     public function confirm()
     {
-        if (!empty($_SESSION['user']) && in_array('ADMIN', $_SESSION['user']['role'])) {
+        $CommentManager = new CommentManager($this->db);
+        $PostManager = new PostManager($this->db);
 
-            $db = DBFactory::dbConnect();
-            $CommentManager = new CommentManager($db);
+        if ($this->sessionExist('user', 'ADMIN')) {
             $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
             $postId = (int)strstr(
                 substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', -1
@@ -200,7 +197,6 @@ class CommentController
 
             $CommentManager->update($comment);
 
-            $PostManager = new PostManager($db);
             $post = $PostManager->getPost($postId);
             $countNew = $CommentManager->countNew($postId);
             $countValid = $CommentManager->count($postId);

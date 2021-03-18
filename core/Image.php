@@ -4,12 +4,12 @@ namespace core;
 /**
  * Multiple(s) function(s)
  */
-class Image
+Class Image
 {
     /**
      * Upload image
      *
-     * @param [string] $folder
+     * @param [string] $folder folder name
      * 
      * @return void
      */
@@ -30,6 +30,13 @@ class Image
         }
     }
 
+    /**
+     * Get image Path
+     *
+     * @param [string] $folder folder name
+     * 
+     * @return void
+     */
     public static function getImage($folder)
     {
         if (!empty($_FILES['image']['name'])) {
