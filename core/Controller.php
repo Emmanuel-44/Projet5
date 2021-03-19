@@ -52,7 +52,7 @@ class Controller
      * @param array $form   form name
      * @param array $fields form fields
      * 
-     * @return void
+     * @return boolean
      */
     public function formValidate(array $form, array $fields)
     {
