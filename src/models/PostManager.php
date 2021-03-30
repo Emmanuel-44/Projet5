@@ -129,4 +129,12 @@ class PostManager
         $post->setModifDate(new DateTime($post->getModifDate()));
         return $post;
     }
+
+    public function checkPost(int $id, string $slug)
+    {
+        $req = $this->_db->prepare("SELECT id, slug FROM post WHERE id = $id AND slug = '$slug'");
+        $req->execute();
+        $check = $req->fetch();
+        return $check;
+    }
 }

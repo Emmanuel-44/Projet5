@@ -56,5 +56,5 @@ $match = $router->match();
 if (is_array($match) && is_callable($match['target'])) {
     call_user_func_array($match['target'], $match['params']);
 } else {
-    echo '404 Not Found';
+    echo 'URL intouvable';
 }
