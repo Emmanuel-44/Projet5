@@ -181,9 +181,9 @@ class Post extends Entity
     /**
      * Id getter
      *
-     * @return void
+     * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -191,9 +191,9 @@ class Post extends Entity
     /**
      * Title getter
      *
-     * @return void
+     * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -201,9 +201,9 @@ class Post extends Entity
     /**
      * Teaser getter
      *
-     * @return void
+     * @return string
      */
-    public function getTeaser()
+    public function getTeaser(): string
     {
         return $this->teaser;
     }
@@ -211,9 +211,9 @@ class Post extends Entity
     /**
      * Content getter
      *
-     * @return void
+     * @return string
      */
-    public function getContent()
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -221,9 +221,9 @@ class Post extends Entity
     /**
      * Author getter
      *
-     * @return void
+     * @return string
      */
-    public function getAuthor()
+    public function getAuthor(): string
     {
         return $this->author;
     }
@@ -231,9 +231,9 @@ class Post extends Entity
     /**
      * ImagePath getter
      *
-     * @return void
+     * @return string
      */
-    public function getImagePath()
+    public function getImagePath(): string
     {
         return $this->imagePath;
     }
@@ -241,7 +241,7 @@ class Post extends Entity
     /**
      * AddingDate getter
      *
-     * @return void
+     * @return string
      */
     public function getAddingDate()
     {
@@ -251,7 +251,7 @@ class Post extends Entity
     /**
      * ModifDate getter
      *
-     * @return void
+     * @return string
      */
     public function getModifDate()
     {
@@ -261,9 +261,9 @@ class Post extends Entity
     /**
      * Slug getter
      *
-     * @return void
+     * @return string
      */
-    public function getSlug()
+    public function getSlug(): string
     {
         return $this->slug;
     }
@@ -271,9 +271,9 @@ class Post extends Entity
     /**
      * ValidComment getter
      *
-     * @return void
+     * @return integer
      */
-    public function getValidComment()
+    public function getValidComment(): int
     {
         return $this->validComment;
     }
@@ -281,9 +281,9 @@ class Post extends Entity
     /**
      * NewComment getter
      *
-     * @return void
+     * @return integer
      */
-    public function getNewComment()
+    public function getNewComment(): int
     {
         return $this->newComment;
     }
@@ -291,9 +291,9 @@ class Post extends Entity
     /**
      * Errors getter
      *
-     * @return void
+     * @return array
      */
-    public function getErrors()
+    public function getErrors():array
     {
         return $this->errors;
     }

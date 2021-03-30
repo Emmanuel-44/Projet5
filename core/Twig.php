@@ -1,7 +1,6 @@
 <?php
 namespace core;
 
-
 /**
  * Twig
  */
@@ -12,7 +11,7 @@ class Twig
      *
      * @return object
      */
-    public static function twig() : object
+    public static function twig(): object
     {
         $loader = new \Twig\Loader\FilesystemLoader('../src/views');
         $twig = new \Twig\Environment(

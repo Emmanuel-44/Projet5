@@ -6,11 +6,13 @@ namespace core;
  */
 class Entity
 {
-        /**
-         * Construct
-         *
-         * @param array $values values array
-         */
+    /**
+     * Construct
+     *
+     * @param array $values values array
+     * 
+     * @return void
+     */
     public function __construct($values = [])
     {
         if (!empty($values)) {
@@ -21,7 +23,7 @@ class Entity
     /**
      * Hydrate
      *
-     * @param [array] $datas datas array
+     * @param array $datas datas array
      * 
      * @return void
      */

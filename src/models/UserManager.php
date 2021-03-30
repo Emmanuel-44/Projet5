@@ -46,11 +46,11 @@ class UserManager
     /**
      * Get a user
      *
-     * @param [int] $id id user
+     * @param int $id id user
      * 
-     * @return object
+     * @return User
      */
-    public function getUser($id)
+    public function getUser($id): User
     {
         $req = $this->_db->prepare('SELECT * FROM user WHERE id = :id');
         $req->bindValue(':id', $id);
@@ -64,9 +64,45 @@ class UserManager
     }
 
     /**
+     * Get users list
+     *
+     * @return array
+     */
+    public function getList(): array
+    {
+        $req = $this->_db->query('SELECT * FROM user ORDER BY addingDate DESC');
+        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\User');
+        $users = $req->fetchAll();
+        foreach ($users as $user) {
+            $user->setId((int)$user->getId());
+            $user->setAddingDate(new DateTime($user->getAddingDate()));
+            $user->setRole(unserialize($user->getRole()));
+        }
+        return $users;
+    }
+
+    /**
+     * Update user role
+     *
+     * @param User $user
+     * 
+     * @return void
+     */
+    public function update(User $user)
+    {
+        $req = $this->_db->prepare(
+            'UPDATE user SET role = :role
+            WHERE id =:id'
+        );
+        $req->bindValue(':role', serialize($user->getRole()));
+        $req->bindValue(':id', $user->getId());
+        $req->execute();
+    }
+
+    /**
      * Check if username exist
      *
-     * @return void
+     * @return mixed
      */
     public function findByUsername()
     {
@@ -79,7 +115,7 @@ class UserManager
     /**
      * Check if email exist
      *
-     * @return void
+     * @return mixed
      */
     public function findByEmail()
     {

@@ -78,7 +78,7 @@ class PostManager
     /**
      * Delete a post
      *
-     * @param [int] $id post id
+     * @param int $id post id
      * 
      * @return void
      */
@@ -111,7 +111,7 @@ class PostManager
     /**
      * Read a post
      *
-     * @param [int] $id post id
+     * @param int $id post id
      * 
      * @return Post
      */

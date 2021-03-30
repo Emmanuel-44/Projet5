@@ -25,6 +25,7 @@
         {% endif %}
 
         <form class="mt-5" action="" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="token" id="token" value="{{ session.token }}">
             <label for="username">Auteur :</label>
             <div class="form-group">
                 <input class="form-control" type="text" name="username" readonly value="{{ session.user.username }}">

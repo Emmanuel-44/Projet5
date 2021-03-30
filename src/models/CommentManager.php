@@ -47,7 +47,7 @@ class CommentManager
     /**
      * Count new comment(s) from a post
      *
-     * @param [int] $postId id from Post
+     * @param int $postId id from Post
      * 
      * @return string
      */
@@ -65,7 +65,7 @@ class CommentManager
     /**
      * Count all valid comments from a post
      *
-     * @param [int] $postId id from Post
+     * @param int $postId id from Post
      * 
      * @return string
      */
@@ -83,7 +83,7 @@ class CommentManager
     /**
      * Read all comments from a post
      *
-     * @param [int] $postId id from Post
+     * @param int $postId id from Post
      * 
      * @return array
      */
@@ -111,15 +111,15 @@ class CommentManager
     /**
      * Get single comment
      *
-     * @param [int] $postId id post
-     * @param [int] $id     id comment
+     * @param int $postId id post
+     * @param int $id     id comment
      * 
      * @return Comment
      */
     public function getComment($postId, $id)
     {
         $req = $this->_db->prepare(
-            'SELECT id, username, content, commentDate, commentState FROM comment 
+            'SELECT id, username, content, commentDate, commentState, postId FROM comment 
             WHERE postId = :postId AND id = :id ORDER BY commentDate DESC'
         );
         $req->bindValue(':postId', $postId);
@@ -158,7 +158,7 @@ class CommentManager
     /**
      * Delete a comment
      *
-     * @param [int] $id id from Comment
+     * @param int $id id from Comment
      * 
      * @return void
      */

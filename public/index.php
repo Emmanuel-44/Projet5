@@ -38,6 +38,8 @@ $router->map(
 );
 $router->map('GET', '/creer-un-compte', [$userController, 'create']);
 $router->map('POST', '/creer-un-compte', [$userController, 'create']);
+$router->map('GET', '/admin/utilisateur/[i:userId]', [$userController, 'update']);
+$router->map('GET', '/admin/utilisateur/remove/[i:userId]', [$userController, 'remove']);
 
 // map update Post
 $router->map(
