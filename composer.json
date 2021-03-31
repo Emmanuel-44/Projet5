@@ -12,5 +12,8 @@
         "altorouter/altorouter": "^2.0",
         "twig/twig": "3.0",
         "cocur/slugify": "^4.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^0.12.82"
     }
 }

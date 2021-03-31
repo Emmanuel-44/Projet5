@@ -78,7 +78,7 @@ class PostManager
     /**
      * Delete a post
      *
-     * @param [int] $id post id
+     * @param int $id post id
      * 
      * @return void
      */
@@ -111,7 +111,7 @@ class PostManager
     /**
      * Read a post
      *
-     * @param [int] $id post id
+     * @param int $id post id
      * 
      * @return Post
      */
@@ -128,5 +128,21 @@ class PostManager
         $post->setAddingDate(new DateTime($post->getAddingDate()));
         $post->setModifDate(new DateTime($post->getModifDate()));
         return $post;
+    }
+
+    /**
+     * Check if id and slug exist
+     *
+     * @param integer $id
+     * @param string $slug
+     * 
+     * @return array|false
+     */
+    public function checkPost(int $id, string $slug)
+    {
+        $req = $this->_db->prepare("SELECT id, slug FROM post WHERE id = $id AND slug = '$slug'");
+        $req->execute();
+        $check = $req->fetch();
+        return $check;
     }
 }

@@ -38,6 +38,8 @@ $router->map(
 );
 $router->map('GET', '/creer-un-compte', [$userController, 'create']);
 $router->map('POST', '/creer-un-compte', [$userController, 'create']);
+$router->map('GET', '/admin/utilisateur/[i:userId]', [$userController, 'update']);
+$router->map('GET', '/admin/utilisateur/remove/[i:userId]', [$userController, 'remove']);
 
 // map update Post
 $router->map(
@@ -54,5 +56,5 @@ $match = $router->match();
 if (is_array($match) && is_callable($match['target'])) {
     call_user_func_array($match['target'], $match['params']);
 } else {
-    echo '404 Not Found';
+    echo 'URL intouvable';
 }

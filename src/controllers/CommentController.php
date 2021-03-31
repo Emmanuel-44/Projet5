@@ -19,15 +19,18 @@ class CommentController extends Controller
      */
     public function add()
     {
-        $Postid = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
+        $PostId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
         $CommentManager = new CommentManager($this->db);
         $PostManager = new PostManager($this->db);
+        $comments = $CommentManager->getList($PostId);
+        $post = $PostManager->getPost($PostId);
+        $slug = $post->getSlug();
             
         // Si le formulaire est validé
         if ($this->formValidate($_POST, ['username','content'])) {
 
-            // Si l'utilisateur est connecté
-            if ($this->sessionExist('user', 'USER')) {
+            // Si l'utilisateur est connecté avec validation du token
+            if ($this->sessionExist('user', 'USER') && $this->tokenValidate("http://localhost/Projet5/blog/$slug-$PostId", 15)) {
 
                 $userImagePath = $_SESSION['user']['imagePath'];
                 $comment = new Comment(
@@ -35,7 +38,7 @@ class CommentController extends Controller
                     'username' => htmlspecialchars($_POST['username']),
                     'content' => htmlspecialchars($_POST['content']),
                     'commentState' => false,
-                    'postId' => $Postid,
+                    'postId' => $PostId,
                     'userImagePath' => $userImagePath
                     ]
                 );
@@ -43,13 +46,11 @@ class CommentController extends Controller
                 // Si les données sont valides
                 if ($comment->isValid()) { 
                     $CommentManager->add($comment);
-                    $post = $PostManager->getPost($Postid);
-                    $countNew = $CommentManager->countNew($Postid);
-                    $countValid = $CommentManager->count($Postid);
-    
+                    $countNew = $CommentManager->countNew($PostId);
+                    $countValid = $CommentManager->count($PostId);
                     $post = new Post(
                         [
-                        'id' => $Postid,
+                        'id' => $PostId,
                         'title' => $post->getTitle(),
                         'author' => $post->getAuthor(),
                         'teaser' => $post->getTeaser(),
@@ -60,34 +61,19 @@ class CommentController extends Controller
                         'newComment' => $countNew
                         ]
                     );
-                    
-                    $comments = $CommentManager->getList($Postid);
                     $PostManager->update($post);
-                    $this->render(
-                        'frontend/singleView.twig', array(
-                        'post' => $post,
-                        'comment' => $comment,
-                        'comments' => $comments
-                        )
-                    );
-                
-                    // Si les données ne sont pas valides
-                } else {
-                    $comments = $CommentManager->getList($Postid);
-                    $post = $PostManager->getPost($Postid);
-                    $this->render(
-                        'frontend/singleView.twig', array(
-                        'post' => $post,
-                        'comment' => $comment,
-                        'comments' => $comments,
-                        )
-                    );
                 }
+                $this->render(
+                    'frontend/singleView.twig', array(
+                    'post' => $post,
+                    'comment' => $comment,
+                    'comments' => $comments
+                    )
+                );
                 // Si l'utilisateur n'est pas connecté
             } else {
+                session_unset();
                 $error = 'Vous devez être connecté pour envoyer un message';
-                $comments = $CommentManager->getList($Postid);
-                $post = $PostManager->getPost($Postid);
                 $this->render(
                     'frontend/singleView.twig', array(
                     'post' => $post,
@@ -96,14 +82,12 @@ class CommentController extends Controller
                     )
                 );
             }
-            // Si le formulaire n'est pas rempli
+            // Si le formulaire n'est pas rempli 
         } else {
-            $comments = $CommentManager->getList($Postid);
-            $post = $PostManager->getPost($Postid);
             $this->render(
                 'frontend/singleView.twig', array(
                 'post' => $post,
-                'comments' => $comments,
+                'comments' => $comments
                 )
             );
         }
@@ -122,41 +106,34 @@ class CommentController extends Controller
         if ($this->sessionExist('user', 'ADMIN')) {
             $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
             $postId = (int)strstr(
-                substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', -1
+                substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', true
             );
             $comment = $CommentManager->getComment($postId, $commentId);
-            $userImagePath = $_SESSION['user']['imagePath'];
             $comment = new Comment(
                 [
                     'id' => $comment->getId(),
-                    'username' => $comment->getUsername(),
                     'content' => 'Message modéré par l\'administration',
-                    'commentDate' => $comment->getCommentDate(),
-                    'commentState' => true,
-                    'postId' => $comment->getPostId(),
-                    'userId' => $userImagePath
+                    'commentState' => true
                 ]
             );
-
             $CommentManager->update($comment);
 
             $post = $PostManager->getPost($postId);
             $countNew = $CommentManager->countNew($postId);
             $countValid = $CommentManager->count($postId);
-
-                    $post = new Post(
-                        [
-                        'id' => $postId,
-                        'title' => $post->getTitle(),
-                        'author' => $post->getAuthor(),
-                        'teaser' => $post->getTeaser(),
-                        'content' => $post->getContent(),
-                        'slug' => $post->getSlug(),
-                        'imagePath' => $post->getImagePath(),
-                        'validComment' => $countValid,
-                        'newComment' => $countNew
-                        ]
-                    );
+            $post = new Post(
+                [
+                    'id' => $postId,
+                    'title' => $post->getTitle(),
+                    'author' => $post->getAuthor(),
+                    'teaser' => $post->getTeaser(),
+                    'content' => $post->getContent(),
+                    'slug' => $post->getSlug(),
+                    'imagePath' => $post->getImagePath(),
+                    'validComment' => $countValid,
+                    'newComment' => $countNew
+                ]
+            );
 
             $PostManager->update($post);
             $slug = $post->getSlug();
@@ -179,19 +156,14 @@ class CommentController extends Controller
         if ($this->sessionExist('user', 'ADMIN')) {
             $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
             $postId = (int)strstr(
-                substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', -1
+                substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', true
             );
             $comment = $CommentManager->getComment($postId, $commentId);
-            $userImagePath = $_SESSION['user']['imagePath'];
             $comment = new Comment(
                 [
                     'id' => $comment->getId(),
-                    'username' => $comment->getUsername(),
                     'content' => $comment->getContent(),
-                    'commentDate' => $comment->getCommentDate(),
-                    'commentState' => true,
-                    'postId' => $comment->getPostId(),
-                    'userId' => $userImagePath
+                    'commentState' => true
                 ]
             );
 
@@ -200,20 +172,19 @@ class CommentController extends Controller
             $post = $PostManager->getPost($postId);
             $countNew = $CommentManager->countNew($postId);
             $countValid = $CommentManager->count($postId);
-
-                    $post = new Post(
-                        [
-                        'id' => $postId,
-                        'title' => $post->getTitle(),
-                        'author' => $post->getAuthor(),
-                        'teaser' => $post->getTeaser(),
-                        'content' => $post->getContent(),
-                        'slug' => $post->getSlug(),
-                        'imagePath' => $post->getImagePath(),
-                        'validComment' => $countValid,
-                        'newComment' => $countNew
-                        ]
-                    );
+            $post = new Post(
+                [
+                'id' => $postId,
+                'title' => $post->getTitle(),
+                'author' => $post->getAuthor(),
+                'teaser' => $post->getTeaser(),
+                'content' => $post->getContent(),
+                'slug' => $post->getSlug(),
+                'imagePath' => $post->getImagePath(),
+                'validComment' => $countValid,
+                'newComment' => $countNew
+                ]
+            );
 
             $PostManager->update($post);
             $slug = $post->getSlug();

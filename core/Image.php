@@ -9,7 +9,7 @@ Class Image
     /**
      * Upload image
      *
-     * @param [string] $folder folder name
+     * @param string $folder folder name
      * 
      * @return void
      */
@@ -33,11 +33,11 @@ Class Image
     /**
      * Get image Path
      *
-     * @param [string] $folder folder name
+     * @param string $folder folder name
      * 
-     * @return void
+     * @return string
      */
-    public static function getImage($folder)
+    public static function getImage($folder): string
     {
         if (!empty($_FILES['image']['name'])) {
             $imagePath = "public/img/$folder/" .$_FILES['image']['name'];

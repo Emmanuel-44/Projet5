@@ -80,19 +80,23 @@
                             </ol>
                             <!-- Blog Comment Form -->
                             <div class="blog-comment-form mt-5">
+                            {% if session is empty %}
+                            <p class="mb-2">Vous devez <a href="http://localhost/Projet5/login">vous connecter </a>ou <a href="http://localhost/Projet5/creer-un-compte">créer un compte </a>pour commenter un article.</p>
+                            {% endif %}
                                 <form action="" method="post">
-                                {% if constant('models\\Comment::INVALID_USERNAME') in comment.errors %}
-                                    <div class="alert alert-danger" role="alert">
-                                        Vous devez ajouter un Pseudo !
-                                    </div>
-                                {% endif %}
+                                    <input type="hidden" name="token" id="token" value="{{ session.token }}">
+                                    {% if constant('models\\Comment::INVALID_USERNAME') in comment.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            Vous devez ajouter un Pseudo !
+                                        </div>
+                                    {% endif %}
                                     <div class="col-lg-12" style="padding-right:0px; padding-left:0px;">
                                         <p><input type="text" name="username" placeholder="Pseudo" {{session ? 'readonly'}} value="{{ session.user.username }}"></p>
                                     </div>
                                     {% if constant('models\\Comment::INVALID_CONTENT') in comment.errors %}
-                                    <div class="alert alert-danger" role="alert">
-                                        Vous devez ajouter un commentaire !
-                                    </div>
+                                        <div class="alert alert-danger" role="alert">
+                                            Vous devez ajouter un commentaire !
+                                        </div>
                                     {% endif %}
                                     <p><textarea name="content" placeholder="Commentaire">{{ comment.errors is not empty ? comment.content }}</textarea></p>
                                     <div class="comment-btn text-center">

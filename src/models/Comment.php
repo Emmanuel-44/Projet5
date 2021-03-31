@@ -114,9 +114,9 @@ class Comment extends Entity
     /**
      * Id getter
      *
-     * @return void
+     * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -124,9 +124,9 @@ class Comment extends Entity
     /**
      * Username getter
      *
-     * @return void
+     * @return string
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -134,9 +134,9 @@ class Comment extends Entity
     /**
      * Content getter
      *
-     * @return void
+     * @return string
      */
-    public function getContent()
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -144,7 +144,7 @@ class Comment extends Entity
     /**
      * CommentDate getter
      *
-     * @return void
+     * @return string
      */
     public function getCommentDate()
     {
@@ -154,9 +154,9 @@ class Comment extends Entity
     /**
      * CommentState getter
      *
-     * @return void
+     * @return boolean
      */
-    public function getCommentState()
+    public function getCommentState(): bool
     {
         return $this->commentState;
     }
@@ -164,9 +164,9 @@ class Comment extends Entity
     /**
      * PostId getter
      *
-     * @return void
+     * @return integer
      */
-    public function getPostId()
+    public function getPostId(): int
     {
         return $this->postId;
     }
@@ -174,9 +174,9 @@ class Comment extends Entity
     /**
      * UserImagePath getter
      *
-     * @return void
+     * @return string
      */
-    public function getUserImagePath()
+    public function getUserImagePath(): string
     {
         return $this->userImagePath;
     }
@@ -184,9 +184,9 @@ class Comment extends Entity
     /**
      * Errors getter
      *
-     * @return void
+     * @return array
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }

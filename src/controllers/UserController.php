@@ -39,7 +39,7 @@ class UserController extends Controller
                     $user = $UserManager->getUser($check['id']);
                     if (password_verify($_POST['password'], $user->getPassword())) {
                         $user->setSession();
-                        if (in_array('ADMIN', $user->getRole())) {
+                        if ($this->sessionExist('user', 'ADMIN')) {
                             header('location: http://localhost/Projet5/admin');
                         } else {
                             header('location: http://localhost/Projet5');
@@ -149,5 +149,49 @@ class UserController extends Controller
         } else {
             header('location: http://localhost/Projet5');
         }
+    }
+
+    /**
+     * Add admin role
+     *
+     * @return void
+     */
+    public function update()
+    {
+        if ($this->sessionExist('user', 'SUPER_ADMIN')) {
+            $UserManager = new UserManager($this->db);
+            $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
+            $user = $UserManager->getUser($id);
+            $user = new User(
+                [
+                    'id' => $id,
+                    'role' => ['USER', 'ADMIN']
+                ]
+            );
+            $UserManager->update($user);
+        }
+        header('location: http://localhost/Projet5/admin');
+    }
+
+    /**
+     * Remove admin role
+     *
+     * @return void
+     */
+    public function remove()
+    {
+        if ($this->sessionExist('user', 'SUPER_ADMIN')) {
+            $UserManager = new UserManager($this->db);
+            $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
+            $user = $UserManager->getUser($id);
+            $user = new User(
+                [
+                    'id' => $id,
+                    'role' => ['USER']
+                ]
+            );
+            $UserManager->update($user);
+        }
+        header('location: http://localhost/Projet5/admin');
     }
 }

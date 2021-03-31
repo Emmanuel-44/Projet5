@@ -52,7 +52,7 @@ class User extends Entity
     /**
      * ContactEmail setter
      *
-     * @param [string] $contactEmail contact email
+     * @param string $contactEmail contact email
      * 
      * @return void
      */
@@ -98,7 +98,7 @@ class User extends Entity
     }
 
     /**
-     * Undocumented function
+     * Role setter
      *
      * @param array $role role
      * 
@@ -127,9 +127,9 @@ class User extends Entity
     /**
      * Id getter
      *
-     * @return void
+     * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -137,9 +137,9 @@ class User extends Entity
     /**
      * Username getter
      *
-     * @return void
+     * @return string
      */
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -147,9 +147,9 @@ class User extends Entity
     /**
      * ContactEmail getter
      *
-     * @return void
+     * @return string
      */
-    public function getContactEmail()
+    public function getContactEmail(): string
     {
         return $this->contactEmail;
     }
@@ -157,9 +157,9 @@ class User extends Entity
     /**
      * Password getter
      *
-     * @return void
+     * @return string
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -167,7 +167,7 @@ class User extends Entity
     /**
      * AddingDate getter
      *
-     * @return void
+     * @return string
      */
     public function getAddingDate()
     {
@@ -177,9 +177,9 @@ class User extends Entity
     /**
      * ImagePath getter
      *
-     * @return void
+     * @return string
      */
-    public function getImagePath()
+    public function getImagePath(): string
     {
         return $this->imagePath;
     }
@@ -187,7 +187,7 @@ class User extends Entity
     /**
      * Role getter
      *
-     * @return void
+     * @return string
      */
     public function getRole()
     {
@@ -197,9 +197,9 @@ class User extends Entity
     /**
      * Errors getter
      *
-     * @return void
+     * @return array
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
@@ -244,5 +244,9 @@ class User extends Entity
             'imagePath' => $this->imagePath,
             'role' => $this->role
         ];
+
+        $token = bin2hex(random_bytes(15));
+        $_SESSION['token'] = $token;
+        $_SESSION['token_time'] = time();
     }
 }

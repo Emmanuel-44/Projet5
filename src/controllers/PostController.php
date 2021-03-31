@@ -6,6 +6,7 @@ use core\Image;
 use models\Post;
 use models\PostManager;
 use models\CommentManager;
+use models\UserManager;
 
 /**
  * Post controller
@@ -29,6 +30,7 @@ class PostController extends Controller
      */
     public function blog()
     {
+        var_dump($_GET);
         $PostManager = new PostManager($this->db);
         $posts = $PostManager->getList();
         $this->render(
@@ -47,15 +49,21 @@ class PostController extends Controller
     {
         $PostManager = new PostManager($this->db);
         $CommentManager = new CommentManager($this->db);
-        $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-        $post = $PostManager->getPost($id);
-        $comments = $CommentManager->getList($id);
-        $this->render(
-            'frontend/singleView.twig', array(
-            'post' => $post,
-            'comments' => $comments
-            )
-        );
+        $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
+        $slug = substr(strrchr($this->reverse_strrchr($_SERVER['REQUEST_URI'], '-', 0), '/'), 1);
+        $urlValid = $PostManager->checkPost($id, $slug);
+        if ($urlValid) {
+            $post = $PostManager->getPost($id);
+            $comments = $CommentManager->getList($id);
+            $this->render(
+                'frontend/singleView.twig', array(
+                'post' => $post,
+                'comments' => $comments
+                )
+            );
+        } else {
+            echo 'Cet article n\'existe pas !';
+        }
     }
 
     /**
@@ -66,17 +74,20 @@ class PostController extends Controller
     public function adminIndex()
     {
         $PostManager = new PostManager($this->db);
+        $userManager = new UserManager($this->db);
         
         if ($this->sessionExist('user', 'ADMIN')) {
             $posts = $PostManager->getList();
+            $users = $userManager->getList();
             $this->render(
                 'backend/homeView.twig', array(
-                'posts' => $posts
+                'posts' => $posts,
+                'users' => $users
                 )
             );
         } else {
-            header('location: http://localhost/Projet5');
-        }   
+            header('location: http://localhost/Projet5'); 
+        }     
     }
 
     /**
@@ -92,41 +103,44 @@ class PostController extends Controller
 
             if ($this->formValidate(
                 $_POST, ['username', 'title', 'teaser', 'content']
-            )
+            ) 
             ) {
-
-                $imagePath = Image::getImage('post');
-
-                $post = new Post(
-                    [
-                    'author' => $_POST['username'],
-                    'title' => $_POST['title'],
-                    'teaser' => $_POST['teaser'],
-                    'content' => $_POST['content'],
-                    'imagePath' => $imagePath,
-                    'slug' => $_POST['title'],
-                    'validComment' => 0,
-                    'newComment' => 0
-                    ]
-                );
-                
-                if ($post->isValid()) {
-                    Image::uploadImage('post');
-                    $PostManager->add($post);
-                    header('location: ../admin');
-                } else {
-                    $this->render(
-                        'backend/createView.twig', array (
-                        'post' => $post
-                        )
+                if ($this->tokenValidate("http://localhost/Projet5/admin/ajouter", 30)) {
+                    $imagePath = Image::getImage('post');
+                    $post = new Post(
+                        [
+                        'author' => htmlspecialchars($_POST['username']),
+                        'title' => htmlspecialchars($_POST['title']),
+                        'teaser' => htmlspecialchars($_POST['teaser']),
+                        'content' => htmlspecialchars($_POST['content']),
+                        'imagePath' => $imagePath,
+                        'slug' => htmlspecialchars($_POST['title']),
+                        'validComment' => 0,
+                        'newComment' => 0
+                        ]
                     );
-                }
+                    
+                    if ($post->isValid()) {
+                        Image::uploadImage('post');
+                        $PostManager->add($post);
+                        header('location: ../admin');
+                    } else {
+                        $this->render(
+                            'backend/createView.twig', array (
+                            'post' => $post
+                            )
+                        );
+                    }
+                } else {
+                    session_unset();
+                    header('location: http://localhost/Projet5');
+                }    
             } else {
                 $this->render('backend/createView.twig');
             }
         } else {
             header('location: http://localhost/Projet5');
-        }
+        }  
     }
 
     /**
@@ -141,22 +155,43 @@ class PostController extends Controller
 
         if ($this->sessionExist('user', 'ADMIN')) {
             
-            $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-            $post = $PostManager->getPost($id);
-            $comments = $CommentManager->getList($id);
-            $this->render(
-                'backend/readView.twig', array(
-                'post' => $post,
-                'comments' => $comments,
-                )
-            );
+            $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
+            $slug = substr(strrchr($this->reverse_strrchr($_SERVER['REQUEST_URI'], '-', 0), '/'), 1);
+            $urlValid = $PostManager->checkPost($id, $slug);
+            if ($urlValid) {
+                $post = $PostManager->getPost($id);
+                $comments = $CommentManager->getList($id);
+                $this->render(
+                    'backend/readView.twig', array(
+                    'post' => $post,
+                    'comments' => $comments,
+                    )
+                );
+            } else {
+                echo 'Cet article n\'existe pas !';
+            }
+            
         } else {
             header('location: http://localhost/Projet5');
         }   
     }
 
     /**
-     * Update a form controller in administration
+     * Helper to get the slug in url
+     *
+     * @param string $haystack
+     * @param string $needle
+     * @param integer $trail
+     * 
+     * @return string
+     */
+    private function reverse_strrchr(string $haystack, string $needle, int $trail): string
+    {
+        return strrpos($haystack, $needle) ? substr($haystack, 0, strrpos($haystack, $needle) + $trail) : false;
+    }
+
+    /**
+     * Update a post controller in administration
      *
      * @return void
      */
@@ -166,62 +201,66 @@ class PostController extends Controller
         $CommentManager = new CommentManager($this->db);
 
         if ($this->sessionExist('user', 'ADMIN')) {
-            $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-            $post = $PostManager->getPost($id);
-            $countValid = $CommentManager->count($id);
-            $countNew = $CommentManager->countNew($id);
+            $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
+            $slug = substr(strrchr($this->reverse_strrchr($_SERVER['REQUEST_URI'], '-', 0), '/'), 1);
+            $urlValid = $PostManager->checkPost($id, $slug);
+            if ($urlValid) {
+                $post = $PostManager->getPost($id);
+                $slug = $post->getSlug();
+                $countValid = $CommentManager->count($id);
+                $countNew = $CommentManager->countNew($id);
 
-            if ($this->formValidate(
-                $_POST, ['username', 'title', 'teaser', 'content']
-            )
-            ) {
-
-                $imagePath = Image::getImage('post');
-
-                $post = new Post(
-                    [
-                    'id' => $id,
-                    'author' => $_POST['username'],
-                    'title' => $_POST['title'],
-                    'teaser' => $_POST['teaser'],
-                    'content' => $_POST['content'],
-                    'imagePath' => $imagePath,
-                    'slug' => $_POST['title'],
-                    'validComment' => $countValid,
-                    'newComment' => $countNew
-                    ]
-                );
-
-                if ($post->isValid()) {
-                    Image::uploadImage('post');
-                    $PostManager->update($post);
-                    $this->render(
-                        'backend/updateView.twig', array(
-                        'post' => $post
-                        )
-                    );
+                if ($this->formValidate(
+                    $_POST, ['username', 'title', 'teaser', 'content'] 
+                )
+                ) {
+                    if ($this->tokenValidate("http://localhost/Projet5/admin/modifier/$slug-$id", 30)) {
+                        $imagePath = Image::getImage('post');
+                        $post = new Post(
+                            [
+                            'id' => $id,
+                            'author' => $_POST['username'],
+                            'title' => $_POST['title'],
+                            'teaser' => $_POST['teaser'],
+                            'content' => $_POST['content'],
+                            'imagePath' => $imagePath,
+                            'slug' => $_POST['title'],
+                            'validComment' => $countValid,
+                            'newComment' => $countNew
+                            ]
+                        );
+        
+                        if ($post->isValid()) {
+                            Image::uploadImage('post');
+                            $PostManager->update($post);
+                        }
+                        $this->render(
+                            'backend/updateView.twig', array(
+                            'post' => $post
+                            )
+                        );
+                    } else {
+                        session_unset();
+                        header('location: http://localhost/Projet5');
+                    }       
                 } else {
+                    $post->setErrors(['vide']);
                     $this->render(
                         'backend/updateView.twig', array(
                         'post' => $post
                         )
                     );
-                }          
+                }
             } else {
-                $post->setErrors(['vide']);
-                $this->render(
-                    'backend/updateView.twig', array(
-                    'post' => $post
-                    )
-                );
+                echo 'Cet article n\'existe pas !';
             }
         } else {
             header('location: http://localhost/Projet5');
-        }     
+        }      
     }
 
     /**
-     * Delete a form controller in administration
+     * Delete a post controller in administration
      *
      * @return void
      */
@@ -230,11 +269,11 @@ class PostController extends Controller
         $PostManager = new PostManager($this->db);
 
         if ($this->sessionExist('user', 'ADMIN')) {
-            $id = substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
+            $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
             $PostManager->delete($id);
             header('location:../../admin');
         } else {
             header('location: http://localhost/Projet5');
-        }
+        }     
     }
 }
