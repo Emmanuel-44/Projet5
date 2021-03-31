@@ -30,6 +30,7 @@ class PostController extends Controller
      */
     public function blog()
     {
+        var_dump($_GET);
         $PostManager = new PostManager($this->db);
         $posts = $PostManager->getList();
         $this->render(
@@ -175,12 +176,22 @@ class PostController extends Controller
         }   
     }
 
-    function reverse_strrchr($haystack, $needle, $trail) {
+    /**
+     * Helper to get the slug in url
+     *
+     * @param string $haystack
+     * @param string $needle
+     * @param integer $trail
+     * 
+     * @return string
+     */
+    private function reverse_strrchr(string $haystack, string $needle, int $trail): string
+    {
         return strrpos($haystack, $needle) ? substr($haystack, 0, strrpos($haystack, $needle) + $trail) : false;
     }
 
     /**
-     * Update a form controller in administration
+     * Update a post controller in administration
      *
      * @return void
      */
@@ -208,12 +219,12 @@ class PostController extends Controller
                         $post = new Post(
                             [
                             'id' => $id,
-                            'author' => htmlspecialchars($_POST['username']),
-                            'title' => htmlspecialchars($_POST['title']),
-                            'teaser' => htmlspecialchars($_POST['teaser']),
-                            'content' => htmlspecialchars($_POST['content']),
+                            'author' => $_POST['username'],
+                            'title' => $_POST['title'],
+                            'teaser' => $_POST['teaser'],
+                            'content' => $_POST['content'],
                             'imagePath' => $imagePath,
-                            'slug' => htmlspecialchars($_POST['title']),
+                            'slug' => $_POST['title'],
                             'validComment' => $countValid,
                             'newComment' => $countNew
                             ]
@@ -249,7 +260,7 @@ class PostController extends Controller
     }
 
     /**
-     * Delete a form controller in administration
+     * Delete a post controller in administration
      *
      * @return void
      */

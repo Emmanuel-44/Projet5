@@ -130,6 +130,14 @@ class PostManager
         return $post;
     }
 
+    /**
+     * Check if id and slug exist
+     *
+     * @param integer $id
+     * @param string $slug
+     * 
+     * @return array|false
+     */
     public function checkPost(int $id, string $slug)
     {
         $req = $this->_db->prepare("SELECT id, slug FROM post WHERE id = $id AND slug = '$slug'");

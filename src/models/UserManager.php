@@ -102,7 +102,7 @@ class UserManager
     /**
      * Check if username exist
      *
-     * @return mixed
+     * @return array|false
      */
     public function findByUsername()
     {
@@ -115,7 +115,7 @@ class UserManager
     /**
      * Check if email exist
      *
-     * @return mixed
+     * @return array|false
      */
     public function findByEmail()
     {
