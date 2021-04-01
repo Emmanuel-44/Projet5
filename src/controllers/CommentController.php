@@ -30,13 +30,13 @@ class CommentController extends Controller
         if ($this->formValidate($_POST, ['username','content'])) {
 
             // Si l'utilisateur est connecté avec validation du token
-            if ($this->sessionExist('user', 'USER') && $this->tokenValidate("http://localhost/Projet5/blog/$slug-$PostId", 15)) {
+            if ($this->sessionExist('user', 'USER') && $this->tokenValidate("http://localhost/Projet5/blog/$slug-$PostId", 60)) {
 
                 $userImagePath = $_SESSION['user']['imagePath'];
                 $comment = new Comment(
                     [
-                    'username' => htmlspecialchars($_POST['username']),
-                    'content' => htmlspecialchars($_POST['content']),
+                    'username' => htmlspecialchars($_POST['username'], ENT_NOQUOTES),
+                    'content' => htmlspecialchars($_POST['content'], ENT_NOQUOTES),
                     'commentState' => false,
                     'postId' => $PostId,
                     'userImagePath' => $userImagePath
@@ -102,45 +102,65 @@ class CommentController extends Controller
     {
         $CommentManager = new CommentManager($this->db);
         $PostManager = new PostManager($this->db);
+        $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
+        $postId = (int)strstr(
+            substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', true
+        );
+        $slug = substr(strrchr($this->reverse_strrchr($_SERVER['REQUEST_URI'], '-', 0), '/'), 1);
 
         if ($this->sessionExist('user', 'ADMIN')) {
-            $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
-            $postId = (int)strstr(
-                substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', true
-            );
-            $comment = $CommentManager->getComment($postId, $commentId);
-            $comment = new Comment(
-                [
-                    'id' => $comment->getId(),
-                    'content' => 'Message modéré par l\'administration',
-                    'commentState' => true
-                ]
-            );
-            $CommentManager->update($comment);
+            if ($this->tokenValidate("http://localhost/Projet5/admin/article/$slug-$postId", 300)) { 
+                $comment = $CommentManager->getComment($postId, $commentId);
+                $comment = new Comment(
+                    [
+                        'id' => $comment->getId(),
+                        'content' => 'Message modéré par l\'administration',
+                        'commentState' => true
+                    ]
+                );
+                $CommentManager->update($comment);
 
-            $post = $PostManager->getPost($postId);
-            $countNew = $CommentManager->countNew($postId);
-            $countValid = $CommentManager->count($postId);
-            $post = new Post(
-                [
-                    'id' => $postId,
-                    'title' => $post->getTitle(),
-                    'author' => $post->getAuthor(),
-                    'teaser' => $post->getTeaser(),
-                    'content' => $post->getContent(),
-                    'slug' => $post->getSlug(),
-                    'imagePath' => $post->getImagePath(),
-                    'validComment' => $countValid,
-                    'newComment' => $countNew
-                ]
-            );
+                $post = $PostManager->getPost($postId);
+                $countNew = $CommentManager->countNew($postId);
+                $countValid = $CommentManager->count($postId);
+                $post = new Post(
+                    [
+                        'id' => $postId,
+                        'title' => $post->getTitle(),
+                        'author' => $post->getAuthor(),
+                        'teaser' => $post->getTeaser(),
+                        'content' => $post->getContent(),
+                        'slug' => $post->getSlug(),
+                        'imagePath' => $post->getImagePath(),
+                        'validComment' => $countValid,
+                        'newComment' => $countNew
+                    ]
+                );
 
-            $PostManager->update($post);
-            $slug = $post->getSlug();
-            header("location: ../../../admin/article/$slug-$postId");
+                $PostManager->update($post);
+                $slug = $post->getSlug();
+                header("location: ../../../admin/article/$slug-$postId");
+            } else {
+                session_unset();
+                header('location: http://localhost/Projet5');
+            }
         } else {
             header('location: http://localhost/Projet5');
         }
+    }
+
+    /**
+     * Helper to get the slug in url
+     *
+     * @param string $haystack
+     * @param string $needle
+     * @param integer $trail
+     * 
+     * @return string
+     */
+    private function reverse_strrchr(string $haystack, string $needle, int $trail): string
+    {
+        return strrpos($haystack, $needle) ? substr($haystack, 0, strrpos($haystack, $needle) + $trail) : false;
     }
 
     /**
@@ -152,43 +172,49 @@ class CommentController extends Controller
     {
         $CommentManager = new CommentManager($this->db);
         $PostManager = new PostManager($this->db);
+        $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
+        $postId = (int)strstr(
+            substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', true
+        );
+        $slug = substr(strrchr($this->reverse_strrchr($_SERVER['REQUEST_URI'], '-', 0), '/'), 1);
 
         if ($this->sessionExist('user', 'ADMIN')) {
-            $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
-            $postId = (int)strstr(
-                substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', true
-            );
-            $comment = $CommentManager->getComment($postId, $commentId);
-            $comment = new Comment(
-                [
-                    'id' => $comment->getId(),
-                    'content' => $comment->getContent(),
-                    'commentState' => true
-                ]
-            );
+            if ($this->tokenValidate("http://localhost/Projet5/admin/article/$slug-$postId", 300)) {
+                $comment = $CommentManager->getComment($postId, $commentId);
+                $comment = new Comment(
+                    [
+                        'id' => $comment->getId(),
+                        'content' => $comment->getContent(),
+                        'commentState' => true
+                    ]
+                );
 
-            $CommentManager->update($comment);
+                $CommentManager->update($comment);
 
-            $post = $PostManager->getPost($postId);
-            $countNew = $CommentManager->countNew($postId);
-            $countValid = $CommentManager->count($postId);
-            $post = new Post(
-                [
-                'id' => $postId,
-                'title' => $post->getTitle(),
-                'author' => $post->getAuthor(),
-                'teaser' => $post->getTeaser(),
-                'content' => $post->getContent(),
-                'slug' => $post->getSlug(),
-                'imagePath' => $post->getImagePath(),
-                'validComment' => $countValid,
-                'newComment' => $countNew
-                ]
-            );
+                $post = $PostManager->getPost($postId);
+                $countNew = $CommentManager->countNew($postId);
+                $countValid = $CommentManager->count($postId);
+                $post = new Post(
+                    [
+                    'id' => $postId,
+                    'title' => $post->getTitle(),
+                    'author' => $post->getAuthor(),
+                    'teaser' => $post->getTeaser(),
+                    'content' => $post->getContent(),
+                    'slug' => $post->getSlug(),
+                    'imagePath' => $post->getImagePath(),
+                    'validComment' => $countValid,
+                    'newComment' => $countNew
+                    ]
+                );
 
-            $PostManager->update($post);
-            $slug = $post->getSlug();
-            header("location: ../../../admin/article/$slug-$postId");
+                $PostManager->update($post);
+                $slug = $post->getSlug();
+                header("location: ../../../admin/article/$slug-$postId");
+            } else {
+                session_unset();
+                header('location: http://localhost/Projet5');
+            }
         } else {
             header('location: http://localhost/Projet5');
         } 

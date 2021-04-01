@@ -105,16 +105,16 @@ class PostController extends Controller
                 $_POST, ['username', 'title', 'teaser', 'content']
             ) 
             ) {
-                if ($this->tokenValidate("http://localhost/Projet5/admin/ajouter", 30)) {
+                if ($this->tokenValidate("http://localhost/Projet5/admin/ajouter", 300)) {
                     $imagePath = Image::getImage('post');
                     $post = new Post(
                         [
-                        'author' => htmlspecialchars($_POST['username']),
-                        'title' => htmlspecialchars($_POST['title']),
-                        'teaser' => htmlspecialchars($_POST['teaser']),
-                        'content' => htmlspecialchars($_POST['content']),
+                        'author' => htmlspecialchars($_POST['username'], ENT_NOQUOTES),
+                        'title' => htmlspecialchars($_POST['title'], ENT_NOQUOTES),
+                        'teaser' => htmlspecialchars($_POST['teaser'], ENT_NOQUOTES),
+                        'content' => htmlspecialchars($_POST['content'], ENT_NOQUOTES),
                         'imagePath' => $imagePath,
-                        'slug' => htmlspecialchars($_POST['title']),
+                        'slug' => htmlspecialchars($_POST['title'], ENT_NOQUOTES),
                         'validComment' => 0,
                         'newComment' => 0
                         ]
@@ -214,17 +214,17 @@ class PostController extends Controller
                     $_POST, ['username', 'title', 'teaser', 'content'] 
                 )
                 ) {
-                    if ($this->tokenValidate("http://localhost/Projet5/admin/modifier/$slug-$id", 30)) {
+                    if ($this->tokenValidate("http://localhost/Projet5/admin/modifier/$slug-$id", 300)) {
                         $imagePath = Image::getImage('post');
                         $post = new Post(
                             [
                             'id' => $id,
-                            'author' => $_POST['username'],
-                            'title' => $_POST['title'],
-                            'teaser' => $_POST['teaser'],
-                            'content' => $_POST['content'],
+                            'author' => htmlspecialchars($_POST['username'], ENT_NOQUOTES),
+                            'title' => htmlspecialchars($_POST['title'], ENT_NOQUOTES),
+                            'teaser' => htmlspecialchars($_POST['teaser'], ENT_NOQUOTES),
+                            'content' => htmlspecialchars($_POST['content'], ENT_NOQUOTES),
                             'imagePath' => $imagePath,
-                            'slug' => $_POST['title'],
+                            'slug' => htmlspecialchars($_POST['title'], ENT_NOQUOTES),
                             'validComment' => $countValid,
                             'newComment' => $countNew
                             ]
@@ -268,10 +268,16 @@ class PostController extends Controller
     {
         $PostManager = new PostManager($this->db);
 
+        $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
+
         if ($this->sessionExist('user', 'ADMIN')) {
-            $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-            $PostManager->delete($id);
-            header('location:../../admin');
+            if ($this->tokenValidate("http://localhost/Projet5/admin", 300)) {
+                $PostManager->delete($id);
+                header('location:http://localhost/Projet5/admin');
+            } else {
+                session_unset();
+                header('location: http://localhost/Projet5');
+            } 
         } else {
             header('location: http://localhost/Projet5');
         }     

@@ -26,22 +26,20 @@ $router->map('GET', '/admin/article/[*:slug]-[i:id]', [$postController, 'read'])
 $router->map(
     'GET|POST', '/admin/modifier/[*:slug]-[i:id]', [$postController, 'update']
 );
-$router->map('GET', '/admin/supprimer/[*:slug]-[i:id]', [$postController, 'delete']);
+$router->map('POST', '/admin/supprimer/[*:slug]-[i:id]', [$postController, 'delete']);
 $router->map('POST', '/blog/[*:slug]-[i:id]', [$commentController, 'add']);
 $router->map(
-    'GET', '/admin/supprimer/[*:slug]-[i:postId]/[i:commentId]', 
+    'POST', '/admin/supprimer/[*:slug]-[i:postId]/[i:commentId]', 
     [$commentController, 'delete']
 );
 $router->map(
-    'GET', '/admin/valider/[*:slug]-[i:postId]/[i:commentId]', 
+    'POST', '/admin/valider/[*:slug]-[i:postId]/[i:commentId]', 
     [$commentController, 'confirm']
 );
 $router->map('GET', '/creer-un-compte', [$userController, 'create']);
 $router->map('POST', '/creer-un-compte', [$userController, 'create']);
-$router->map('GET', '/admin/utilisateur/[i:userId]', [$userController, 'update']);
-$router->map('GET', '/admin/utilisateur/remove/[i:userId]', [$userController, 'remove']);
-
-// map update Post
+$router->map('POST', '/admin/utilisateur/[i:userId]', [$userController, 'update']);
+$router->map('POST', '/admin/utilisateur/remove/[i:userId]', [$userController, 'remove']);
 $router->map(
     'GET|POST', '/admin/modifier/[*:slug]-[i:id]', function () {
         $postController = new PostController();

@@ -159,18 +159,23 @@ class UserController extends Controller
     public function update()
     {
         if ($this->sessionExist('user', 'SUPER_ADMIN')) {
-            $UserManager = new UserManager($this->db);
-            $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
-            $user = $UserManager->getUser($id);
-            $user = new User(
-                [
-                    'id' => $id,
-                    'role' => ['USER', 'ADMIN']
-                ]
-            );
-            $UserManager->update($user);
+            if ($this->tokenValidate("http://localhost/Projet5/admin", 300)) {
+                $UserManager = new UserManager($this->db);
+                $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
+                $user = $UserManager->getUser($id);
+                $user = new User(
+                    [
+                        'id' => $id,
+                        'role' => ['USER', 'ADMIN']
+                    ]
+                );
+                $UserManager->update($user);
+            } else {
+                session_unset();
+                header('location: http://localhost/Projet5'); 
+            }
         }
-        header('location: http://localhost/Projet5/admin');
+        header('location: http://localhost/Projet5/admin');  
     }
 
     /**
@@ -181,17 +186,22 @@ class UserController extends Controller
     public function remove()
     {
         if ($this->sessionExist('user', 'SUPER_ADMIN')) {
-            $UserManager = new UserManager($this->db);
-            $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
-            $user = $UserManager->getUser($id);
-            $user = new User(
-                [
-                    'id' => $id,
-                    'role' => ['USER']
-                ]
-            );
-            $UserManager->update($user);
+            if ($this->tokenValidate("http://localhost/Projet5/admin", 300)) {
+                $UserManager = new UserManager($this->db);
+                $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
+                $user = $UserManager->getUser($id);
+                $user = new User(
+                    [
+                        'id' => $id,
+                        'role' => ['USER']
+                    ]
+                );
+                $UserManager->update($user);
+            } else {
+                session_unset();
+                header('location: http://localhost/Projet5'); 
+            }
         }
-        header('location: http://localhost/Projet5/admin');
+        header('location: http://localhost/Projet5/admin'); 
     }
 }
