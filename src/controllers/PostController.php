@@ -62,7 +62,8 @@ class PostController extends Controller
                 )
             );
         } else {
-            echo 'Cet article n\'existe pas !';
+            $errorController = new ErrorController();
+            $errorController->error404();
         }
     }
 
@@ -168,7 +169,8 @@ class PostController extends Controller
                     )
                 );
             } else {
-                echo 'Cet article n\'existe pas !';
+                $errorController = new ErrorController();
+                $errorController->error404();
             }
             
         } else {

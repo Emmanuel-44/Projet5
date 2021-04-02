@@ -4,6 +4,7 @@ require '../vendor/autoload.php';
 
 use controllers\PostController;
 use controllers\UserController;
+use controllers\ErrorController;
 use controllers\CommentController;
 
 $router = new AltoRouter();
@@ -12,6 +13,7 @@ $router->setBasePath('/projet5');
 $postController = new PostController();
 $userController = new UserController();
 $commentController = new CommentController();
+$errorController = new ErrorController();
 
 // routes
 $router->map('GET', '/', [$postController, 'index']);
@@ -54,5 +56,5 @@ $match = $router->match();
 if (is_array($match) && is_callable($match['target'])) {
     call_user_func_array($match['target'], $match['params']);
 } else {
-    echo 'URL intouvable';
+    $errorController->error404();
 }
