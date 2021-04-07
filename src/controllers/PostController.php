@@ -16,21 +16,22 @@ class PostController extends Controller
     /**
      * Home page controller
      *
-     * @return void
      */
     public function index()
     {
-        $this->render('frontend/homeView.twig');
+        $PostManager = new PostManager($this->db);
+        $posts = $PostManager->getList();
+        $this->render('frontend/homeView.twig', array(
+            'posts' => $posts
+        ));
     }
 
     /**
      * Blog page controller
      *
-     * @return void
      */
     public function blog()
     {
-        var_dump($_GET);
         $PostManager = new PostManager($this->db);
         $posts = $PostManager->getList();
         $this->render(
@@ -43,7 +44,6 @@ class PostController extends Controller
     /**
      * Read a single post controller
      *
-     * @return void
      */
     public function single()
     {
@@ -70,7 +70,6 @@ class PostController extends Controller
     /**
      * Home admin page controller
      *
-     * @return void
      */
     public function adminIndex()
     {
@@ -94,7 +93,6 @@ class PostController extends Controller
     /**
      * Add post controller
      *
-     * @return void
      */
     public function create()
     {
@@ -147,7 +145,6 @@ class PostController extends Controller
     /**
      * Read a post controller in administration
      *
-     * @return void
      */
     public function read()
     {
@@ -195,7 +192,6 @@ class PostController extends Controller
     /**
      * Update a post controller in administration
      *
-     * @return void
      */
     public function update()
     {
@@ -264,7 +260,6 @@ class PostController extends Controller
     /**
      * Delete a post controller in administration
      *
-     * @return void
      */
     public function delete()
     {

@@ -2,6 +2,7 @@
 session_start();
 require '../vendor/autoload.php';
 
+use controllers\ContactController;
 use controllers\PostController;
 use controllers\UserController;
 use controllers\ErrorController;
@@ -11,6 +12,7 @@ $router = new AltoRouter();
 $router->setBasePath('/projet5');
 
 $postController = new PostController();
+$contactController = new ContactController();
 $userController = new UserController();
 $commentController = new CommentController();
 $errorController = new ErrorController();
@@ -48,6 +50,7 @@ $router->map(
         $postController->update();
     }
 );
+$router->map('POST', '/contact', [$contactController, 'emailSend']);
 
 // match curent request url
 $match = $router->match();

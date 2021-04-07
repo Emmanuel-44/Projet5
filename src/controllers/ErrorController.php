@@ -8,7 +8,6 @@ class ErrorController extends Controller
     /**
      * Error page controller
      *
-     * @return void
      */
     public function error404()
     {

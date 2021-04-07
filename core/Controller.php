@@ -24,7 +24,6 @@ class Controller
      * @param string $view     view path
      * @param array  $variable variables
      * 
-     * @return void
      */
     public function render(string $view, array $variable=[])
     {

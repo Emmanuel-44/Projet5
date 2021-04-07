@@ -15,7 +15,6 @@ class CommentController extends Controller
     /**
      * Add a comment
      *
-     * @return void
      */
     public function add()
     {
@@ -96,7 +95,6 @@ class CommentController extends Controller
     /**
      * Delete a comment
      *
-     * @return void
      */
     public function delete()
     {
@@ -166,7 +164,6 @@ class CommentController extends Controller
     /**
      * Confirm a comment
      *
-     * @return void
      */
     public function confirm()
     {

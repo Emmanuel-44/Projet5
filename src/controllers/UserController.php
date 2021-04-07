@@ -14,7 +14,6 @@ class UserController extends Controller
     /**
      * Login user controller
      *
-     * @return void
      */
     public function login()
     {
@@ -76,7 +75,6 @@ class UserController extends Controller
     /**
      * Create account
      *
-     * @return void
      */
     public function create()
     {
@@ -154,7 +152,6 @@ class UserController extends Controller
     /**
      * Add admin role
      *
-     * @return void
      */
     public function update()
     {
@@ -181,7 +178,6 @@ class UserController extends Controller
     /**
      * Remove admin role
      *
-     * @return void
      */
     public function remove()
     {
