@@ -15,11 +15,12 @@
 {% block content %}
     <section class="blog-section">
         <div class="container">
-            <div class="text-center">
+            <div class="text-center mb-5">
                 <h2>Liste des articles</h2>
-                <a href="admin/ajouter" class="mb-5 button btn-primary">Ajouter un article</a>
+                <a href="admin/ajouter" class="mb-2 button btn-primary">Ajouter un article</a>
+                <a href="admin/utilisateurs" class="mb-2 button btn-primary">Voir la liste des utilsateurs</a>
             </div>
-            <div class="col-lg-12 mb-4">
+            <div class="col-lg-12">
                 <div class="row">
                     <!-- Single Blog -->
                     {% for post in posts %}
@@ -44,30 +45,25 @@
                     <!-- Single Blog -->
                 </div>
             </div>
-            <div class="text-center mb-4">
-                <h2>Liste des utilisateurs</h2>
-            </div>
-            <div class="col-lg-12 mb-4">
-                <div class="row">
-                    {% for user in users %}
-                        <div class="col-sm-3">
-                            <div class="single-blog">
-                                <div class="blog-thumb" style="background-image: url({{user.imagePath}})"></div>
-                                <h4 class="blog-title">{{user.username}}</h4>
-                                <p class="blog-meta">Membre depuis le {{user.addingDate | date('d/m/Y')}}</p>
-                                <a href="mailto:{{user.contactEmail}}">{{user.contactEmail}}</a>
-                                <form action="http://localhost/Projet5/admin/utilisateur/{{user.id}}" method="post" enctype="multipart/form-data">
-                                    <input type="hidden" name="token" id="token" value="{{ session.token }}">
-                                    {% if 'SUPER_ADMIN' in session.user.role and user.role|length == 1 %}<button type="submit" class="button btn-success" style="cursor:pointer;">admin</button>{% endif %}
-                                </form>
-                                <form action="http://localhost/Projet5/admin/utilisateur/remove/{{user.id}}" method="post" enctype="multipart/form-data">
-                                    <input type="hidden" name="token" id="token" value="{{ session.token }}">
-                                    {% if 'SUPER_ADMIN' in session.user.role and user.role|length == 2 %}<button type="submit" class="button btn-danger" style="cursor:pointer;">retirer</button>{% endif %}
-                                </form>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+            <div class="row justify-content-center">
+                <nav>
+                    <ul class="pagination">
+                        <!-- Lien vers la page précédente (désactivé si on se trouve sur la 1ère page) -->
+                        <li class="page-item {{ currentPage == 1 ? "disabled" : "" }}">
+                            <a href="./admin?page={{ currentPage - 1 }}" class="page-link button blog-btn">Précédente</a>
+                        </li>
+                        {% for page in 1.. pages %}
+                            <!-- Lien vers chacune des pages (activé si on se trouve sur la page correspondante) -->
+                            <li class="page-item {{ currentPage == page ? "active" : "" }}">
+                                <a href="./admin?page={{ page }}" class="page-link button blog-btn">{{ page }}</a>
+                            </li>
+                        {% endfor %}
+                        <!-- Lien vers la page suivante (désactivé si on se trouve sur la dernière page) -->
+                        <li class="page-item {{ currentPage == pages ? "disabled" : "" }}">
+                            <a href="./admin?page={{ currentPage + 1 }}" class="page-link button blog-btn">Suivante</a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </section>

@@ -95,7 +95,7 @@ class PostManager
      */
     public function getList() : array
     {
-        $req = $this->_db->query('SELECT * FROM post ORDER BY addingDate DESC');
+        $req = $this->_db->query('SELECT * FROM post ORDER BY addingDate DESC LIMIT 0, 3');
         $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\Post');
         $posts = $req->fetchAll();
         foreach ($posts as $post) {
@@ -145,4 +145,46 @@ class PostManager
         $check = $req->fetch();
         return $check;
     }
+
+    // PAGINATION
+
+    /**
+     * Posts count
+     *
+     * @return integer
+     */
+    public function countPost()
+    {
+        $req = $this->_db->query('SELECT COUNT(*) AS nb_posts FROM post');
+        $req->execute();
+        $result = $req->fetch();
+        $nbPosts = (int)$result['nb_posts'];
+        return $nbPosts;
+    }
+
+    /**
+     * Get posts list
+     *
+     * @param int $firstPage
+     * @param int $perPage
+     * 
+     * @return array
+     */
+    public function getPosts($firstPage, $perPage)
+    {
+        $req = $this->_db->prepare('SELECT * FROM post ORDER BY addingDate DESC LIMIT :firstPage, :perPage');
+        $req->bindValue(':firstPage', $firstPage, PDO::PARAM_INT);
+        $req->bindValue(':perPage', $perPage, PDO::PARAM_INT);
+        $req->execute();
+        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\Post');
+        $posts = $req->fetchAll();
+        foreach ($posts as $post) {
+            $post->setId((int)$post->getId());
+            $post->setValidComment((int)$post->getValidComment());
+            $post->setNewComment((int)$post->getNewComment());
+            $post->setAddingDate(new DateTime($post->getAddingDate()));
+            $post->setModifDate(new DateTime($post->getModifDate()));
+        }
+        return $posts;
+    }    
 }

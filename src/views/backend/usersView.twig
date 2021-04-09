@@ -1,0 +1,66 @@
+{% extends "layout.twig" %}
+
+{% block image %}
+    <div class="page-title bg-img section-padding bg-overlay" style="background-image: url(http://localhost/Projet5/public/assets/images/admin.jpg)">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <h2><small>Espace Administration</small></h2>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <section class="blog-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2>Liste des utilisateurs</h2>
+                <a href="../admin" class="button btn-primary">Retour liste des articles</a>
+            </div>
+            <div class="col-lg-12">
+                <div class="row">
+                    {% for user in users %}
+                        <div class="col-sm-3">
+                            <div class="single-blog">
+                                <div class="blog-thumb" style="background-image: url(../{{user.imagePath}})"></div>
+                                <h4 class="blog-title">{{user.username}}</h4>
+                                <p class="blog-meta">Membre depuis le {{user.addingDate | date('d/m/Y')}}</p>
+                                <a href="mailto:{{user.contactEmail}}">{{user.contactEmail}}</a>
+                                <form action="http://localhost/Projet5/admin/utilisateur/{{user.id}}" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="token" id="token" value="{{ session.token }}">
+                                    {% if 'SUPER_ADMIN' in session.user.role and user.role|length == 1 %}<button type="submit" class="button btn-success" style="cursor:pointer;">admin</button>{% endif %}
+                                </form>
+                                <form action="http://localhost/Projet5/admin/utilisateur/remove/{{user.id}}" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="token" id="token" value="{{ session.token }}">
+                                    {% if 'SUPER_ADMIN' in session.user.role and user.role|length == 2 %}<button type="submit" class="button btn-danger" style="cursor:pointer;">retirer</button>{% endif %}
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <nav>
+                    <ul class="pagination">
+                        <!-- Lien vers la page précédente (désactivé si on se trouve sur la 1ère page) -->
+                        <li class="page-item {{ currentPage == 1 ? "disabled" : "" }}">
+                            <a href="../admin/utilisateurs?page={{ currentPage - 1 }}" class="page-link button blog-btn">Précédente</a>
+                        </li>
+                        {% for page in 1.. pages %}
+                            <!-- Lien vers chacune des pages (activé si on se trouve sur la page correspondante) -->
+                            <li class="page-item {{ currentPage == page ? "active" : "" }}">
+                                <a href="../admin/utilisateurs?page={{ page }}" class="page-link button blog-btn">{{ page }}</a>
+                            </li>
+                        {% endfor %}
+                        <!-- Lien vers la page suivante (désactivé si on se trouve sur la dernière page) -->
+                        <li class="page-item {{ currentPage == pages ? "disabled" : "" }}">
+                            <a href="../admin/utilisateurs?page={{ currentPage + 1 }}" class="page-link button blog-btn">Suivante</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </section>
+{% endblock %}

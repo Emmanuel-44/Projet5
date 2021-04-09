@@ -1,9 +1,10 @@
 <?php
 namespace controllers;
 
-use core\Controller;
 use core\Image;
 use models\User;
+use core\Controller;
+use core\Pagination;
 use models\UserManager;
 
 /**
@@ -11,6 +12,22 @@ use models\UserManager;
  */
 class UserController extends Controller
 {
+    public function usersList()
+    {
+        if ($this->sessionExist('user', 'ADMIN')) {
+            $pagination= Pagination::paginationUsers();
+            $this->render(
+                'backend/usersView.twig', array(
+                'users' => $pagination['users'],
+                'pages' => $pagination['nbPages'],
+                'currentPage' => $pagination['currentPage']
+                )
+            );
+        } else {
+            header('location: http://localhost/Projet5'); 
+        } 
+    }
+
     /**
      * Login user controller
      *
@@ -156,7 +173,7 @@ class UserController extends Controller
     public function update()
     {
         if ($this->sessionExist('user', 'SUPER_ADMIN')) {
-            if ($this->tokenValidate("http://localhost/Projet5/admin", 300)) {
+            if ($this->tokenValidate("http://localhost/Projet5/admin/utilisateurs", 300)) {
                 $UserManager = new UserManager($this->db);
                 $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
                 $user = $UserManager->getUser($id);
@@ -172,7 +189,7 @@ class UserController extends Controller
                 header('location: http://localhost/Projet5'); 
             }
         }
-        header('location: http://localhost/Projet5/admin');  
+        header('location: http://localhost/Projet5/admin/utilisateurs');  
     }
 
     /**
@@ -182,7 +199,7 @@ class UserController extends Controller
     public function remove()
     {
         if ($this->sessionExist('user', 'SUPER_ADMIN')) {
-            if ($this->tokenValidate("http://localhost/Projet5/admin", 300)) {
+            if ($this->tokenValidate("http://localhost/Projet5/admin/utilisateurs", 300)) {
                 $UserManager = new UserManager($this->db);
                 $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
                 $user = $UserManager->getUser($id);
@@ -198,6 +215,6 @@ class UserController extends Controller
                 header('location: http://localhost/Projet5'); 
             }
         }
-        header('location: http://localhost/Projet5/admin'); 
+        header('location: http://localhost/Projet5/admin/utilisateurs'); 
     }
 }
