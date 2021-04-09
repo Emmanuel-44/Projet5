@@ -51,7 +51,6 @@ $router->map(
     }
 );
 $router->map('POST', '/contact', [$contactController, 'emailSend']);
-$router->map('GET', '/admin/utilisateurs', [$userController, 'usersList']);
 
 // match curent request url
 $match = $router->match();

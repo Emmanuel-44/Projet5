@@ -983,20 +983,11 @@ h4.blog-title a {
     color: #000;
     margin-bottom: 30px;
     margin-top: 30px;
-    margin-right: 3px;
-    margin-left: 3px;
 }
 
 .button.blog-btn:hover {
     background-color: #ffc900;
     border-color: #ffc900;
-}
-
-.page-item.active .page-link {
-    z-index: 1;
-    color: #fff;
-    background-color: #ffc900;
-    border-color: #000;
 }
 
 /*::::::::::::::::::::::::::::::::::::

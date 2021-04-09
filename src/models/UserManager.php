@@ -64,6 +64,24 @@ class UserManager
     }
 
     /**
+     * Get users list
+     *
+     * @return array
+     */
+    public function getList(): array
+    {
+        $req = $this->_db->query('SELECT * FROM user ORDER BY addingDate DESC');
+        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\User');
+        $users = $req->fetchAll();
+        foreach ($users as $user) {
+            $user->setId((int)$user->getId());
+            $user->setAddingDate(new DateTime($user->getAddingDate()));
+            $user->setRole(unserialize($user->getRole()));
+        }
+        return $users;
+    }
+
+    /**
      * Update user role
      *
      * @param User $user
@@ -106,44 +124,4 @@ class UserManager
         $check = $req->fetch();
         return $check;
     }
-
-    // PAGINATION
-
-    /**
-     * Users count
-     *
-     * @return integer
-     */
-    public function countUser()
-    {
-        $req = $this->_db->query('SELECT COUNT(*) AS nb_users FROM user');
-        $req->execute();
-        $result = $req->fetch();
-        $nbUsers = (int)$result['nb_users'];
-        return $nbUsers;
-    }
-
-    /**
-     * Get posts list
-     *
-     * @param int $firstPage
-     * @param int $perPage
-     * 
-     * @return array
-     */
-    public function getUsers($firstPage, $perPage)
-    {
-        $req = $this->_db->prepare('SELECT * FROM user ORDER BY addingDate DESC LIMIT :firstPage, :perPage');
-        $req->bindValue(':firstPage', $firstPage, PDO::PARAM_INT);
-        $req->bindValue(':perPage', $perPage, PDO::PARAM_INT);
-        $req->execute();
-        $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\User');
-        $users = $req->fetchAll();
-        foreach ($users as $user) {
-            $user->setId((int)$user->getId());
-            $user->setAddingDate(new DateTime($user->getAddingDate()));
-            $user->setRole(unserialize($user->getRole()));
-        }
-        return $users;
-    } 
 }

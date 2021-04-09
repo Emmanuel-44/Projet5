@@ -350,5 +350,3 @@ MigrationBackup/
 .ionide/
 
 /vendor/
-
-/public/img/
