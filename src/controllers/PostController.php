@@ -3,10 +3,10 @@ namespace controllers;
 
 use core\Controller;
 use core\Image;
+use core\pagination;
 use models\Post;
 use models\PostManager;
 use models\CommentManager;
-use models\UserManager;
 
 /**
  * Post controller
@@ -32,11 +32,12 @@ class PostController extends Controller
      */
     public function blog()
     {
-        $PostManager = new PostManager($this->db);
-        $posts = $PostManager->getList();
+        $pagination= Pagination::paginationPosts();
         $this->render(
             'frontend/blogView.twig', array(
-            'posts' => $posts
+            'posts' => $pagination['posts'],
+            'pages' => $pagination['nbPages'],
+            'currentPage' => $pagination['currentPage']
             )
         );
     }
@@ -73,16 +74,13 @@ class PostController extends Controller
      */
     public function adminIndex()
     {
-        $PostManager = new PostManager($this->db);
-        $userManager = new UserManager($this->db);
-        
         if ($this->sessionExist('user', 'ADMIN')) {
-            $posts = $PostManager->getList();
-            $users = $userManager->getList();
+            $pagination= Pagination::paginationPosts();
             $this->render(
                 'backend/homeView.twig', array(
-                'posts' => $posts,
-                'users' => $users
+                'posts' => $pagination['posts'],
+                'pages' => $pagination['nbPages'],
+                'currentPage' => $pagination['currentPage']
                 )
             );
         } else {
