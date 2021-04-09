@@ -23,15 +23,20 @@
                 <div class="row">
                     <!-- Single Blog -->
                     {% for post in posts %}
-                        <div class="col-sm-4">
+                        <div class="col-lg-4">
                             <div class="single-blog">
                                 <div class="blog-thumb" style="background-image: url({{post.imagePath}})"></div>
                                 <h4 class="blog-title">{{post.title}}</h4>
                                 <p class="blog-meta">De {{post.author}}, publié le {{post.addingDate | date('d/m/Y')}}{{ post.modifDate != post.addingDate ? ', modifié le ' ~ post.modifDate | date("d/m/Y") }}, {{post.validComment}} Commentaire(s)</p>
                                 <p>{{post.teaser | slice(0, 200)}} [...]</p>
-                                <a href="admin/article/{{post.slug}}-{{post.id}}" class="button">Voir</a>
-                                <a href="admin/modifier/{{post.slug}}-{{post.id}}" class="button">Modifier</a>
-                                <a href="admin/supprimer/{{post.slug}}-{{post.id}}" class="button btn-danger">Supprimer</a>
+                                <div class="row">
+                                    <a href="admin/article/{{post.slug}}-{{post.id}}" class="button ml-2">Voir</a>
+                                    <a href="admin/modifier/{{post.slug}}-{{post.id}}" class="button ml-2">Modifier</a>
+                                    <form action="http://localhost/Projet5/admin/supprimer/{{post.slug}}-{{post.id}}" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="token" id="token" value="{{ session.token }}">
+                                        <button type="submit" class="button btn-danger ml-2" style="cursor:pointer;">Supprimer</button>
+                                    </form>
+                                </div>
                                 {% if post.newComment != 0 %} <a href="admin/article/{{ post.slug }}-{{ post.id }}" class="button btn-success">{% endif %}{{ post.newComment ? post.newComment ~ ' nouveau(x) commentaire(s)'}} </a>
                             </div>
                         </div>
@@ -51,8 +56,14 @@
                                 <h4 class="blog-title">{{user.username}}</h4>
                                 <p class="blog-meta">Membre depuis le {{user.addingDate | date('d/m/Y')}}</p>
                                 <a href="mailto:{{user.contactEmail}}">{{user.contactEmail}}</a>
-                                {% if 'SUPER_ADMIN' in session.user.role and user.role|length == 1 %}<p><a href="admin/utilisateur/{{user.id}}" class="button btn-success">admin</a></p>{% endif %}
-                                {% if 'SUPER_ADMIN' in session.user.role and user.role|length == 2 %}<p><a href="admin/utilisateur/remove/{{user.id}}" class="button btn-danger">retirer</a></p>{% endif %}
+                                <form action="http://localhost/Projet5/admin/utilisateur/{{user.id}}" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="token" id="token" value="{{ session.token }}">
+                                    {% if 'SUPER_ADMIN' in session.user.role and user.role|length == 1 %}<button type="submit" class="button btn-success" style="cursor:pointer;">admin</button>{% endif %}
+                                </form>
+                                <form action="http://localhost/Projet5/admin/utilisateur/remove/{{user.id}}" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="token" id="token" value="{{ session.token }}">
+                                    {% if 'SUPER_ADMIN' in session.user.role and user.role|length == 2 %}<button type="submit" class="button btn-danger" style="cursor:pointer;">retirer</button>{% endif %}
+                                </form>
                             </div>
                         </div>
                     {% endfor %}

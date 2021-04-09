@@ -571,48 +571,29 @@
             <div class="row justify-content-center">
                 <div class="col-lg-6 ">
                     <div class="section-title text-center">
-                        <h2>Blog Area</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                        <h2>Articles récents</h2>
+                        
                     </div>
                 </div>
             </div>
             <!-- //Section Title -->
             <div class="row">
                 <!-- Single Blog -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="single-blog">
-                        <div class="blog-thumb" style="background-image: url(public/assets/images/blog/img-1.jpg)"></div>
-                        <h4 class="blog-title"><a href="single-blog.html">Full Responsive</a></h4>
-                        <p class="blog-meta"><a href="#">AL Mamun</a>, 22 FEB 2018</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque similique velit, officiis non.</p>
-                        <a href="single-blog.html" class="button">Read More</a>
+                {% for post in posts %}
+                    <div class="col-sm-4">
+                        <div class="single-blog">
+                            <div class="blog-thumb" style="background-image: url({{post.imagePath}})"></div>
+                            <h4 class="blog-title">{{post.title}}</h4>
+                            <p class="blog-meta">De {{post.author}}, publié le {{post.addingDate | date('d/m/Y')}}{{ post.modifDate != post.addingDate ? ', modifié le ' ~ post.modifDate | date("d/m/Y") }}, {{post.validComment}} Commentaire(s)</p>
+                            <p>{{post.teaser | slice(0, 200)}} [...]</p>
+                            <a href="blog/{{post.slug}}-{{post.id}}" class="button">Lire plus</a>
+                        </div>
                     </div>
-                </div>
-                <!-- Single Blog -->
-                <!-- Single Blog -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="single-blog">
-                        <div class="blog-thumb" style="background-image: url(public/assets/images/blog/img-2.jpg)"></div>
-                        <h4 class="blog-title"><a href="single-blog.html">Lifetime free Update</a></h4>
-                        <p class="blog-meta"><a href="#">AL Mamun</a>, 22 FEB 2018</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque similique velit, officiis non.</p>
-                        <a href="single-blog.html" class="button">Read More</a>
-                    </div>
-                </div>
-                <!-- Single Blog -->
-                <!-- Single Blog -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="single-blog">
-                        <div class="blog-thumb" style="background-image: url(public/assets/images/blog/img-3.jpg)"></div>
-                        <h4 class="blog-title"><a href="single-blog.html">Unlimited Support</a></h4>
-                        <p class="blog-meta"><a href="#">AL Mamun</a>, 22 FEB 2018</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque similique velit, officiis non.</p>
-                        <a href="single-blog.html" class="button">Read More</a>
-                    </div>
-                </div>
+                {% endfor %}
                 <!-- Single Blog -->
             </div>
-        </div>
+            <div class="cta-button text-center mt-4">
+            <a href="http://localhost/Projet5/blog" class="button">Accéder au Blog</a></div>
     </section>
     <!-- ====== // Blog Section ====== -->
 
@@ -880,8 +861,8 @@
             <div class="row justify-content-center">
                 <div class="col-lg-6 ">
                     <div class="section-title text-center">
-                        <h2>Contact Me</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                        <h2>Me contacter</h2>
+                        <p>Vous recevrez une réponse dans les plus brefs délais.</p>
                     </div>
                 </div>
             </div>
@@ -891,24 +872,24 @@
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     <!-- Form -->
-                    <form id="contact-form" action="mail.php" method="post" class="contact-form bg-white">
+                    <form id="contact-form" action="http://localhost/Projet5/contact" method="post" class="contact-form bg-white">
                         <div class="row">
                             <div class="col-lg-6 form-group">
-                                <input type="text" class="form-control" name="name" required placeholder="Name">
+                                <input type="text" class="form-control" name="name" required placeholder="Nom" {{session ? 'readonly'}} value="{{session.user.username}}">
                             </div>
                             <div class="col-lg-6 form-group">
-                                <input type="email" class="form-control" name="email" required placeholder="Email">
+                                <input type="email" class="form-control" name="email" required placeholder="Email" {{session ? 'readonly'}} value="{{session.user.contactEmail}}">
                             </div>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" name="subject" required placeholder="Subject">
+                            <input type="text" class="form-control" name="subject" required placeholder="Sujet">
                         </div>
 
                         <div class="form-group">
                             <textarea name="message" id="" class="form-control" required placeholder="Message"></textarea>
                         </div>
                         <div class="form-btn text-center">
-                            <button class="button" type="submit">Send Message</button>
+                            <button class="button" type="submit">Envoyer</button>
                             <p class="form-message"></p>
                         </div>
                     </form>

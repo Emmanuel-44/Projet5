@@ -2,16 +2,20 @@
 session_start();
 require '../vendor/autoload.php';
 
+use controllers\ContactController;
 use controllers\PostController;
 use controllers\UserController;
+use controllers\ErrorController;
 use controllers\CommentController;
 
 $router = new AltoRouter();
 $router->setBasePath('/projet5');
 
 $postController = new PostController();
+$contactController = new ContactController();
 $userController = new UserController();
 $commentController = new CommentController();
+$errorController = new ErrorController();
 
 // routes
 $router->map('GET', '/', [$postController, 'index']);
@@ -26,28 +30,27 @@ $router->map('GET', '/admin/article/[*:slug]-[i:id]', [$postController, 'read'])
 $router->map(
     'GET|POST', '/admin/modifier/[*:slug]-[i:id]', [$postController, 'update']
 );
-$router->map('GET', '/admin/supprimer/[*:slug]-[i:id]', [$postController, 'delete']);
+$router->map('POST', '/admin/supprimer/[*:slug]-[i:id]', [$postController, 'delete']);
 $router->map('POST', '/blog/[*:slug]-[i:id]', [$commentController, 'add']);
 $router->map(
-    'GET', '/admin/supprimer/[*:slug]-[i:postId]/[i:commentId]', 
+    'POST', '/admin/supprimer/[*:slug]-[i:postId]/[i:commentId]', 
     [$commentController, 'delete']
 );
 $router->map(
-    'GET', '/admin/valider/[*:slug]-[i:postId]/[i:commentId]', 
+    'POST', '/admin/valider/[*:slug]-[i:postId]/[i:commentId]', 
     [$commentController, 'confirm']
 );
 $router->map('GET', '/creer-un-compte', [$userController, 'create']);
 $router->map('POST', '/creer-un-compte', [$userController, 'create']);
-$router->map('GET', '/admin/utilisateur/[i:userId]', [$userController, 'update']);
-$router->map('GET', '/admin/utilisateur/remove/[i:userId]', [$userController, 'remove']);
-
-// map update Post
+$router->map('POST', '/admin/utilisateur/[i:userId]', [$userController, 'update']);
+$router->map('POST', '/admin/utilisateur/remove/[i:userId]', [$userController, 'remove']);
 $router->map(
     'GET|POST', '/admin/modifier/[*:slug]-[i:id]', function () {
         $postController = new PostController();
         $postController->update();
     }
 );
+$router->map('POST', '/contact', [$contactController, 'emailSend']);
 
 // match curent request url
 $match = $router->match();
@@ -56,5 +59,5 @@ $match = $router->match();
 if (is_array($match) && is_callable($match['target'])) {
     call_user_func_array($match['target'], $match['params']);
 } else {
-    echo 'URL intouvable';
+    $errorController->error404();
 }
