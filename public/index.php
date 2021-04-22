@@ -2,11 +2,12 @@
 session_start();
 require '../vendor/autoload.php';
 
-use controllers\ContactController;
+use core\Download;
 use controllers\PostController;
 use controllers\UserController;
 use controllers\ErrorController;
 use controllers\CommentController;
+use controllers\ContactController;
 
 $router = new AltoRouter();
 $router->setBasePath('/projet5');
@@ -16,6 +17,7 @@ $contactController = new ContactController();
 $userController = new UserController();
 $commentController = new CommentController();
 $errorController = new ErrorController();
+$download = new Download();
 
 // routes
 $router->map('GET', '/', [$postController, 'index']);
@@ -52,6 +54,7 @@ $router->map(
 );
 $router->map('POST', '/contact', [$contactController, 'emailSend']);
 $router->map('GET', '/admin/utilisateurs', [$userController, 'usersList']);
+$router->map('GET', '/cv', [$download, 'downloadCv']);
 
 // match curent request url
 $match = $router->match();
