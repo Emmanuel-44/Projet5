@@ -1,5 +1,47 @@
 {% extends "layout.twig" %}
 
+{% block nav %}
+    <!-- ====== Navbar ====== -->
+    <nav class="navbar navbar-expand-lg fixed-top bg-primari">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand logo" href="index.html">
+                <img src="http://localhost/Projet5/public/assets/images/logo.png" alt="logo">
+            </a>
+            <!-- // Logo -->
+            <!-- Mobile Menu -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-expanded="false"><span><i class="fa fa-bars"></i></span></button>
+            <!-- Mobile Menu -->
+            <div class="collapse navbar-collapse main-menu margin" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="http://localhost/Projet5">ACCUEIL</a></li>
+                    <li class="nav-item"><a class="nav-link" href="http://localhost/Projet5/blog">BLOG</a></li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    {% if session.user is defined and session.user is not empty %}
+                        <li class="nav-item"><img src="http://localhost/Projet5/{{ session.user.imagePath }}" class="avatar-img mt-2 mb-2" alt="Photo de profil"></li>
+                        <li class="dropdown nav-link">
+                            <button class="btn btn-outline-warning dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Bonjour {{ session.user.username }}</a>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <p class="dropdown-item">{{ session.user.contactEmail }}</p>
+                                <p class="dropdown-item">Membre depuis le {{ session.user.addingDate | date('d/m/Y') }}</p>
+                                <div class="dropdown-divider"></div>
+                                {% if 'ADMIN' in session.user.role %}<a class="dropdown-item" href="http://localhost/Projet5/admin">Espace administration</a>{% endif %}
+                                <a class="dropdown-item" href="http://localhost/Projet5/logout">Se déconnecter</a> 
+                            </div>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="http://localhost/Projet5/login">Se connecter</a></li>
+                        <li class="nav-item"><a class="nav-link" href="http://localhost/Projet5/creer-un-compte">Créer un compte</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
 {% block image %}
     <div class="page-title bg-img section-padding bg-overlay" style="background-image: url(http://localhost/Projet5/public/assets/images/admin.jpg)">
         <div class="container">

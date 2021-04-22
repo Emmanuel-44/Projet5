@@ -6,7 +6,7 @@
     :::::::::::::::::::::::::::::::::::*/
 
      // Navbar Sticky
-    $(window).scroll(
+    /*$(window).scroll(
         function () {
             var scroll = $(window).scrollTop();
 
@@ -16,7 +16,7 @@
                 $(".navbar").removeClass("bg-primari");
             }
         }
-    );
+    );*/
 
 
     //Smoth Scroll
@@ -63,7 +63,7 @@
         function () {
             element.typed(
                 {
-                    strings: ["Web Designer.", "Graphic Designer."],
+                    strings: ["Développeur web.", "Sites vitrines.", "Applications PHP / Symfony."],
                     typeSpeed: 100,
                     loop: true,
                     autoplay: true,
