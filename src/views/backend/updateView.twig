@@ -69,8 +69,13 @@
         <form class="mt-5" action="" method="post" enctype="multipart/form-data">
         <input type="hidden" name="token" id="token" value="{{ session.token }}">
             <label for="username">Auteur :</label>
+                {% if constant('models\\Post::INVALID_AUTHOR') in post.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        Vous devez ajouter un auteur !
+                    </div>
+                {% endif %}
             <div class="form-group">
-                <input class="form-control" type="text" name="username" readonly value="{{ post.author }}">
+                <input class="form-control" type="text" name="username" value="{{ post.author }}">
             </div>
             <label for="title">Titre :</label>
                 {% if constant('models\\Post::INVALID_TITLE') in post.errors %}
