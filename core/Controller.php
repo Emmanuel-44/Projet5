@@ -59,10 +59,9 @@ class Controller
             
             if (isset($form[$field])) {
                 return true;
-            } else {
-                return false;
             }
         }
+        return false;
     }
 
     /**
@@ -74,18 +73,23 @@ class Controller
      */
     public function tokenValidate(string $formPath, int $time) : bool
     {
-        if(isset($_SESSION['token']) && isset($_SESSION['token_time']) && isset($_POST['token']))
+        $session_token = $_SESSION['token'];
+        $session_token_time = $_SESSION['token_time'];
+        $post_token = $_POST['token'];
+        $referer = $_SERVER['HTTP_REFERER'];
+
+        if(isset($session_token) && isset($session_token_time) && isset($post_token))
         {
             //Si le jeton de la session correspond à celui du formulaire
-            if($_SESSION['token'] == $_POST['token'])
+            if($session_token == $post_token)
             {
                 //On stocke le timestamp qu'il était il y a X minutes
                 $timestamp_ancien = time() - ($time*60);
                 //Si le jeton n'est pas expiré
-                if($_SESSION['token_time'] >= $timestamp_ancien)
+                if($session_token_time >= $timestamp_ancien)
                 {
                     //Si le referer est bon
-                    if($_SERVER['HTTP_REFERER'] == "$formPath")
+                    if($referer == "$formPath")
                     {
                         return true;
                     }

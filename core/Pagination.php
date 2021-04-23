@@ -13,15 +13,17 @@ class Pagination
      */
     public static function paginationPosts(): array
     {
+        $page = $_POST['page'];
+
         // On détermine sur quelle page on se trouve
-        if(isset($_GET['page']) && !empty($_GET['page'])){
-            $currentPage = (int) strip_tags($_GET['page']);
+        if(isset($page) && !empty($page)){
+            $currentPage = (int) strip_tags($page);
         } else {
             $currentPage = 1;
         }
 
-        $db = DBFactory:: dbConnect();
-        $PostManager = new PostManager($db);
+        $_db = DBFactory:: dbConnect();
+        $PostManager = new PostManager($_db);
         $nbPosts = $PostManager->countPost();
         
         // On détermine le nombre d'articles par page
@@ -50,15 +52,17 @@ class Pagination
      */
     public static function paginationUsers(): array
     {
+        $page = $_POST['page'];
+
         // On détermine sur quelle page on se trouve
-        if(isset($_GET['page']) && !empty($_GET['page'])){
-            $currentPage = (int) strip_tags($_GET['page']);
+        if(isset($page) && !empty($page)){
+            $currentPage = (int) strip_tags($page);
         } else {
             $currentPage = 1;
         }
 
-        $db = DBFactory:: dbConnect();
-        $UserManager = new UserManager($db);
+        $_db = DBFactory:: dbConnect();
+        $UserManager = new UserManager($_db);
         $nbUsers = $UserManager->countUser();
         
         // On détermine le nombre d'articles par page
