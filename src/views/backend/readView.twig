@@ -1,5 +1,47 @@
 {% extends "layout.twig" %}
 
+{% block nav %}
+    <!-- ====== Navbar ====== -->
+    <nav class="navbar navbar-expand-lg fixed-top bg-primari">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand logo" href="index.html">
+                <img src="http://localhost/Projet5/public/assets/images/logo.png" alt="logo">
+            </a>
+            <!-- // Logo -->
+            <!-- Mobile Menu -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-expanded="false"><span><i class="fa fa-bars"></i></span></button>
+            <!-- Mobile Menu -->
+            <div class="collapse navbar-collapse main-menu margin" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="http://localhost/Projet5">ACCUEIL</a></li>
+                    <li class="nav-item"><a class="nav-link" href="http://localhost/Projet5/blog">BLOG</a></li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    {% if session.user is defined and session.user is not empty %}
+                        <li class="nav-item"><img src="http://localhost/Projet5/{{ session.user.imagePath }}" class="avatar-img mt-2 mb-2" alt="Photo de profil"></li>
+                        <li class="dropdown nav-link">
+                            <button class="btn btn-outline-warning dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Bonjour {{ session.user.username }}</a>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <p class="dropdown-item">{{ session.user.contactEmail }}</p>
+                                <p class="dropdown-item">Membre depuis le {{ session.user.addingDate | date('d/m/Y') }}</p>
+                                <div class="dropdown-divider"></div>
+                                {% if 'ADMIN' in session.user.role %}<a class="dropdown-item" href="http://localhost/Projet5/admin">Espace administration</a>{% endif %}
+                                <a class="dropdown-item" href="http://localhost/Projet5/logout">Se déconnecter</a> 
+                            </div>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="http://localhost/Projet5/login">Se connecter</a></li>
+                        <li class="nav-item"><a class="nav-link" href="http://localhost/Projet5/creer-un-compte">Créer un compte</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
 {% block image %}
     <div class="page-title bg-img section-padding bg-overlay" style="background-image: url(http://localhost/Projet5/public/assets/images/admin.jpg)">
         <div class="container">
@@ -30,17 +72,15 @@
 
                         <!--  Blog Author -->
                         <div class="blog-author">
-                            <div class="user-img" style="background-image: url(../../public/assets/images/team/img-1.jpg)"></div>
+                            <div class="user-img" style="background-image: url(../../public/assets/images/team/img-3.jpg)"></div>
                             <div class="user-content">
-                                <h2>{{ post.author }} <span>Graphic designer</span></h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus, voluptas hic animi officiis corrupti velit commodi sed tempora reprehenderit.</p>
+                                <h2>Emmanuel Mahé<span>Développeur web</span></h2>
+                                <p>Fondateur du site, vous pouvez suivre mon actualité à travers les différents réseaux sociaux.</p>
                                 <!-- Social Area -->
                                 <div class="social-aria text-left">
-                                    <a target="_blank" href="#"><i class="fab fa-facebook-f"></i></a>
-                                    <a target="_blank" href="#"><i class="fab fa-twitter"></i></a>
-                                    <a target="_blank" href="#"><i class="fab fa-instagram"></i></a>
-                                    <a target="_blank" href="#"><i class="fab fa-pinterest"></i></a>
-                                    <a target="_blank" href="#"><i class="fab fa-youtube"></i></a>
+                                    <a target="_blank" href="https://facebook.com"><i class="fab fa-facebook-f"></i></a>
+                                    <a target="_blank" href="https://twitter.com"><i class="fab fa-twitter"></i></a>
+                                    <a target="_blank" href="https://www.instagram.com"><i class="fab fa-instagram"></i></a>
                                 </div>
                                 <!-- // Social Area -->
                             </div>

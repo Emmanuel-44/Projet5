@@ -19,7 +19,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $PostManager = new PostManager($this->db);
+        $PostManager = new PostManager($this->database);
         $posts = $PostManager->getList();
         $this->render('frontend/homeView.twig', array(
             'posts' => $posts
@@ -48,8 +48,8 @@ class PostController extends Controller
      */
     public function single()
     {
-        $PostManager = new PostManager($this->db);
-        $CommentManager = new CommentManager($this->db);
+        $PostManager = new PostManager($this->database);
+        $CommentManager = new CommentManager($this->database);
         $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
         $slug = substr(strrchr($this->reverse_strrchr($_SERVER['REQUEST_URI'], '-', 0), '/'), 1);
         $urlValid = $PostManager->checkPost($id, $slug);
@@ -94,7 +94,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        $PostManager = new PostManager($this->db);
+        $PostManager = new PostManager($this->database);
 
         if ($this->sessionExist('user', 'ADMIN')) {
 
@@ -146,8 +146,8 @@ class PostController extends Controller
      */
     public function read()
     {
-        $PostManager = new PostManager($this->db);
-        $CommentManager = new CommentManager($this->db);
+        $PostManager = new PostManager($this->database);
+        $CommentManager = new CommentManager($this->database);
 
         if ($this->sessionExist('user', 'ADMIN')) {
             
@@ -193,8 +193,8 @@ class PostController extends Controller
      */
     public function update()
     {
-        $PostManager = new PostManager($this->db);
-        $CommentManager = new CommentManager($this->db);
+        $PostManager = new PostManager($this->database);
+        $CommentManager = new CommentManager($this->database);
 
         if ($this->sessionExist('user', 'ADMIN')) {
             $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
@@ -261,7 +261,7 @@ class PostController extends Controller
      */
     public function delete()
     {
-        $PostManager = new PostManager($this->db);
+        $PostManager = new PostManager($this->database);
 
         $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
 

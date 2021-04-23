@@ -20,8 +20,8 @@ class Pagination
             $currentPage = 1;
         }
 
-        $db = DBFactory:: dbConnect();
-        $PostManager = new PostManager($db);
+        $database = DBFactory:: dbConnect();
+        $PostManager = new PostManager($database);
         $nbPosts = $PostManager->countPost();
         
         // On détermine le nombre d'articles par page
@@ -52,13 +52,13 @@ class Pagination
     {
         // On détermine sur quelle page on se trouve
         if(isset($_GET['page']) && !empty($_GET['page'])){
-            $currentPage = (int) strip_tags($_GET['page']);
+            $currentPage = (int)htmlspecialchars($_GET['page']);
         } else {
             $currentPage = 1;
         }
 
-        $db = DBFactory:: dbConnect();
-        $UserManager = new UserManager($db);
+        $database = DBFactory:: dbConnect();
+        $UserManager = new UserManager($database);
         $nbUsers = $UserManager->countUser();
         
         // On détermine le nombre d'articles par page

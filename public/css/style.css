@@ -268,7 +268,7 @@ button:focus {
 }
 
 .margin {
-    margin-left: 310px;
+    margin-left: 33.5%;
 }
 
 /*::::::::::::::::::::::::::::::::::::
@@ -337,7 +337,7 @@ button:focus {
 
 .hero-content h2 {
     color: #fff;
-    font-size: 90px;
+    font-size: 50px;
     font-weight: 600;
     line-height: 1;
 }

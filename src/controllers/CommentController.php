@@ -18,9 +18,10 @@ class CommentController extends Controller
      */
     public function add()
     {
-        $PostId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-        $CommentManager = new CommentManager($this->db);
-        $PostManager = new PostManager($this->db);
+        $url = $_SERVER['REQUEST_URI'];
+        $PostId = (int)substr(strrchr($url, '-'), 1);
+        $CommentManager = new CommentManager($this->database);
+        $PostManager = new PostManager($this->database);
         $comments = $CommentManager->getList($PostId);
         $post = $PostManager->getPost($PostId);
         $slug = $post->getSlug();
@@ -98,13 +99,14 @@ class CommentController extends Controller
      */
     public function delete()
     {
-        $CommentManager = new CommentManager($this->db);
-        $PostManager = new PostManager($this->db);
-        $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
+        $CommentManager = new CommentManager($this->database);
+        $PostManager = new PostManager($this->database);
+        $url = $_SERVER['REQUEST_URI'];
+        $commentId = (int)substr(strrchr($url, '/'), 1);
         $postId = (int)strstr(
-            substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', true
+            substr(strrchr($url, '-'), 1), '/', true
         );
-        $slug = substr(strrchr($this->reverse_strrchr($_SERVER['REQUEST_URI'], '-', 0), '/'), 1);
+        $slug = substr(strrchr($this->reverse_strrchr($url, '-', 0), '/'), 1);
 
         if ($this->sessionExist('user', 'ADMIN')) {
             if ($this->tokenValidate("http://localhost/Projet5/admin/article/$slug-$postId", 300)) { 
@@ -167,13 +169,14 @@ class CommentController extends Controller
      */
     public function confirm()
     {
-        $CommentManager = new CommentManager($this->db);
-        $PostManager = new PostManager($this->db);
-        $commentId = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
+        $CommentManager = new CommentManager($this->database);
+        $PostManager = new PostManager($this->database);
+        $url = $_SERVER['REQUEST_URI'];
+        $commentId = (int)substr(strrchr($url, '/'), 1);
         $postId = (int)strstr(
-            substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1), '/', true
+            substr(strrchr($url, '-'), 1), '/', true
         );
-        $slug = substr(strrchr($this->reverse_strrchr($_SERVER['REQUEST_URI'], '-', 0), '/'), 1);
+        $slug = substr(strrchr($this->reverse_strrchr($url, '-', 0), '/'), 1);
 
         if ($this->sessionExist('user', 'ADMIN')) {
             if ($this->tokenValidate("http://localhost/Projet5/admin/article/$slug-$postId", 300)) {
