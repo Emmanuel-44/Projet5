@@ -14,8 +14,10 @@ implements \Twig\Extension\GlobalsInterface
      */
     public function getGlobals(): array
     {
+        $session = $_SESSION;
+
         return [
-            'session' => $_SESSION
+            'session' => $session
         ];
     }
 }

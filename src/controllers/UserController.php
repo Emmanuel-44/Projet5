@@ -34,7 +34,7 @@ class UserController extends Controller
      */
     public function login()
     {
-        $UserManager = new UserManager($this->db);
+        $UserManager = new UserManager($this->database);
 
         if (!$this->sessionExist('user', 'USER')) {
 
@@ -95,7 +95,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $UserManager = new UserManager($this->db);
+        $UserManager = new UserManager($this->database);
 
         if (!$this->sessionExist('user', 'USER')) {
             
@@ -174,7 +174,7 @@ class UserController extends Controller
     {
         if ($this->sessionExist('user', 'SUPER_ADMIN')) {
             if ($this->tokenValidate("http://localhost/Projet5/admin/utilisateurs", 300)) {
-                $UserManager = new UserManager($this->db);
+                $UserManager = new UserManager($this->database);
                 $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
                 $user = $UserManager->getUser($id);
                 $user = new User(
@@ -200,7 +200,7 @@ class UserController extends Controller
     {
         if ($this->sessionExist('user', 'SUPER_ADMIN')) {
             if ($this->tokenValidate("http://localhost/Projet5/admin/utilisateurs", 300)) {
-                $UserManager = new UserManager($this->db);
+                $UserManager = new UserManager($this->database);
                 $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
                 $user = $UserManager->getUser($id);
                 $user = new User(

@@ -7,7 +7,7 @@ namespace core;
 class Controller
 {
     protected $twig;
-    protected $db;
+    protected $database;
 
     /**
      * Constructor
@@ -15,7 +15,7 @@ class Controller
     public function __construct()
     {
         $this->twig  = Twig::twig();
-        $this->db  = DBFactory:: dbConnect();
+        $this->database  = DBFactory:: dbConnect();
     }
 
     /**
@@ -40,8 +40,10 @@ class Controller
      */
     public function sessionExist(string $name, string $value) : bool
     {
-        return !empty($_SESSION[$name]) && in_array(
-            $value, $_SESSION[$name]['role']
+        $session = $_SESSION;
+        
+        return !empty($session[$name]) && in_array(
+            $value, $session[$name]['role']
         );
     }
 
