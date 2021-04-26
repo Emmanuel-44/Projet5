@@ -153,24 +153,25 @@ class PostController extends Controller
         $CommentManager = new CommentManager($this->database);
 
         if ($this->sessionExist('user', 'ADMIN')) {
-            
-            $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-            $slug = substr(strrchr($this->reverse_strrchr($_SERVER['REQUEST_URI'], '-', 0), '/'), 1);
-            $urlValid = $PostManager->checkPost($id, $slug);
-            if ($urlValid) {
-                $post = $PostManager->getPost($id);
-                $comments = $CommentManager->getList($id);
-                $this->render(
-                    'backend/readView.twig', array(
-                    'post' => $post,
-                    'comments' => $comments,
-                    )
-                );
-            } else {
-                $errorController = new ErrorController();
-                $errorController->error404();
-            }
-            
+            $url = filter_input(INPUT_SERVER, 'REQUEST_URI');
+            if (isset($url)) {
+                $id = (int)substr(strrchr($url, '-'), 1);
+                $slug = substr(strrchr($this->reverse_strrchr($url, '-', 0), '/'), 1);
+                $urlValid = $PostManager->checkPost($id, $slug);
+                if ($urlValid) {
+                    $post = $PostManager->getPost($id);
+                    $comments = $CommentManager->getList($id);
+                    $this->render(
+                        'backend/readView.twig', array(
+                        'post' => $post,
+                        'comments' => $comments,
+                        )
+                    );
+                } else {
+                    $errorController = new ErrorController();
+                    $errorController->error404();
+                }
+            }     
         } else {
             header('location: http://localhost/Projet5');
         }   
@@ -251,7 +252,9 @@ class PostController extends Controller
                     );
                 }
             } else {
-                echo 'Cet article n\'existe pas !';
+                $this->render(
+                    'error404View.twig'
+                );
             }
         } else {
             header('location: http://localhost/Projet5');
