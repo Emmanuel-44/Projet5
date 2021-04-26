@@ -40,7 +40,7 @@ class Controller
      */
     public function sessionExist(string $name, string $value) : bool
     {
-        $session = $_SESSION;
+        $session = filter_var_array($_SESSION);
         
         return !empty($session[$name]) && in_array(
             $value, $session[$name]['role']
@@ -60,6 +60,7 @@ class Controller
         foreach ($fields as $field) {
             
             if (isset($form[$field])) {
+                filter_input(INPUT_POST, $field);
                 return true;
             }
         }
@@ -75,10 +76,10 @@ class Controller
      */
     public function tokenValidate(string $formPath, int $time) : bool
     {
-        $session_token = $_SESSION['token'];
-        $session_token_time = $_SESSION['token_time'];
-        $post_token = $_POST['token'];
-        $referer = $_SERVER['HTTP_REFERER'];
+        $session_token = filter_var($_SESSION['token']);
+        $session_token_time = filter_var($_SESSION['token_time']);
+        $post_token = filter_input(INPUT_POST, 'token');
+        $referer = filter_input(INPUT_SERVER, 'HTTP_REFERER');
 
         if(isset($session_token) && isset($session_token_time) && isset($post_token))
         {
@@ -91,7 +92,7 @@ class Controller
                 if($session_token_time >= $timestamp_ancien)
                 {
                     //Si le referer est bon
-                    if($referer == "$formPath")
+                    if(isset($referer) && $referer == "$formPath")
                     {
                         return true;
                     }
