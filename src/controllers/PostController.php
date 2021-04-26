@@ -109,12 +109,12 @@ class PostController extends Controller
                     $imagePath = Image::getImage('post');
                     $post = new Post(
                         [
-                        'author' => htmlspecialchars($_POST['username'], ENT_NOQUOTES),
-                        'title' => htmlspecialchars($_POST['title'], ENT_NOQUOTES),
-                        'teaser' => htmlspecialchars($_POST['teaser'], ENT_NOQUOTES),
-                        'content' => htmlspecialchars($_POST['content'], ENT_NOQUOTES),
+                        'author' => htmlspecialchars(filter_input(INPUT_POST, 'username'), ENT_NOQUOTES),
+                        'title' => htmlspecialchars(filter_input(INPUT_POST, 'title'), ENT_NOQUOTES),
+                        'teaser' => htmlspecialchars(filter_input(INPUT_POST, 'teaser'), ENT_NOQUOTES),
+                        'content' => htmlspecialchars(filter_input(INPUT_POST, 'content'), ENT_NOQUOTES),
                         'imagePath' => $imagePath,
-                        'slug' => htmlspecialchars($_POST['title'], ENT_NOQUOTES),
+                        'slug' => htmlspecialchars(filter_input(INPUT_POST, 'title'), ENT_NOQUOTES),
                         'validComment' => 0,
                         'newComment' => 0
                         ]
@@ -201,30 +201,31 @@ class PostController extends Controller
         $CommentManager = new CommentManager($this->database);
 
         if ($this->sessionExist('user', 'ADMIN')) {
-            $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-            $slug = substr(strrchr($this->reverse_strrchr($_SERVER['REQUEST_URI'], '-', 0), '/'), 1);
-            $urlValid = $PostManager->checkPost($id, $slug);
+            $url = filter_input(INPUT_SERVER, 'REQUEST_URI');
+            $postId = (int)substr(strrchr($url, '-'), 1);
+            $slug = substr(strrchr($this->reverse_strrchr($url, '-', 0), '/'), 1);
+            $urlValid = $PostManager->checkPost($postId, $slug);
             if ($urlValid) {
-                $post = $PostManager->getPost($id);
+                $post = $PostManager->getPost($postId);
                 $slug = $post->getSlug();
-                $countValid = $CommentManager->count($id);
-                $countNew = $CommentManager->countNew($id);
+                $countValid = $CommentManager->count($postId);
+                $countNew = $CommentManager->countNew($postId);
 
                 if ($this->formValidate(
                     $_POST, ['username', 'title', 'teaser', 'content'] 
                 )
                 ) {
-                    if ($this->tokenValidate("http://localhost/Projet5/admin/modifier/$slug-$id", 300)) {
+                    if ($this->tokenValidate("http://localhost/Projet5/admin/modifier/$slug-$postId", 300)) {
                         $imagePath = Image::getImage('post');
                         $post = new Post(
                             [
-                            'id' => $id,
-                            'author' => htmlspecialchars($_POST['username'], ENT_NOQUOTES),
-                            'title' => htmlspecialchars($_POST['title'], ENT_NOQUOTES),
-                            'teaser' => htmlspecialchars($_POST['teaser'], ENT_NOQUOTES),
-                            'content' => htmlspecialchars($_POST['content'], ENT_NOQUOTES),
+                            'id' => $postId,
+                            'author' => htmlspecialchars(filter_input(INPUT_POST, 'username'), ENT_NOQUOTES),
+                            'title' => htmlspecialchars(filter_input(INPUT_POST, 'title'), ENT_NOQUOTES),
+                            'teaser' => htmlspecialchars(filter_input(INPUT_POST, 'teaser'), ENT_NOQUOTES),
+                            'content' => htmlspecialchars(filter_input(INPUT_POST, 'content'), ENT_NOQUOTES),
                             'imagePath' => $imagePath,
-                            'slug' => htmlspecialchars($_POST['title'], ENT_NOQUOTES),
+                            'slug' => htmlspecialchars(filter_input(INPUT_POST, 'title'), ENT_NOQUOTES),
                             'validComment' => $countValid,
                             'newComment' => $countNew
                             ]
@@ -269,11 +270,12 @@ class PostController extends Controller
     {
         $PostManager = new PostManager($this->database);
 
-        $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
+        $url = filter_input(INPUT_SERVER, 'REQUEST_URI');
+        $postId = (int)substr(strrchr($url, '-'), 1);
 
         if ($this->sessionExist('user', 'ADMIN')) {
             if ($this->tokenValidate("http://localhost/Projet5/admin", 300)) {
-                $PostManager->delete($id);
+                $PostManager->delete($postId);
                 header('location:http://localhost/Projet5/admin');
             } else {
                 session_unset();

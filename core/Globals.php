@@ -15,7 +15,7 @@ implements \Twig\Extension\GlobalsInterface
     public function getGlobals(): array
     {
         $session = $_SESSION;
-        $url = $_SERVER['REQUEST_URI'];
+        $url = filter_input(INPUT_SERVER, 'REQUEST_URI');
 
         return [
             'session' => $session,
