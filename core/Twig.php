@@ -21,7 +21,7 @@ class Twig
             ]
         );
         $twig->addExtension(new \Twig\Extension\DebugExtension());
-        $twig->addExtension(new Sessions);
+        $twig->addExtension(new Globals);
 
         return $twig;
     }

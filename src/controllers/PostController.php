@@ -48,24 +48,27 @@ class PostController extends Controller
      */
     public function single()
     {
-        $PostManager = new PostManager($this->database);
-        $CommentManager = new CommentManager($this->database);
-        $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '-'), 1);
-        $slug = substr(strrchr($this->reverse_strrchr($_SERVER['REQUEST_URI'], '-', 0), '/'), 1);
-        $urlValid = $PostManager->checkPost($id, $slug);
-        if ($urlValid) {
-            $post = $PostManager->getPost($id);
-            $comments = $CommentManager->getList($id);
-            $this->render(
-                'frontend/singleView.twig', array(
-                'post' => $post,
-                'comments' => $comments
-                )
-            );
-        } else {
-            $errorController = new ErrorController();
-            $errorController->error404();
-        }
+        $url = filter_input(INPUT_SERVER, 'REQUEST_URI');
+        if (isset($url)) {
+            $PostManager = new PostManager($this->database);
+            $CommentManager = new CommentManager($this->database);
+            $Postid = (int)substr(strrchr($url, '-'), 1);
+            $slug = substr(strrchr($this->reverse_strrchr($url, '-', 0), '/'), 1);
+            $urlValid = $PostManager->checkPost($Postid, $slug);
+            if ($urlValid) {
+                $post = $PostManager->getPost($Postid);
+                $comments = $CommentManager->getList($Postid);
+                $this->render(
+                    'frontend/singleView.twig', array(
+                    'post' => $post,
+                    'comments' => $comments
+                    )
+                );
+            } else {
+                $errorController = new ErrorController();
+                $errorController->error404();
+            }
+        } 
     }
 
     /**

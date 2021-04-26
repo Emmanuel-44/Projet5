@@ -4,7 +4,7 @@ namespace core;
 /**
  * Session twig
  */
-class Sessions extends \Twig\Extension\AbstractExtension 
+class Globals extends \Twig\Extension\AbstractExtension 
 implements \Twig\Extension\GlobalsInterface
 {
     /**
@@ -15,9 +15,11 @@ implements \Twig\Extension\GlobalsInterface
     public function getGlobals(): array
     {
         $session = $_SESSION;
+        $url = $_SERVER['REQUEST_URI'];
 
         return [
-            'session' => $session
+            'session' => $session,
+            'url' => $url
         ];
     }
 }
