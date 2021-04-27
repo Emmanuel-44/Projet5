@@ -18,7 +18,7 @@ class CommentController extends Controller
      */
     public function add()
     {
-        $url = $_SERVER['REQUEST_URI'];
+        $url = filter_input(INPUT_SERVER, 'REQUEST_URI');
         $PostId = (int)substr(strrchr($url, '-'), 1);
         $CommentManager = new CommentManager($this->database);
         $PostManager = new PostManager($this->database);
@@ -27,7 +27,7 @@ class CommentController extends Controller
         $slug = $post->getSlug();
             
         // Si le formulaire est validé
-        if ($this->formValidate($_POST, ['username','content'])) {
+        if ($this->formValidate(filter_input_array(INPUT_POST), ['username','content'])) {
 
             // Si l'utilisateur est connecté avec validation du token
             if ($this->sessionExist('user', 'USER') && $this->tokenValidate("http://localhost/Projet5/blog/$slug-$PostId", 60)) {
@@ -35,8 +35,8 @@ class CommentController extends Controller
                 $userImagePath = $_SESSION['user']['imagePath'];
                 $comment = new Comment(
                     [
-                    'username' => htmlspecialchars($_POST['username'], ENT_NOQUOTES),
-                    'content' => htmlspecialchars($_POST['content'], ENT_NOQUOTES),
+                    'username' => htmlspecialchars(filter_input(INPUT_POST, 'username'), ENT_NOQUOTES),
+                    'content' => htmlspecialchars(filter_input(INPUT_POST, 'content'), ENT_NOQUOTES),
                     'commentState' => false,
                     'postId' => $PostId,
                     'userImagePath' => $userImagePath
@@ -101,7 +101,7 @@ class CommentController extends Controller
     {
         $CommentManager = new CommentManager($this->database);
         $PostManager = new PostManager($this->database);
-        $url = $_SERVER['REQUEST_URI'];
+        $url = filter_input(INPUT_SERVER, 'REQUEST_URI');
         $commentId = (int)substr(strrchr($url, '/'), 1);
         $postId = (int)strstr(
             substr(strrchr($url, '-'), 1), '/', true
@@ -171,7 +171,7 @@ class CommentController extends Controller
     {
         $CommentManager = new CommentManager($this->database);
         $PostManager = new PostManager($this->database);
-        $url = $_SERVER['REQUEST_URI'];
+        $url = filter_input(INPUT_SERVER, 'REQUEST_URI');
         $commentId = (int)substr(strrchr($url, '/'), 1);
         $postId = (int)strstr(
             substr(strrchr($url, '-'), 1), '/', true
