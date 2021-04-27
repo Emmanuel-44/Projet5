@@ -58,8 +58,9 @@ class UserController extends Controller
                         $user->setSession();
                         if ($this->sessionExist('user', 'ADMIN')) {
                             header('location: http://localhost/Projet5/admin');
-                        }
-                        header('location: http://localhost/Projet5');   
+                        } else {
+                            header('location: http://localhost/Projet5');  
+                        } 
                         
                     } else {
                         $error = ['fail'];

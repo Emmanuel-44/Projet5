@@ -14,8 +14,9 @@ class Pagination
     public static function paginationPosts(): array
     {
         // On détermine sur quelle page on se trouve
-        if(isset($_GET['page']) && !empty($_GET['page'])){
-            $currentPage = (int) strip_tags($_GET['page']);
+        $page = filter_input(INPUT_GET, 'page');
+        if(isset($page) && !empty($page)){
+            $currentPage = (int) strip_tags($page);
         } else {
             $currentPage = 1;
         }
@@ -51,8 +52,9 @@ class Pagination
     public static function paginationUsers(): array
     {
         // On détermine sur quelle page on se trouve
-        if(isset($_GET['page']) && !empty($_GET['page'])){
-            $currentPage = (int)htmlspecialchars($_GET['page']);
+        $page = filter_input(INPUT_GET, 'page');
+        if(isset($page) && !empty($page)){
+            $currentPage = (int)htmlspecialchars($page);
         } else {
             $currentPage = 1;
         }
