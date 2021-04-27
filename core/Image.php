@@ -15,16 +15,17 @@ Class Image
      */
     public static function uploadImage($folder)
     {
-        if (isset($_FILES['image']) AND $_FILES['image']['error'] == 0) {
-            if ($_FILES['image']['size'] <= 1000000) {
-                $datasFile = pathinfo($_FILES['image']['name']);
+        $image = $_FILES['image'];
+        if (isset($image) AND $image['error'] == 0) {
+            if ($image['size'] <= 1000000) {
+                $datasFile = pathinfo($image['name']);
                 $extension_upload = $datasFile['extension'];
-                $authorized_extensions = array('jpg', 'jpeg', 'png');
+                $authorized_ext = array('jpg', 'jpeg', 'png');
 
-                if (in_array($extension_upload, $authorized_extensions)) {
+                if (in_array($extension_upload, $authorized_ext)) {
                     $imagepath = "../public/img/$folder/"
-                        . basename($_FILES['image']['name']);
-                    move_uploaded_file($_FILES['image']['tmp_name'], $imagepath);
+                        . basename($image['name']);
+                    move_uploaded_file($image['tmp_name'], $imagepath);
                 }
             }
         }
@@ -39,8 +40,9 @@ Class Image
      */
     public static function getImage($folder): string
     {
-        if (!empty($_FILES['image']['name'])) {
-            $imagePath = "public/img/$folder/" .$_FILES['image']['name'];
+        $image = $_FILES['image'];
+        if (!empty($image['name'])) {
+            $imagePath = "public/img/$folder/" .$image['name'];
         } else {
             $imagePath = "public/img/$folder/default.png";
         }
