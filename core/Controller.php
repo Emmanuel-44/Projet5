@@ -55,7 +55,7 @@ class Controller
      * 
      * @return boolean
      */
-    public function formValidate(array $form, array $fields) : bool
+    public function formValidate(?array $form, array $fields) : bool
     {
         foreach ($fields as $field) {
             
