@@ -102,7 +102,7 @@ class PostController extends Controller
         if ($this->sessionExist('user', 'ADMIN')) {
 
             if ($this->formValidate(
-                $_POST, ['username', 'title', 'teaser', 'content']
+                filter_input_array(INPUT_POST), ['username', 'title', 'teaser', 'content']
             ) 
             ) {
                 if ($this->tokenValidate("http://localhost/Projet5/admin/ajouter", 300)) {
@@ -155,12 +155,12 @@ class PostController extends Controller
         if ($this->sessionExist('user', 'ADMIN')) {
             $url = filter_input(INPUT_SERVER, 'REQUEST_URI');
             if (isset($url)) {
-                $id = (int)substr(strrchr($url, '-'), 1);
+                $postId = (int)substr(strrchr($url, '-'), 1);
                 $slug = substr(strrchr($this->reverse_strrchr($url, '-', 0), '/'), 1);
-                $urlValid = $PostManager->checkPost($id, $slug);
+                $urlValid = $PostManager->checkPost($postId, $slug);
                 if ($urlValid) {
-                    $post = $PostManager->getPost($id);
-                    $comments = $CommentManager->getList($id);
+                    $post = $PostManager->getPost($postId);
+                    $comments = $CommentManager->getList($postId);
                     $this->render(
                         'backend/readView.twig', array(
                         'post' => $post,
