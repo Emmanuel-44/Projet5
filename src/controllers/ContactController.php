@@ -47,12 +47,15 @@ class ContactController
                 $mail->AltBody = htmlspecialchars(filter_input(INPUT_POST, 'message'));
 
                 $mail->send();
-                echo 'Votre message a bien été envoyé';
+                $message = print_r('Votre message a bien été envoyé.');
+                return $message;
             } catch (Exception $e) {
-                echo "Le message n'a pas pu être envoyé. Mailer Error: {$mail->ErrorInfo}";
+                $message = print_r('Le message n\'a pas pu être envoyé.');
+                return $message;
             }
         } else {
-            echo "Tous les champs doivent être remplis avec un format email valide !";
-        }  
+            $message = print_r('Tous les champs doivent être remplis avec un format email valide !');
+            return $message;
+        } 
     }
 }

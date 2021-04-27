@@ -25,7 +25,6 @@ class UserController extends Controller
             );
         } else {
             header('location: http://localhost/Projet5');
-            exit; 
         }
     }
 
@@ -59,10 +58,8 @@ class UserController extends Controller
                         $user->setSession();
                         if ($this->sessionExist('user', 'ADMIN')) {
                             header('location: http://localhost/Projet5/admin');
-                            exit;
                         }
-                        header('location: http://localhost/Projet5');
-                        exit;   
+                        header('location: http://localhost/Projet5');   
                         
                     } else {
                         $error = ['fail'];
@@ -78,7 +75,6 @@ class UserController extends Controller
             } 
         } else {
             header('location: http://localhost/Projet5');
-            exit;
         } 
     }
 
@@ -91,7 +87,6 @@ class UserController extends Controller
     {
         session_destroy();
         header('location: http://localhost/Projet5');
-        exit;
     }
 
     /**
@@ -104,7 +99,7 @@ class UserController extends Controller
 
         if (!$this->sessionExist('user', 'USER')) {
             
-            if ($this->formValidate($_POST, ['username','email', 'password'])) {
+            if ($this->formValidate(filter_input_array(INPUT_POST), ['username','email', 'password'])) {
 
                 if (!empty(filter_input(INPUT_POST, 'password'))) {
                     $password = password_hash(filter_input(INPUT_POST, 'password'), PASSWORD_DEFAULT);
@@ -156,17 +151,20 @@ class UserController extends Controller
                     }
                     
                 } else {
+                    // Confirmation de mot de passe pas rempli
                     $this->render(
                         'frontend/createUserView.twig', array(
                             'user' => $user,
-                            'post' => $_POST
+                            'post' => filter_input_array(INPUT_POST)
                         )
                     );
                 }
             } else {
+                // Formulaire non rempli, arrivée sur la page
                 $this->render('frontend/createUserView.twig');
             }
         } else {
+            // Si un utilisateur est déjà connecté
             header('location: http://localhost/Projet5');
         }
     }
@@ -193,11 +191,9 @@ class UserController extends Controller
             } else {
                 session_unset();
                 header('location: http://localhost/Projet5'); 
-                exit;
             }
         }
         header('location: http://localhost/Projet5/admin/utilisateurs');
-        exit;
     }
 
     /**
@@ -222,10 +218,8 @@ class UserController extends Controller
             } else {
                 session_unset();
                 header('location: http://localhost/Projet5');
-                exit;
             }
         }
-        header('location: http://localhost/Projet5/admin/utilisateurs');
-        exit; 
+        header('location: http://localhost/Projet5/admin/utilisateurs'); 
     }
 }
