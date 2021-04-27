@@ -14,8 +14,8 @@ class ContactController
      */
     public function emailSend()
     {
-        if (!empty($_POST['name']) && !empty($_POST['email']) 
-            && !empty($_POST['subject']) && !empty($_POST['message']) 
+        if (!empty(filter_input(INPUT_POST, 'name')) && !empty(filter_input(INPUT_POST, 'email')) 
+            && !empty(filter_input(INPUT_POST, 'subject')) && !empty(filter_input(INPUT_POST, 'message')) 
             && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) 
         {
             //Instantiation and passing `true` enables exceptions
@@ -33,18 +33,18 @@ class ContactController
                 $mail->Port       = 587;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 
                 //Recipients
-                $mail->setFrom(htmlspecialchars($_POST['email']), htmlspecialchars($_POST['name']));
+                $mail->setFrom(htmlspecialchars(filter_input(INPUT_POST, 'email')), htmlspecialchars(filter_input(INPUT_POST, 'name')));
                 $mail->addAddress('monadresse@gmail.com', 'Emmanuel');      //Add a recipient
-                $mail->addReplyTo(htmlspecialchars($_POST['email']), htmlspecialchars($_POST['name']));
+                $mail->addReplyTo(htmlspecialchars(filter_input(INPUT_POST, 'email')), htmlspecialchars(filter_input(INPUT_POST, 'name')));
 
                 //Content
             $mail->isHTML(true);                                            //Set email format to HTML
-                $mail->Subject = htmlspecialchars($_POST['subject']);
-                $mail->Body    = '<b>Auteur : </b>' . $_POST['name'] 
-                    . '<br /><b>Email : </b>' . htmlspecialchars($_POST['email'])
-                    . '<br /><b>Sujet : </b>' . htmlspecialchars($_POST['subject'])
-                    . '<br /><b>Message : </b>' . htmlspecialchars($_POST['message']);
-                $mail->AltBody = htmlspecialchars($_POST['message']);
+                $mail->Subject = htmlspecialchars(filter_input(INPUT_POST, 'subject'));
+                $mail->Body    = '<b>Auteur : </b>' . filter_input(INPUT_POST, 'name') 
+                    . '<br /><b>Email : </b>' . htmlspecialchars(filter_input(INPUT_POST, 'email'))
+                    . '<br /><b>Sujet : </b>' . htmlspecialchars(filter_input(INPUT_POST, 'subject'))
+                    . '<br /><b>Message : </b>' . htmlspecialchars(filter_input(INPUT_POST, 'message'));
+                $mail->AltBody = htmlspecialchars(filter_input(INPUT_POST, 'message'));
 
                 $mail->send();
                 echo 'Votre message a bien été envoyé';

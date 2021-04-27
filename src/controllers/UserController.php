@@ -24,8 +24,9 @@ class UserController extends Controller
                 )
             );
         } else {
-            header('location: http://localhost/Projet5'); 
-        } 
+            header('location: http://localhost/Projet5');
+            exit; 
+        }
     }
 
     /**
@@ -37,9 +38,10 @@ class UserController extends Controller
         $UserManager = new UserManager($this->database);
 
         if (!$this->sessionExist('user', 'USER')) {
-
-            if (isset($_POST['email']) && isset($_POST['password']) 
-                && !empty($_POST['email']) && !empty(['password'])
+            $email = filter_input(INPUT_POST, 'email');
+            $password = filter_input(INPUT_POST, 'password');
+            if (isset($email) && isset($password) 
+                && !empty($email) && !empty($password)
             ) {
 
                 $check = $UserManager->findByEmail();
@@ -53,13 +55,14 @@ class UserController extends Controller
                     );
                 } else {
                     $user = $UserManager->getUser($check['id']);
-                    if (password_verify($_POST['password'], $user->getPassword())) {
+                    if (password_verify($password, $user->getPassword())) {
                         $user->setSession();
                         if ($this->sessionExist('user', 'ADMIN')) {
                             header('location: http://localhost/Projet5/admin');
-                        } else {
-                            header('location: http://localhost/Projet5');
+                            exit;
                         }
+                        header('location: http://localhost/Projet5');
+                        exit;   
                         
                     } else {
                         $error = ['fail'];
@@ -75,6 +78,7 @@ class UserController extends Controller
             } 
         } else {
             header('location: http://localhost/Projet5');
+            exit;
         } 
     }
 
@@ -87,6 +91,7 @@ class UserController extends Controller
     {
         session_destroy();
         header('location: http://localhost/Projet5');
+        exit;
     }
 
     /**
@@ -101,8 +106,8 @@ class UserController extends Controller
             
             if ($this->formValidate($_POST, ['username','email', 'password'])) {
 
-                if (!empty($_POST['password'])) {
-                    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                if (!empty(filter_input(INPUT_POST, 'password'))) {
+                    $password = password_hash(filter_input(INPUT_POST, 'password'), PASSWORD_DEFAULT);
                 } else {
                     $password = '';
                 }
@@ -111,8 +116,8 @@ class UserController extends Controller
     
                 $user = new User(
                     [
-                    'username' => htmlspecialchars($_POST['username']),
-                    'contactEmail' => htmlspecialchars($_POST['email']),
+                    'username' => htmlspecialchars(filter_input(INPUT_POST, 'username')),
+                    'contactEmail' => htmlspecialchars(filter_input(INPUT_POST, 'email')),
                     'password' => $password,
                     'imagePath' => $imagePath,
                     'role' => ['USER']
@@ -120,7 +125,7 @@ class UserController extends Controller
                 );
         
                 if ($user->isValid() 
-                    && $_POST['password'] == $_POST['confirm_password']
+                    && filter_input(INPUT_POST, 'password') == filter_input(INPUT_POST, 'confirm_password')
                 ) {
                     $checkUsername = $UserManager->findByUsername();
                     $checkEmail = $UserManager->findByEmail();
@@ -175,11 +180,12 @@ class UserController extends Controller
         if ($this->sessionExist('user', 'SUPER_ADMIN')) {
             if ($this->tokenValidate("http://localhost/Projet5/admin/utilisateurs", 300)) {
                 $UserManager = new UserManager($this->database);
-                $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
-                $user = $UserManager->getUser($id);
+                $url = filter_input(INPUT_SERVER, 'REQUEST_URI');
+                $userId = (int)substr(strrchr($url, '/'), 1);
+                $user = $UserManager->getUser($userId);
                 $user = new User(
                     [
-                        'id' => $id,
+                        'id' => $userId,
                         'role' => ['USER', 'ADMIN']
                     ]
                 );
@@ -187,9 +193,11 @@ class UserController extends Controller
             } else {
                 session_unset();
                 header('location: http://localhost/Projet5'); 
+                exit;
             }
         }
-        header('location: http://localhost/Projet5/admin/utilisateurs');  
+        header('location: http://localhost/Projet5/admin/utilisateurs');
+        exit;
     }
 
     /**
@@ -201,20 +209,23 @@ class UserController extends Controller
         if ($this->sessionExist('user', 'SUPER_ADMIN')) {
             if ($this->tokenValidate("http://localhost/Projet5/admin/utilisateurs", 300)) {
                 $UserManager = new UserManager($this->database);
-                $id = (int)substr(strrchr($_SERVER['REQUEST_URI'], '/'), 1);
-                $user = $UserManager->getUser($id);
+                $url = filter_input(INPUT_SERVER, 'REQUEST_URI');
+                $userId = (int)substr(strrchr($url, '/'), 1);
+                $user = $UserManager->getUser($userId);
                 $user = new User(
                     [
-                        'id' => $id,
+                        'id' => $userId,
                         'role' => ['USER']
                     ]
                 );
                 $UserManager->update($user);
             } else {
                 session_unset();
-                header('location: http://localhost/Projet5'); 
+                header('location: http://localhost/Projet5');
+                exit;
             }
         }
-        header('location: http://localhost/Projet5/admin/utilisateurs'); 
+        header('location: http://localhost/Projet5/admin/utilisateurs');
+        exit; 
     }
 }
