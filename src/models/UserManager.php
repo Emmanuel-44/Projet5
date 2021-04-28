@@ -16,9 +16,9 @@ class UserManager
      *
      * @param PDO $db bdd
      */
-    public function __construct(PDO $db)
+    public function __construct(PDO $database)
     {
-        $this->_db = $db;
+        $this->_db = $database;
     }
 
     /**
@@ -50,10 +50,10 @@ class UserManager
      * 
      * @return User
      */
-    public function getUser($id): User
+    public function getUser($userId): User
     {
         $req = $this->_db->prepare('SELECT * FROM user WHERE id = :id');
-        $req->bindValue(':id', $id);
+        $req->bindValue(':id', $userId);
         $req->execute();
         $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\User');
         $user = $req->fetch();

@@ -16,9 +16,9 @@ class CommentManager
      *
      * @param PDO $db bdd
      */
-    public function __construct(PDO $db)
+    public function __construct(PDO $database)
     {
-        $this->_db = $db;
+        $this->_db = $database;
     }
     
     /**
@@ -162,8 +162,8 @@ class CommentManager
      * 
      * @return void
      */
-    public function delete($id)
+    public function delete($commentId)
     {
-        $this->_db->exec('DELETE FROM comment WHERE id=' .$id);
+        $this->_db->exec('DELETE FROM comment WHERE id=' .$commentId);
     }
 }

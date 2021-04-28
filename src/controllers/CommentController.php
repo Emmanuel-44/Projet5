@@ -70,18 +70,19 @@ class CommentController extends Controller
                     'comments' => $comments
                     )
                 );
-                // Si l'utilisateur n'est pas connecté
-            } else {
-                session_unset();
-                $error = 'Vous devez être connecté pour envoyer un message';
-                $this->render(
-                    'frontend/singleView.twig', array(
-                    'post' => $post,
-                    'comments' => $comments,
-                    'error' => $error
-                    )
-                );
+                exit();
             }
+            // Si l'utilisateur n'est pas connecté
+            session_unset();
+            $error = 'Vous devez être connecté pour envoyer un message';
+            $this->render(
+                'frontend/singleView.twig', array(
+                'post' => $post,
+                'comments' => $comments,
+                'error' => $error
+                )
+            );
+            
             // Si le formulaire n'est pas rempli 
         } else {
             $this->render(
