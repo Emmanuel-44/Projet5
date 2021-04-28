@@ -89,7 +89,7 @@ class UserManager
     public function findByUsername()
     {
         $req = $this->_db->prepare('SELECT username FROM user WHERE username = ?');
-        $req->execute(array($_POST['username']));
+        $req->execute(array(filter_input(INPUT_POST, 'username')));
         $check = $req->fetch();
         return $check;
     }
@@ -102,7 +102,7 @@ class UserManager
     public function findByEmail()
     {
         $req = $this->_db->prepare('SELECT * FROM user WHERE contactEmail = ?');
-        $req->execute(array($_POST['email']));
+        $req->execute(array(filter_input(INPUT_POST, 'email')));
         $check = $req->fetch();
         return $check;
     }
