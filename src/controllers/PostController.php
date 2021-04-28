@@ -20,7 +20,7 @@ class PostController extends Controller
     public function index()
     {
         $PostManager = new PostManager($this->database);
-        $posts = $PostManager->getList();
+        $posts = $PostManager->getList(); 
         $this->render('frontend/homeView.twig', array(
             'posts' => $posts
         ));
@@ -68,7 +68,7 @@ class PostController extends Controller
                 $errorController = new ErrorController();
                 $errorController->error404();
             }
-        } 
+        }
     }
 
     /**
@@ -87,8 +87,9 @@ class PostController extends Controller
                 )
             );
         } else {
-            header('location: http://localhost/Projet5'); 
-        }     
+            header('location: http://localhost/Projet5');
+            exit();
+        }  
     }
 
     /**
@@ -212,7 +213,7 @@ class PostController extends Controller
                 $countNew = $CommentManager->countNew($postId);
 
                 if ($this->formValidate(
-                    $_POST, ['username', 'title', 'teaser', 'content'] 
+                    filter_input_array(INPUT_POST), ['username', 'title', 'teaser', 'content'] 
                 )
                 ) {
                     if ($this->tokenValidate("http://localhost/Projet5/admin/modifier/$slug-$postId", 300)) {

@@ -82,10 +82,10 @@ class PostManager
      * 
      * @return void
      */
-    public function delete($id)
+    public function delete($postId)
     {
-        $this->_db->exec('DELETE FROM post WHERE id ='. $id);
-        $this->_db->exec('DELETE FROM comment WHERE postId='. $id);
+        $this->_db->exec('DELETE FROM post WHERE id ='. $postId);
+        $this->_db->exec('DELETE FROM comment WHERE postId='. $postId);
     }
 
     /** 
