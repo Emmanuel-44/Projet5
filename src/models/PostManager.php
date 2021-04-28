@@ -16,9 +16,9 @@ class PostManager
      *
      * @param PDO $db bdd
      */
-    public function __construct(PDO $db)
+    public function __construct(PDO $database)
     {
-        $this->_db = $db;
+        $this->_db = $database;
     }
     
     /**
@@ -115,10 +115,10 @@ class PostManager
      * 
      * @return Post
      */
-    public function getPost($id) : Post
+    public function getPost($postId) : Post
     {
         $req = $this->_db->prepare('SELECT * FROM post WHERE id = :id');
-        $req->bindValue(':id', $id);
+        $req->bindValue(':id', $postId);
         $req->execute();
         $req->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'models\Post');
         $post = $req->fetch();
@@ -138,9 +138,9 @@ class PostManager
      * 
      * @return array|false
      */
-    public function checkPost(int $id, string $slug)
+    public function checkPost(int $postId, string $slug)
     {
-        $req = $this->_db->prepare("SELECT id, slug FROM post WHERE id = $id AND slug = '$slug'");
+        $req = $this->_db->prepare("SELECT id, slug FROM post WHERE id = $postId AND slug = '$slug'");
         $req->execute();
         $check = $req->fetch();
         return $check;
