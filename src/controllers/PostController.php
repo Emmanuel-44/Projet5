@@ -86,9 +86,9 @@ class PostController extends Controller
                 'currentPage' => $pagination['currentPage']
                 )
             );
-            exit();
-        }
-            header('location: http://localhost/Projet5'); 
+        } else {
+            header('location: http://localhost/Projet5');
+        }  
     }
 
     /**

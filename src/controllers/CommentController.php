@@ -2,6 +2,7 @@
 namespace controllers;
 
 use core\Controller;
+use core\Session;
 use models\Comment;
 use models\CommentManager;
 use models\PostManager;
@@ -32,7 +33,7 @@ class CommentController extends Controller
             // Si l'utilisateur est connecté avec validation du token
             if ($this->sessionExist('user', 'USER') && $this->tokenValidate("http://localhost/Projet5/blog/$slug-$PostId", 60)) {
 
-                $userImagePath = $_SESSION['user']['imagePath'];
+                $userImagePath = Session::get('user')['imagePath'];
                 $comment = new Comment(
                     [
                     'username' => htmlspecialchars(filter_input(INPUT_POST, 'username'), ENT_NOQUOTES),
@@ -70,19 +71,18 @@ class CommentController extends Controller
                     'comments' => $comments
                     )
                 );
-                exit();
+                // Si l'utilisateur n'est pas connecté
+            } else {
+                session_unset();
+                $error = 'Vous devez être connecté pour envoyer un message';
+                $this->render(
+                    'frontend/singleView.twig', array(
+                    'post' => $post,
+                    'comments' => $comments,
+                    'error' => $error
+                    )
+                );
             }
-            // Si l'utilisateur n'est pas connecté
-            session_unset();
-            $error = 'Vous devez être connecté pour envoyer un message';
-            $this->render(
-                'frontend/singleView.twig', array(
-                'post' => $post,
-                'comments' => $comments,
-                'error' => $error
-                )
-            );
-            
             // Si le formulaire n'est pas rempli 
         } else {
             $this->render(

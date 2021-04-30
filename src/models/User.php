@@ -2,8 +2,9 @@
 
 namespace models;
 
-use core\Entity;
 use DateTime;
+use core\Entity;
+use core\Session;
 
 /**
  * User entity
@@ -236,17 +237,17 @@ class User extends Entity
      */
     public function setSession()
     {
-        $_SESSION['user'] = [
+        Session::put('user', [
             'id' => $this->id,
             'username' => $this->username,
             'contactEmail' => $this->contactEmail,
             'addingDate' => $this->addingDate,
             'imagePath' => $this->imagePath,
             'role' => $this->role
-        ];
+        ]);
 
         $token = bin2hex(random_bytes(15));
-        $_SESSION['token'] = $token;
-        $_SESSION['token_time'] = time();
+        Session::put('token', $token);
+        Session::put('token_time', time());
     }
 }

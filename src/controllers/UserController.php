@@ -23,9 +23,9 @@ class UserController extends Controller
                 'currentPage' => $pagination['currentPage']
                 )
             );
-            exit();
+        } else {
+            header('location: http://localhost/Projet5');
         }
-        header('location: http://localhost/Projet5');
     }
 
     /**

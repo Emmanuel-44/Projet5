@@ -1,9 +1,10 @@
 <?php
 namespace controllers;
 
-use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
+use Berlioz\FlashBag\FlashBag;
 use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class ContactController
 {
@@ -16,7 +17,7 @@ class ContactController
     {
         if (!empty(filter_input(INPUT_POST, 'name')) && !empty(filter_input(INPUT_POST, 'email')) 
             && !empty(filter_input(INPUT_POST, 'subject')) && !empty(filter_input(INPUT_POST, 'message')) 
-            && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) 
+            && filter_var(filter_input(INPUT_POST, 'email'), FILTER_VALIDATE_EMAIL)) 
         {
             //Instantiation and passing `true` enables exceptions
             $mail = new PHPMailer(true);
@@ -51,8 +52,8 @@ class ContactController
             } catch (Exception $e) {
                 echo 'Le message n\'a pas pu être envoyé.';
             }
-            exit();
-        }
-        echo 'Tous les champs doivent être remplis avec un format email valide !';
+        } else {
+            echo 'Tous les champs doivent être remplis avec un format email valide !';
+        }   
     }
 }
