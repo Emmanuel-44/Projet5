@@ -73,7 +73,7 @@ class CommentController extends Controller
                 );
                 // Si l'utilisateur n'est pas connecté
             } else {
-                session_unset();
+                Session::forget();
                 $error = 'Vous devez être connecté pour envoyer un message';
                 $this->render(
                     'frontend/singleView.twig', array(
