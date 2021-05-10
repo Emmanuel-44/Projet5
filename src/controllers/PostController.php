@@ -4,6 +4,7 @@ namespace controllers;
 use core\Controller;
 use core\Image;
 use core\pagination;
+use core\Session;
 use models\Post;
 use models\PostManager;
 use models\CommentManager;
@@ -105,7 +106,7 @@ class PostController extends Controller
                 filter_input_array(INPUT_POST), ['username', 'title', 'teaser', 'content']
             ) 
             ) {
-                if ($this->tokenValidate("http://localhost/Projet5/admin/ajouter", 300)) {
+                if ($this->tokenValidate("http://localhost/Projet5/admin/ajouter", 1)) {
                     $imagePath = Image::getImage('post');
                     $post = new Post(
                         [
@@ -132,7 +133,7 @@ class PostController extends Controller
                         );
                     }
                 } else {
-                    session_unset();
+                    Session::forget();
                     header('location: http://localhost/Projet5');
                 }    
             } else {
@@ -215,7 +216,7 @@ class PostController extends Controller
                     filter_input_array(INPUT_POST), ['username', 'title', 'teaser', 'content'] 
                 )
                 ) {
-                    if ($this->tokenValidate("http://localhost/Projet5/admin/modifier/$slug-$postId", 300)) {
+                    if ($this->tokenValidate("http://localhost/Projet5/admin/modifier/$slug-$postId", 1)) {
                         $imagePath = Image::getImage('post');
                         $post = new Post(
                             [
@@ -241,7 +242,7 @@ class PostController extends Controller
                             )
                         );
                     } else {
-                        session_unset();
+                        Session::forget();
                         header('location: http://localhost/Projet5');
                     }       
                 } else {
@@ -274,11 +275,11 @@ class PostController extends Controller
         $postId = (int)substr(strrchr($url, '-'), 1);
 
         if ($this->sessionExist('user', 'ADMIN')) {
-            if ($this->tokenValidate("http://localhost/Projet5/admin", 300)) {
+            if ($this->tokenValidate("http://localhost/Projet5/admin", 1)) {
                 $PostManager->delete($postId);
                 header('location:http://localhost/Projet5/admin');
             } else {
-                session_unset();
+                Session::forget();
                 header('location: http://localhost/Projet5');
             } 
         } else {

@@ -5,6 +5,7 @@ use core\Image;
 use models\User;
 use core\Controller;
 use core\Pagination;
+use core\Session;
 use models\UserManager;
 
 /**
@@ -86,7 +87,7 @@ class UserController extends Controller
      */
     public function logout()
     {
-        session_destroy();
+        Session::forget();
         header('location: http://localhost/Projet5');
     }
 
@@ -190,7 +191,7 @@ class UserController extends Controller
                 );
                 $UserManager->update($user);
             } else {
-                session_unset();
+                Session::forget();
                 header('location: http://localhost/Projet5'); 
             }
         }
@@ -217,7 +218,7 @@ class UserController extends Controller
                 );
                 $UserManager->update($user);
             } else {
-                session_unset();
+                Session::forget();
                 header('location: http://localhost/Projet5');
             }
         }

@@ -16,7 +16,7 @@ class Session
         
     }
 
-    public static function forget($key){
-        unset($_SESSION[$key]);
+    public static function forget(){
+        session_unset();
     }
 }
