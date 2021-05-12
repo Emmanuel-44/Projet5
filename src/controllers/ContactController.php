@@ -39,7 +39,7 @@ class ContactController
                 $mail->addReplyTo(htmlspecialchars(filter_input(INPUT_POST, 'email')), htmlspecialchars(filter_input(INPUT_POST, 'name')));
 
                 //Content
-            $mail->isHTML(true);                                            //Set email format to HTML
+                $mail->isHTML(true);                                            //Set email format to HTML
                 $mail->Subject = htmlspecialchars(filter_input(INPUT_POST, 'subject'));
                 $mail->Body    = '<b>Auteur : </b>' . filter_input(INPUT_POST, 'name') 
                     . '<br /><b>Email : </b>' . htmlspecialchars(filter_input(INPUT_POST, 'email'))
@@ -54,6 +54,6 @@ class ContactController
             }
         } else {
             echo 'Tous les champs doivent être remplis avec un format email valide !';
-        }   
+        }
     }
 }

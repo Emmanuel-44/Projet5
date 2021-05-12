@@ -142,7 +142,7 @@ class CommentController extends Controller
                 $slug = $post->getSlug();
                 header("location: ../../../admin/article/$slug-$postId");
             } else {
-                session_unset();
+                Session::forget();
                 header('location: http://localhost/Projet5');
             }
         } else {
@@ -213,7 +213,7 @@ class CommentController extends Controller
                 $slug = $post->getSlug();
                 header("location: ../../../admin/article/$slug-$postId");
             } else {
-                session_unset();
+                Session::forget();
                 header('location: http://localhost/Projet5');
             }
         } else {
