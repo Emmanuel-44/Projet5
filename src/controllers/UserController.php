@@ -98,76 +98,74 @@ class UserController extends Controller
     public function create()
     {
         $UserManager = new UserManager($this->database);
-
-        if (!$this->sessionExist('user', 'USER')) {
             
-            if ($this->formValidate(filter_input_array(INPUT_POST), ['username','email', 'password'])) {
+        if ($this->formValidate(filter_input_array(INPUT_POST), ['username','email', 'password'])) {
 
-                if (!empty(filter_input(INPUT_POST, 'password'))) {
-                    $password = password_hash(filter_input(INPUT_POST, 'password'), PASSWORD_DEFAULT);
+            if (!empty(filter_input(INPUT_POST, 'password'))) {
+                $password = password_hash(filter_input(INPUT_POST, 'password'), PASSWORD_DEFAULT);
+            } else {
+                $password = '';
+            }
+            
+            $imagePath = Image::getImage('user');
+
+            $user = new User(
+                [
+                'username' => htmlspecialchars(filter_input(INPUT_POST, 'username')),
+                'contactEmail' => htmlspecialchars(filter_input(INPUT_POST, 'email')),
+                'password' => $password,
+                'imagePath' => $imagePath,
+                'role' => ['USER']
+                ]
+            );
+    
+            if ($user->isValid() 
+                && filter_input(INPUT_POST, 'password') == filter_input(INPUT_POST, 'confirm_password')
+            ) {
+                $checkUsername = $UserManager->findByUsername();
+                $checkEmail = $UserManager->findByEmail();
+
+                if (!$checkEmail && !$checkUsername) {
+                    Image::uploadImage('user');
+                    $UserManager->add($user);
+                    $user->setSession();
+                    header('location: http://localhost/Projet5');
                 } else {
-                    $password = '';
-                }
-                
-                $imagePath = Image::getImage('user');
-    
-                $user = new User(
-                    [
-                    'username' => htmlspecialchars(filter_input(INPUT_POST, 'username')),
-                    'contactEmail' => htmlspecialchars(filter_input(INPUT_POST, 'email')),
-                    'password' => $password,
-                    'imagePath' => $imagePath,
-                    'role' => ['USER']
-                    ]
-                );
-        
-                if ($user->isValid() 
-                    && filter_input(INPUT_POST, 'password') == filter_input(INPUT_POST, 'confirm_password')
-                ) {
-                    $checkUsername = $UserManager->findByUsername();
-                    $checkEmail = $UserManager->findByEmail();
-    
-                    if (!$checkEmail && !$checkUsername) {
-                        Image::uploadImage('user');
-                        $UserManager->add($user);
-                        $user->setSession();
-                        header('location: http://localhost/Projet5');
-                    } else {
-                        if ($checkUsername) {
-                            $user->setErrors(['username_error']);
-                        }
-    
-                        if ($checkEmail) {
-                            $user->setErrors(['email_error']);
-                        }
-    
-                        if ($checkEmail && $checkUsername) {
-                            $user->setErrors(['email_error', 'username_error']);
-                        }
-    
-                        $this->render(
-                            'frontend/createUserView.twig', array(
-                                'user' => $user
-                            )
-                        );
+                    /*if ($checkUsername) {
+                        $user->setErrors(['username_error']);
                     }
-                    
-                } else {
-                    // Confirmation de mot de passe pas rempli
+
+                    if ($checkEmail) {
+                        $user->setErrors(['email_error']);
+                    }
+
+                    if ($checkEmail && $checkUsername) {
+                        $user->setErrors(['email_error', 'username_error']);
+                    }*/
+
+                    if ($checkEmail || $checkUsername) {
+                        $user->setErrors(['id_error']);
+                    }
+
                     $this->render(
                         'frontend/createUserView.twig', array(
-                            'user' => $user,
-                            'post' => filter_input_array(INPUT_POST)
+                            'user' => $user
                         )
                     );
                 }
+                
             } else {
-                // Formulaire non rempli, arrivée sur la page
-                $this->render('frontend/createUserView.twig');
+                // Confirmation de mot de passe pas rempli
+                $this->render(
+                    'frontend/createUserView.twig', array(
+                        'user' => $user,
+                        'post' => filter_input_array(INPUT_POST)
+                    )
+                );
             }
         } else {
-            // Si un utilisateur est déjà connecté
-            header('location: http://localhost/Projet5');
+            // Formulaire non rempli, arrivée sur la page
+            $this->render('frontend/createUserView.twig');
         }
     }
 

@@ -17,6 +17,11 @@
 {% block content %}
 <div class="container" style="max-width: 500px; margin-top:80px; margin-bottom:80px;">
     <form class="mt-5" action="" method="post" enctype="multipart/form-data">
+    {% if 'id_error' in user.errors %}
+    <div class="alert alert-danger" role="alert">
+        Ces identifiants existent déjà !
+    </div>
+    {% endif %}
     {% if 'username_error' in user.errors %}
     <div class="alert alert-danger" role="alert">
         Ce pseudo existe déjà !
