@@ -2,7 +2,7 @@
 namespace controllers;
 
 use PHPMailer\PHPMailer\SMTP;
-use Berlioz\FlashBag\FlashBag;
+use core\Controller;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -52,8 +52,8 @@ class ContactController
             } catch (Exception $e) {
                 echo 'Le message n\'a pas pu être envoyé.';
             }
-        } else {
-            echo 'Tous les champs doivent être remplis avec un format email valide !';
+            return;
         }
+        echo 'Tous les champs doivent être remplis avec un format email valide !';
     }
 }

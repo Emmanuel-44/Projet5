@@ -15,7 +15,9 @@ Class Image
      */
     public static function uploadImage($folder)
     {
-        $image = $_FILES['image'];
+        if (isset($_FILES['image'])) {
+            $image = $_FILES['image'];
+        } 
         if (isset($image) AND $image['error'] == 0) {
             if ($image['size'] <= 1000000) {
                 $datasFile = pathinfo($image['name']);
@@ -40,7 +42,9 @@ Class Image
      */
     public static function getImage($folder): string
     {
-        $image = $_FILES['image'];
+        if (isset($_FILES['image'])) {
+            $image = $_FILES['image'];
+        }
         if (!empty($image['name'])) {
             $imagePath = "public/img/$folder/" .$image['name'];
         } else {

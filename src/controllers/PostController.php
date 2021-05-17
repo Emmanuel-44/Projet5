@@ -57,6 +57,7 @@ class PostController extends Controller
             $slug = substr(strrchr($this->reverse_strrchr($url, '-', 0), '/'), 1);
             $urlValid = $PostManager->checkPost($Postid, $slug);
             if ($urlValid) {
+                
                 $post = $PostManager->getPost($Postid);
                 $comments = $CommentManager->getList($Postid);
                 $this->render(
@@ -65,10 +66,10 @@ class PostController extends Controller
                     'comments' => $comments
                     )
                 );
-            } else {
-                $errorController = new ErrorController();
-                $errorController->error404();
+                return;
             }
+            $errorController = new ErrorController();
+            $errorController->error404();
         }
     }
 

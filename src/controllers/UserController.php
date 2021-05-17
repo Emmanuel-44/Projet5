@@ -24,9 +24,9 @@ class UserController extends Controller
                 'currentPage' => $pagination['currentPage']
                 )
             );
-        } else {
-            header('location: http://localhost/Projet5');
+            return;
         }
+        header('location: http://localhost/Projet5');
     }
 
     /**
@@ -131,18 +131,6 @@ class UserController extends Controller
                     $user->setSession();
                     header('location: http://localhost/Projet5');
                 } else {
-                    /*if ($checkUsername) {
-                        $user->setErrors(['username_error']);
-                    }
-
-                    if ($checkEmail) {
-                        $user->setErrors(['email_error']);
-                    }
-
-                    if ($checkEmail && $checkUsername) {
-                        $user->setErrors(['email_error', 'username_error']);
-                    }*/
-
                     if ($checkEmail || $checkUsername) {
                         $user->setErrors(['id_error']);
                     }
@@ -152,8 +140,7 @@ class UserController extends Controller
                             'user' => $user
                         )
                     );
-                }
-                
+                }  
             } else {
                 // Confirmation de mot de passe pas rempli
                 $this->render(
