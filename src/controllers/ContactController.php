@@ -51,7 +51,7 @@ class ContactController extends Controller
                 $mail->send();
                 echo 'Votre message a bien été envoyé.';
             } catch (Exception $e) {
-                echo 'Le message n\'a pas pu être envoyé.';
+                return false;
             }
         }
     }
