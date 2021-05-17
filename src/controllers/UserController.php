@@ -36,48 +36,41 @@ class UserController extends Controller
     public function login()
     {
         $UserManager = new UserManager($this->database);
+        $email = filter_input(INPUT_POST, 'email');
+        $password = filter_input(INPUT_POST, 'password');
+        if (isset($email) && isset($password) 
+            && !empty($email) && !empty($password)
+        ) {
 
-        if (!$this->sessionExist('user', 'USER')) {
-            $email = filter_input(INPUT_POST, 'email');
-            $password = filter_input(INPUT_POST, 'password');
-            if (isset($email) && isset($password) 
-                && !empty($email) && !empty($password)
-            ) {
+            $check = $UserManager->findByEmail();
 
-                $check = $UserManager->findByEmail();
-    
-                if (!$check) {
-                    $error = ['fail'];
-                    $this->render(
-                        'frontend/loginView.twig', array(
-                            'error' => $error
-                        )
-                    );
-                } else {
-                    $user = $UserManager->getUser($check['id']);
-                    if (password_verify($password, $user->getPassword())) {
-                        $user->setSession();
-                        if ($this->sessionExist('user', 'ADMIN')) {
-                            header('location: http://localhost/Projet5/admin');
-                        } else {
-                            header('location: http://localhost/Projet5');  
-                        } 
-                        
-                    } else {
-                        $error = ['fail'];
-                        $this->render(
-                            'frontend/loginView.twig', array(
-                                'error' => $error
-                            )
-                        );
-                    }
-                }   
-            } else {
-                $this->render('frontend/loginView.twig');
-            } 
-        } else {
-            header('location: http://localhost/Projet5');
-        } 
+            if (!$check) {
+                $error = ['fail'];
+                $this->render(
+                    'frontend/loginView.twig', array(
+                        'error' => $error
+                    )
+                );
+                return;
+            }
+            $user = $UserManager->getUser($check['id']);
+            if (password_verify($password, $user->getPassword())) {
+                $user->setSession();
+                if ($this->sessionExist('user', 'ADMIN')) {
+                    header('location: http://localhost/Projet5/admin');
+                    return;
+                }
+                header('location: http://localhost/Projet5');
+            }
+            $error = ['fail'];
+            $this->render(
+                'frontend/loginView.twig', array(
+                    'error' => $error
+                )
+            );
+            return; 
+        }
+        $this->render('frontend/loginView.twig');
     }
 
     /**
