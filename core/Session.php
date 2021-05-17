@@ -4,14 +4,14 @@ namespace core;
 class Session
 {
     public static function put($key, $value){
-        $_SESSION[$key] = $value;
+        $GLOBALS['_SESSION'][$key] = $value;
     }
 
     public static function get(?string $key){
         if ($key) {
-            return (isset($_SESSION[$key]) ? $_SESSION[$key] : null);
+            return (isset($GLOBALS['_SESSION'][$key]) ? $GLOBALS['_SESSION'][$key] : null);
         }
-        return $_SESSION;   
+        return $GLOBALS['_SESSION'];
     }
 
     public static function forget(){
