@@ -10,13 +10,11 @@ class Session
     public static function get(?string $key){
         if ($key) {
             return (isset($_SESSION[$key]) ? $_SESSION[$key] : null);
-        } else {
-            return $_SESSION;
         }
-        
+        return $_SESSION;   
     }
 
     public static function forget(){
-        session_unset();
+        session_destroy();
     }
 }
