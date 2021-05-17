@@ -83,15 +83,15 @@ class CommentController extends Controller
                 'error' => $error
                 )
             );
-            // Si le formulaire n'est pas rempli 
-        } else {
-            $this->render(
-                'frontend/singleView.twig', array(
-                'post' => $post,
-                'comments' => $comments
-                )
-            );
+            return;  
         }
+        // Si le formulaire n'est pas rempli 
+        $this->render(
+            'frontend/singleView.twig', array(
+            'post' => $post,
+            'comments' => $comments
+            )
+        );
     }
 
     /**

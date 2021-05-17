@@ -1,12 +1,13 @@
 <?php
 namespace controllers;
 
-use PHPMailer\PHPMailer\SMTP;
 use core\Controller;
+use models\PostManager;
+use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
-class ContactController
+class ContactController extends Controller
 {
     /**
      * Email sending
@@ -52,8 +53,6 @@ class ContactController
             } catch (Exception $e) {
                 echo 'Le message n\'a pas pu être envoyé.';
             }
-            return;
         }
-        echo 'Tous les champs doivent être remplis avec un format email valide !';
     }
 }
