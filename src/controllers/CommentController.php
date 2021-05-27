@@ -31,7 +31,7 @@ class CommentController extends Controller
         if ($this->formValidate(filter_input_array(INPUT_POST), ['username','content'])) {
 
             // Si l'utilisateur est connecté avec validation du token
-            if ($this->sessionExist('user', 'USER') && $this->tokenValidate("http://localhost/Projet5/blog/$slug-$PostId", 60)) {
+            if ($this->sessionExist('user', 'USER') && $this->tokenValidate(60)) {
 
                 $userImagePath = Session::get('user')['imagePath'];
                 $comment = new Comment(
@@ -110,7 +110,7 @@ class CommentController extends Controller
         $slug = substr(strrchr($this->reverse_strrchr($url, '-', 0), '/'), 1);
 
         if ($this->sessionExist('user', 'ADMIN')) {
-            if ($this->tokenValidate("http://localhost/Projet5/admin/article/$slug-$postId", 300)) { 
+            if ($this->tokenValidate(300)) { 
                 $comment = $CommentManager->getComment($postId, $commentId);
                 $comment = new Comment(
                     [
@@ -180,7 +180,7 @@ class CommentController extends Controller
         $slug = substr(strrchr($this->reverse_strrchr($url, '-', 0), '/'), 1);
 
         if ($this->sessionExist('user', 'ADMIN')) {
-            if ($this->tokenValidate("http://localhost/Projet5/admin/article/$slug-$postId", 300)) {
+            if ($this->tokenValidate(300)) {
                 $comment = $CommentManager->getComment($postId, $commentId);
                 $comment = new Comment(
                     [

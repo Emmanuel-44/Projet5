@@ -107,7 +107,7 @@ class PostController extends Controller
                 filter_input_array(INPUT_POST), ['username', 'title', 'teaser', 'content']
             ) 
             ) {
-                if ($this->tokenValidate("http://localhost/Projet5/admin/ajouter", 300)) {
+                if ($this->tokenValidate(300)) {
                     $imagePath = Image::getImage('post');
                     $post = new Post(
                         [
@@ -217,7 +217,7 @@ class PostController extends Controller
                     filter_input_array(INPUT_POST), ['username', 'title', 'teaser', 'content'] 
                 )
                 ) {
-                    if ($this->tokenValidate("http://localhost/Projet5/admin/modifier/$slug-$postId", 300)) {
+                    if ($this->tokenValidate(300)) {
                         $imagePath = Image::getImage('post');
                         $post = new Post(
                             [
@@ -276,7 +276,7 @@ class PostController extends Controller
         $postId = (int)substr(strrchr($url, '-'), 1);
 
         if ($this->sessionExist('user', 'ADMIN')) {
-            if ($this->tokenValidate("http://localhost/Projet5/admin", 300)) {
+            if ($this->tokenValidate(300)) {
                 $PostManager->delete($postId);
                 header('location:http://localhost/Projet5/admin');
             } else {

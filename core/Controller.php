@@ -73,7 +73,7 @@ class Controller
      * 
      * @return boolean
      */
-    public function tokenValidate(string $formPath, int $time) : bool
+    public function tokenValidate(int $time) : bool
     {
         $session_token = Session::get('token');
         $session_token_time = Session::get('token_time');
@@ -90,11 +90,7 @@ class Controller
                 //Si le jeton n'est pas expiré
                 if($session_token_time >= $timestamp_ancien)
                 {
-                    //Si le referer est bon
-                    if(isset($referer) && $referer == "$formPath")
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
         }

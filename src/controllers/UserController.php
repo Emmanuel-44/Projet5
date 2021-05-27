@@ -156,7 +156,7 @@ class UserController extends Controller
     public function update()
     {
         if ($this->sessionExist('user', 'SUPER_ADMIN')) {
-            if ($this->tokenValidate("http://localhost/Projet5/admin/utilisateurs", 300)) {
+            if ($this->tokenValidate(300)) {
                 $UserManager = new UserManager($this->database);
                 $url = filter_input(INPUT_SERVER, 'REQUEST_URI');
                 $userId = (int)substr(strrchr($url, '/'), 1);
@@ -183,7 +183,7 @@ class UserController extends Controller
     public function remove()
     {
         if ($this->sessionExist('user', 'SUPER_ADMIN')) {
-            if ($this->tokenValidate("http://localhost/Projet5/admin/utilisateurs", 300)) {
+            if ($this->tokenValidate(300)) {
                 $UserManager = new UserManager($this->database);
                 $url = filter_input(INPUT_SERVER, 'REQUEST_URI');
                 $userId = (int)substr(strrchr($url, '/'), 1);
